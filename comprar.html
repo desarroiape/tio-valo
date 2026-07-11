@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comprar cuentas — tiovalostore gaming</title>
+<link rel="icon" href="PHOTO-2026-05-05-19-31-46.jpg" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          /* Paleta cálida derivada del logo tiovalostore (mostaza + naranja + marrón) */
+          ink:      '#17110A',   /* base marrón casi negro */
+          'ink-2':  '#0F0A05',
+          surface:  '#241A0D',
+          'surface-2': '#2F2211',
+          line:     '#47351A',
+          red:      '#FF9F30',   /* naranja principal (rol de acento) */
+          'red-dim':'#E77A16',   /* naranja profundo (hover) */
+          cream:    '#FBF1DD',   /* crema cálido (texto) */
+          muted:    '#B39A72',   /* taupe cálido */
+          mint:     '#FFCA3A',   /* dorado/ámbar (acento secundario) */
+        },
+        fontFamily: {
+          display: ['"Baloo 2"', 'cursive'],
+          cond:    ['Oswald', 'sans-serif'],
+          body:    ['Inter', 'sans-serif'],
+          mono:    ['"Space Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root { --notch: 14px; }
+  html { scroll-behavior: smooth; background: #17110A; }
+  body { background-color: #17110A; }
+
+  /* Ambient layered radial gradients + grain — glows cálidos naranja/ámbar */
+  .atmosphere {
+    background-color: #17110A;
+    background-image:
+      radial-gradient(120% 80% at 85% -10%, rgba(255,159,48,0.18), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(255,202,58,0.10), transparent 55%),
+      radial-gradient(120% 90% at 50% 120%, rgba(231,122,22,0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  .grain::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Firma tiovalostore: esquinas redondeadas tipo burbuja (hace eco del logo) */
+  .notch-tr { border-radius: 14px; }
+  .notch-bl { border-radius: 14px; }
+  .notch-both { border-radius: 18px; }
+
+  .btn-red { border-radius: 12px; }
+
+  .layer-shadow {
+    box-shadow:
+      0 1px 0 rgba(255,241,221,0.05) inset,
+      0 18px 40px -20px rgba(0,0,0,0.85),
+      0 0 0 1px rgba(71,53,26,0.9);
+  }
+  .card { transition: transform .35s cubic-bezier(.2,.9,.25,1), box-shadow .35s ease; }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 26px 50px -22px rgba(0,0,0,0.85),
+      0 0 0 1px rgba(255,159,48,0.6),
+      0 0 34px -6px rgba(255,159,48,0.4);
+  }
+  .card:hover .card-img { transform: scale(1.06); }
+  .card-img { transition: transform .6s cubic-bezier(.2,.9,.25,1); }
+
+  .img-treat { position: relative; }
+  .img-treat::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(23,17,10,0.92) 4%, rgba(23,17,10,0.15) 55%, rgba(255,159,48,0.14));
+    mix-blend-mode: multiply;
+  }
+
+  a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .cta:active { transform: translateY(1px) scale(.99); }
+  :focus-visible { outline: 2px solid #FF9F30; outline-offset: 3px; }
+
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
+    border-radius: 3px;
+    background: #FF9F30; box-shadow: 0 0 14px rgba(255,159,48,0.65);
+  }
+
+  /* Detail overlay */
+  #overlay { transition: opacity .3s ease; }
+  #overlay.hidden-x { opacity: 0; pointer-events: none; }
+  #overlay-panel { transition: transform .4s cubic-bezier(.2,.9,.25,1), opacity .4s ease; }
+  #overlay.hidden-x #overlay-panel { transform: translateY(26px) scale(.985); opacity: 0; }
+
+  .tag { border-radius: 8px; }
+
+  /* fade-up on load */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp .7s cubic-bezier(.2,.9,.25,1) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body class="font-body text-cream antialiased atmosphere grain selection:bg-red selection:text-ink">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <a href="/" class="group flex items-center gap-3">
+      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(255,159,48,0.7)] transition-transform group-hover:-translate-y-0.5">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-xl font-800 lowercase tracking-tight text-cream">tiovalo<span class="text-red">store</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">gaming</span>
+      </span>
+    </a>
+    <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
+      <a href="/comprar" class="px-4 py-2 text-cream" aria-current="page">Catálogo</a>
+      <a href="/vender" class="px-4 py-2 text-cream/80 hover:text-cream">Vender</a>
+      <a href="/vender" class="ml-1 border border-line px-4 py-2 font-600 text-cream/90 btn-red hover:border-mint hover:text-mint">Vender cuenta</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top" class="relative z-10">
+
+  <!-- ============ CATÁLOGO ============ -->
+  <section id="catalogo" class="mx-auto max-w-6xl px-5 pt-14 pb-16 md:pt-20 md:pb-20">
+    <a href="/" class="fade-up inline-flex items-center gap-2 font-cond text-xs font-600 uppercase tracking-[0.16em] text-muted hover:text-cream">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Inicio
+    </a>
+    <div class="mt-6 mb-9 flex items-end justify-between gap-4">
+      <div>
+        <p class="fade-up rail mb-3 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Comprar cuenta</p>
+        <h1 class="fade-up font-display text-4xl uppercase leading-none text-cream sm:text-6xl" style="animation-delay:.05s">Cuentas disponibles</h1>
+      </div>
+      <p class="hidden max-w-xs text-right text-sm leading-[1.6] text-muted sm:block">Haz clic en una cuenta para ver su descripción completa.</p>
+    </div>
+
+    <div id="catalog-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative z-10 border-t border-line/60">
+  <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center">
+    <a href="/" class="flex items-center gap-3">
+      <span class="grid h-9 w-9 place-items-center overflow-hidden rounded-lg ring-1 ring-red/40">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="font-display text-base font-800 lowercase tracking-tight text-cream/80">tiovalo<span class="text-red">store</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">gaming</span></span>
+    </a>
+    <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games.</p>
+  </div>
+</footer>
+
+<!-- ============ DETALLE (OVERLAY) ============ -->
+<div id="overlay" class="hidden-x fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink-2/85 px-4 py-8 backdrop-blur-sm sm:py-12">
+  <div id="overlay-panel" class="relative w-full max-w-3xl border border-line/70 bg-ink notch-both layer-shadow">
+    <button id="overlay-close" aria-label="Cerrar" class="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center bg-ink/70 text-cream/80 hover:bg-red hover:text-ink">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div id="overlay-body"><!-- inyectado por JS --></div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURACIÓN — cambia estos valores por los tuyos
+   ===================================================================== */
+const CONFIG = {
+  whatsapp: '51940198935',              // <-- tu número con código de país, sin +, espacios ni guiones
+  telegramBot: 'https://t.me/valobot',
+};
+
+/* =====================================================================
+   CATÁLOGO — edita, agrega o elimina cuentas aquí
+   ===================================================================== */
+const CUENTAS = [
+  {
+    id: 'VAL-001', titulo: 'Cuenta Inmortal — Reaver Vandal',
+    rango: 'Inmortal 2', region: 'LATAM', skins: 24, precio: 120,
+    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-001',
+    destacado: 'Reaver Vandal · Prime Phantom',
+    descripcion: 'Cuenta competitiva con historial limpio y rango alto de la temporada actual. Correo original incluido para transferencia total. Ideal para quien busca entrar directo a rangos altos con skins premium.',
+    detalles: ['Reaver Vandal (full)', 'Prime Phantom', 'Elderflame Operator', 'Sovereign Sword', 'Battlepass completo E7'],
+    correo: 'Correo original incluido', nivel: 142, vp: 350,
+  },
+  {
+    id: 'VAL-002', titulo: 'Cuenta Diamante — Colección Prime',
+    rango: 'Diamante 1', region: 'NA', skins: 17, precio: 85,
+    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-002',
+    destacado: 'Prime Vandal · Glitchpop',
+    descripcion: 'Buena base de skins y rango sólido. Perfecta para seguir subiendo esta temporada. Se entrega con correo vinculado y datos completos.',
+    detalles: ['Prime Vandal', 'Glitchpop Phantom', 'Ion Sheriff', 'Spectrum knife', 'Agentes: 14 desbloqueados'],
+    correo: 'Correo original incluido', nivel: 98, vp: 120,
+  },
+  {
+    id: 'VAL-003', titulo: 'Cuenta Radiante — Full Skins',
+    rango: 'Radiante', region: 'EU', skins: 41, precio: 260,
+    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-003',
+    destacado: 'Champions 2023 · Elderflame',
+    descripcion: 'Cuenta tope de gama: rango Radiante confirmado y una de las colecciones más completas del catálogo. Inventario premium con bundles completos y cuchillos exclusivos.',
+    detalles: ['Champions 2023 Vandal', 'Elderflame Vandal + Operator', 'Araxys bundle', 'RGX 11z Pro (full)', 'Todos los agentes'],
+    correo: 'Correo original incluido', nivel: 231, vp: 800,
+  },
+  {
+    id: 'VAL-004', titulo: 'Cuenta Ascendente — Glitchpop',
+    rango: 'Ascendente 3', region: 'BR', skins: 12, precio: 60,
+    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-004',
+    destacado: 'Glitchpop Vandal · Oni',
+    descripcion: 'Relación precio-valor excelente para empezar con buen inventario. Skins llamativas y rango competitivo estable.',
+    detalles: ['Glitchpop Vandal', 'Oni Phantom', 'Ruination Sword', 'Agentes: 11 desbloqueados', 'Battlepass E6'],
+    correo: 'Correo original incluido', nivel: 76, vp: 45,
+  },
+  {
+    id: 'VAL-005', titulo: 'Cuenta Oro — Starter con Skins',
+    rango: 'Oro 2', region: 'LATAM', skins: 8, precio: 35,
+    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-005',
+    destacado: 'Prime Spectre · Sovereign',
+    descripcion: 'Cuenta económica ideal para iniciar sin empezar de cero. Rango decente y varias skins para jugar cómodo desde el día uno.',
+    detalles: ['Prime Spectre', 'Sovereign Ghost', 'Nunca Olvidado Marshal', 'Agentes: 9 desbloqueados'],
+    correo: 'Correo original incluido', nivel: 54, vp: 20,
+  },
+  {
+    id: 'VAL-006', titulo: 'Cuenta Inmortal — Araxys Bundle',
+    rango: 'Inmortal 1', region: 'AP', skins: 29, precio: 140,
+    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-006',
+    destacado: 'Araxys · Recon Phantom',
+    descripcion: 'Inventario moderno y agresivo con bundles recientes. Rango alto y cuenta lista para competir al máximo nivel. Correo original garantizado.',
+    detalles: ['Araxys Vandal + Sheriff', 'Recon Phantom', 'Gaia\'s Vengeance', 'Kuronami bundle', 'Todos los agentes'],
+    correo: 'Correo original incluido', nivel: 167, vp: 500,
+  },
+];
+
+/* =====================================================================
+   Utilidades WhatsApp
+   ===================================================================== */
+function waLink(mensaje) {
+  return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+}
+
+/* =====================================================================
+   Render del catálogo
+   ===================================================================== */
+const grid = document.getElementById('catalog-grid');
+grid.innerHTML = CUENTAS.map((c, i) => `
+  <article class="card group cursor-pointer bg-surface notch-tr layer-shadow" data-id="${c.id}" tabindex="0" role="button" aria-label="Ver ${c.titulo}">
+    <div class="img-treat aspect-[3/2] overflow-hidden">
+      <img src="${c.img}" alt="${c.titulo}" class="card-img h-full w-full object-cover" loading="lazy" />
+      <span class="tag absolute left-3 top-3 z-10 bg-red px-2.5 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">${c.rango}</span>
+      <span class="absolute bottom-3 left-3 z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/70">${c.id}</span>
+    </div>
+    <div class="p-5">
+      <h3 class="font-cond text-lg font-600 uppercase leading-tight tracking-wide text-cream">${c.titulo}</h3>
+      <p class="mt-1 text-sm text-muted">${c.destacado}</p>
+      <div class="mt-4 flex items-center justify-between border-t border-line/60 pt-4">
+        <div class="flex gap-4 font-mono text-[11px] uppercase tracking-wider text-muted">
+          <span><span class="text-cream">${c.region}</span> · región</span>
+          <span><span class="text-cream">${c.skins}</span> skins</span>
+        </div>
+        <div class="text-right">
+          <span class="font-display text-2xl text-red">$${c.precio}</span>
+        </div>
+      </div>
+      <span class="mt-4 flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">
+        Ver detalle
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </div>
+  </article>
+`).join('');
+
+/* =====================================================================
+   Overlay de detalle
+   ===================================================================== */
+const overlay = document.getElementById('overlay');
+const overlayBody = document.getElementById('overlay-body');
+
+function abrirDetalle(id) {
+  const c = CUENTAS.find(x => x.id === id);
+  if (!c) return;
+  const msg = `¡Hola! Quiero comprar esta cuenta de Valorant:\n\n• ID: ${c.id}\n• ${c.titulo}\n• Rango: ${c.rango}\n• Región: ${c.region}\n• Skins: ${c.skins}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
+  const link = waLink(msg);
+
+  overlayBody.innerHTML = `
+    <div class="img-treat aspect-[16/7] overflow-hidden">
+      <img src="${c.img}" alt="${c.titulo}" class="h-full w-full object-cover" />
+      <span class="tag absolute left-4 top-4 z-10 bg-red px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">${c.rango}</span>
+    </div>
+    <div class="p-6 sm:p-8">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-red">${c.id}</p>
+          <h3 class="mt-1 font-display text-3xl uppercase leading-none text-cream sm:text-4xl">${c.titulo}</h3>
+        </div>
+        <div class="shrink-0 text-right">
+          <div class="font-display text-4xl text-red">$${c.precio}</div>
+          <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">USD</div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-px border border-line/60 bg-line/40 notch-tr sm:grid-cols-4">
+        ${[['Región', c.region],['Skins', c.skins],['Nivel', c.nivel],['VP', c.vp]].map(([k,v]) => `
+          <div class="bg-ink px-4 py-3">
+            <div class="font-display text-xl text-cream">${v}</div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${k}</div>
+          </div>`).join('')}
+      </div>
+
+      <p class="mt-6 text-sm leading-[1.75] text-cream/80">${c.descripcion}</p>
+
+      <h4 class="mt-6 mb-3 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Inventario destacado</h4>
+      <ul class="grid gap-2 sm:grid-cols-2">
+        ${c.detalles.map(d => `
+          <li class="flex items-center gap-2 text-sm text-cream/85">
+            <svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-red" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${d}
+          </li>`).join('')}
+      </ul>
+
+      <div class="mt-5 flex items-center gap-2 text-sm text-mint">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>
+        ${c.correo}
+      </div>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="${link}" target="_blank" rel="noopener" class="cta flex flex-1 items-center justify-center gap-2 bg-red px-6 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">
+          Quiero comprar esta cuenta
+        </a>
+        <a href="${link}" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" class="cta flex items-center justify-center gap-2 border border-mint bg-mint/[0.08] px-5 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.01c-.24.68-1.42 1.3-1.95 1.34-.5.05-1.14.24-3.83-.8-3.22-1.27-5.28-4.55-5.44-4.76-.16-.21-1.31-1.74-1.31-3.32s.83-2.36 1.12-2.68c.24-.27.63-.39.99-.39.12 0 .24 0 .34.01.31.01.46.03.66.51.24.6.83 2.09.9 2.24.07.15.12.32.02.53-.09.21-.14.34-.28.53-.14.19-.29.42-.42.56-.14.15-.28.31-.12.6.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.36-.23.61-.14.25.09 1.61.76 1.88.9.28.14.46.21.53.32.07.12.07.66-.17 1.34z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>`;
+
+  overlay.classList.remove('hidden-x');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('overlay-close').focus();
+}
+
+function cerrarDetalle() {
+  overlay.classList.add('hidden-x');
+  document.body.style.overflow = '';
+}
+
+grid.addEventListener('click', e => {
+  const card = e.target.closest('[data-id]');
+  if (card) abrirDetalle(card.dataset.id);
+});
+grid.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-id]')) {
+    e.preventDefault();
+    abrirDetalle(e.target.closest('[data-id]').dataset.id);
+  }
+});
+document.getElementById('overlay-close').addEventListener('click', cerrarDetalle);
+overlay.addEventListener('click', e => { if (e.target === overlay) cerrarDetalle(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.classList.contains('hidden-x')) cerrarDetalle(); });
+</script>
+</body>
+</html>

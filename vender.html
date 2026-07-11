@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vender tu cuenta — tiovalostore gaming</title>
+<link rel="icon" href="PHOTO-2026-05-05-19-31-46.jpg" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          /* Paleta cálida derivada del logo tiovalostore (mostaza + naranja + marrón) */
+          ink:      '#17110A',   /* base marrón casi negro */
+          'ink-2':  '#0F0A05',
+          surface:  '#241A0D',
+          'surface-2': '#2F2211',
+          line:     '#47351A',
+          red:      '#FF9F30',   /* naranja principal (rol de acento) */
+          'red-dim':'#E77A16',   /* naranja profundo (hover) */
+          cream:    '#FBF1DD',   /* crema cálido (texto) */
+          muted:    '#B39A72',   /* taupe cálido */
+          mint:     '#FFCA3A',   /* dorado/ámbar (acento secundario) */
+        },
+        fontFamily: {
+          display: ['"Baloo 2"', 'cursive'],
+          cond:    ['Oswald', 'sans-serif'],
+          body:    ['Inter', 'sans-serif'],
+          mono:    ['"Space Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root { --notch: 14px; }
+  html { scroll-behavior: smooth; background: #17110A; }
+  body { background-color: #17110A; }
+
+  /* Ambient layered radial gradients + grain — glows cálidos naranja/ámbar */
+  .atmosphere {
+    background-color: #17110A;
+    background-image:
+      radial-gradient(120% 80% at 85% -10%, rgba(255,159,48,0.18), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(255,202,58,0.10), transparent 55%),
+      radial-gradient(120% 90% at 50% 120%, rgba(231,122,22,0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  .grain::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Firma tiovalostore: esquinas redondeadas tipo burbuja (hace eco del logo) */
+  .notch-tr { border-radius: 14px; }
+  .notch-bl { border-radius: 14px; }
+  .notch-both { border-radius: 18px; }
+
+  .btn-red { border-radius: 12px; }
+
+  .layer-shadow {
+    box-shadow:
+      0 1px 0 rgba(255,241,221,0.05) inset,
+      0 18px 40px -20px rgba(0,0,0,0.85),
+      0 0 0 1px rgba(71,53,26,0.9);
+  }
+
+  a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .cta:active { transform: translateY(1px) scale(.99); }
+  :focus-visible { outline: 2px solid #FF9F30; outline-offset: 3px; }
+
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
+    border-radius: 3px;
+    background: #FF9F30; box-shadow: 0 0 14px rgba(255,159,48,0.65);
+  }
+
+  #drop-zone.drop-active { border-color: #FFCA3A; background: rgba(255,202,58,0.08); }
+
+  /* fade-up on load */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp .7s cubic-bezier(.2,.9,.25,1) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body class="font-body text-cream antialiased atmosphere grain selection:bg-red selection:text-ink">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <a href="/" class="group flex items-center gap-3">
+      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(255,159,48,0.7)] transition-transform group-hover:-translate-y-0.5">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-xl font-800 lowercase tracking-tight text-cream">tiovalo<span class="text-red">store</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">gaming</span>
+      </span>
+    </a>
+    <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
+      <a href="/comprar" class="px-4 py-2 text-cream/80 hover:text-cream">Catálogo</a>
+      <a href="/vender" class="px-4 py-2 text-cream" aria-current="page">Vender</a>
+      <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top" class="relative z-10">
+
+  <!-- ============ VENDER ============ -->
+  <section id="vender" class="mx-auto max-w-6xl px-5 pt-14 pb-16 md:pt-20 md:pb-24">
+    <a href="/" class="fade-up inline-flex items-center gap-2 font-cond text-xs font-600 uppercase tracking-[0.16em] text-muted hover:text-cream">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Inicio
+    </a>
+    <p class="fade-up rail mt-6 mb-3 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-mint">// Vender cuenta</p>
+    <h1 class="fade-up font-display text-4xl uppercase leading-none text-cream sm:text-6xl" style="animation-delay:.05s">Vende tu cuenta</h1>
+    <p class="fade-up mt-4 max-w-xl text-base leading-[1.7] text-muted" style="animation-delay:.1s">
+      Para tasar y comprar tu cuenta necesitamos estos datos. Complétalos y te contactamos por WhatsApp para cerrar el trato.
+    </p>
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-[1.05fr,0.95fr]">
+      <!-- Requisitos -->
+      <div>
+        <h2 class="mb-6 font-cond text-sm font-600 uppercase tracking-[0.2em] text-mint">Lo que necesitamos</h2>
+        <ol class="space-y-4">
+          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
+            <span class="font-display text-2xl leading-none text-mint">01</span>
+            <div>
+              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Correo vinculado</div>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">¿Entregas el correo original vinculado a la cuenta? Es indispensable para transferirla de forma segura.</p>
+            </div>
+          </li>
+          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
+            <span class="font-display text-2xl leading-none text-mint">02</span>
+            <div>
+              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Región</div>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">¿En qué región está la cuenta? (LATAM, NA, EU, BR, AP…).</p>
+            </div>
+          </li>
+          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
+            <span class="font-display text-2xl leading-none text-mint">03</span>
+            <div>
+              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Cantidad de skins</div>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">¿Cuántas skins tiene la cuenta? El valor sube según cuáles y cuántas sean.</p>
+            </div>
+          </li>
+          <li class="flex gap-4 border border-mint/50 bg-mint/[0.06] p-5 notch-tr layer-shadow">
+            <span class="font-display text-2xl leading-none text-mint">04</span>
+            <div>
+              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Fotos de la cuenta</div>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">
+                Envía capturas del inventario. Usa el bot de Telegram
+                <a href="https://t.me/valobot" target="_blank" rel="noopener" class="font-600 text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">@valobot</a>
+                para sacar las imágenes de tus skins automáticamente y adjúntalas.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Formulario: datos + subida de imágenes -> webhook -->
+      <div class="border border-line/70 bg-surface/50 p-6 notch-both layer-shadow sm:p-8">
+        <h2 class="mb-1 font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">Envíanos tu cuenta</h2>
+        <p class="mb-6 text-sm text-muted">Completa los datos, sube las fotos y las recibiremos directo en nuestro sistema.</p>
+        <form id="sell-form" novalidate>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Tu nombre o usuario <span class="text-red">*</span></label>
+              <input name="nombre" type="text" required placeholder="¿Cómo te llamamos?" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">WhatsApp o Telegram de contacto <span class="text-red">*</span></label>
+              <input name="contacto" type="text" required placeholder="Ej. +52 55 1234 5678 o @usuario" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Región de la cuenta</label>
+              <select name="region" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                <option>LATAM</option><option>NA</option><option>BR</option><option>EU</option><option>AP</option><option>KR</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango actual</label>
+              <select name="rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Entregas el correo original vinculado?</label>
+              <select name="correo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                <option>Sí, entrego el correo original (full acceso)</option>
+                <option>El correo se puede cambiar por uno nuevo</option>
+                <option>No, solo entrego datos de acceso</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Cantidad de skins</label>
+              <input name="skins" type="number" min="0" placeholder="Ej. 24" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Precio que pides (USD)</label>
+              <input name="precio" type="number" min="0" placeholder="Opcional" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Skins o bundles destacados</label>
+              <input name="skins_destacadas" type="text" placeholder="Ej. Reaver Vandal, Champions 2023, cuchillo Prime..." class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Notas adicionales</label>
+              <textarea name="notas" rows="2" placeholder="Cualquier detalle extra que debamos saber" class="w-full resize-none border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <!-- Subida de imágenes -->
+          <div class="mt-5">
+            <div class="mb-1.5 flex items-center justify-between">
+              <label class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Fotos de la cuenta <span class="text-red">*</span></label>
+              <span id="foto-count" class="font-mono text-[10px] text-mint"></span>
+            </div>
+            <div id="drop-zone" tabindex="0" role="button" aria-label="Subir fotos de la cuenta"
+                 class="cursor-pointer border border-dashed border-line bg-ink/60 px-4 py-7 text-center transition hover:border-mint focus:border-mint focus:outline-none">
+              <svg width="28" height="28" viewBox="0 0 24 24" class="mx-auto mb-2 text-mint" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
+              <p class="text-sm font-500 text-cream">Arrastra tus imágenes o <span class="text-mint underline underline-offset-2">haz clic para elegir</span></p>
+              <p class="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted">PNG · JPG · WEBP — hasta 12 imágenes</p>
+            </div>
+            <input id="foto-input" type="file" accept="image/*" multiple class="hidden" />
+            <div id="preview-grid" class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4"></div>
+          </div>
+
+          <div class="mt-4 flex items-start gap-2 border border-mint/40 bg-mint/[0.06] p-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" class="mt-0.5 shrink-0 text-mint" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <p class="text-xs leading-[1.6] text-cream/80">¿No sabes qué fotos subir? Genera las imágenes de tu inventario con el bot <a href="https://t.me/valobot" target="_blank" rel="noopener" class="font-600 text-mint underline underline-offset-2">@valobot</a> en Telegram y súbelas aquí.</p>
+          </div>
+
+          <div id="sell-status" class="mt-4 hidden"></div>
+
+          <button id="sell-submit" type="submit" class="cta mt-4 flex w-full items-center justify-center gap-2 bg-mint px-6 py-3.5 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60">
+            Enviar cuenta
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative z-10 border-t border-line/60">
+  <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center">
+    <a href="/" class="flex items-center gap-3">
+      <span class="grid h-9 w-9 place-items-center overflow-hidden rounded-lg ring-1 ring-red/40">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="font-display text-base font-800 lowercase tracking-tight text-cream/80">tiovalo<span class="text-red">store</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">gaming</span></span>
+    </a>
+    <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games.</p>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIGURACIÓN — cambia estos valores por los tuyos
+   ===================================================================== */
+const CONFIG = {
+  whatsapp: '51940198935',              // <-- tu número con código de país, sin +, espacios ni guiones
+  telegramBot: 'https://t.me/valobot',
+  // Webhook de n8n donde recibirás las cuentas + imágenes (multipart/form-data).
+  webhookUrl: 'https://n8n.srv1246097.hstgr.cloud/webhook/8928dfee-f847-464c-afac-8aa6f4a5e0ef',
+  maxFiles: 12,                         // máximo de imágenes por envío
+  maxSizeMB: 8,                         // tamaño máximo por imagen
+};
+
+/* =====================================================================
+   Formulario de venta -> subida de imágenes + webhook
+   ===================================================================== */
+const MAX_SIZE = CONFIG.maxSizeMB * 1024 * 1024;
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('foto-input');
+const previewGrid = document.getElementById('preview-grid');
+const fotoCount = document.getElementById('foto-count');
+const statusEl = document.getElementById('sell-status');
+const sellForm = document.getElementById('sell-form');
+const submitBtn = document.getElementById('sell-submit');
+let fotos = [];
+
+const fmtSize = b => b < 1048576 ? `${Math.round(b / 1024)} KB` : `${(b / 1048576).toFixed(1)} MB`;
+
+function setStatus(msg, type) {
+  const base = 'mt-4 border px-4 py-3 text-sm ';
+  const styles = {
+    err:  'border-red/50 bg-red/10 text-red',
+    ok:   'border-mint/50 bg-mint/10 text-mint',
+    info: 'border-line bg-ink text-muted',
+  };
+  statusEl.className = base + (styles[type] || styles.info);
+  statusEl.textContent = msg;
+  statusEl.classList.remove('hidden');
+}
+
+function renderPreviews() {
+  previewGrid.innerHTML = fotos.map((f, i) => `
+    <figure class="group relative border border-line/70 bg-ink notch-tr">
+      <img src="${f.url}" alt="${f.file.name}" class="aspect-square w-full object-cover" />
+      <button type="button" data-rm="${i}" aria-label="Quitar imagen"
+        class="absolute right-1 top-1 grid h-6 w-6 place-items-center bg-ink/85 text-cream hover:bg-red hover:text-ink">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <figcaption class="truncate px-1.5 py-1 font-mono text-[9px] text-muted">${fmtSize(f.file.size)}</figcaption>
+    </figure>`).join('');
+  fotoCount.textContent = fotos.length ? `${fotos.length} / ${CONFIG.maxFiles} imágenes` : '';
+}
+
+function addFiles(list) {
+  for (const file of list) {
+    if (!file.type.startsWith('image/')) { setStatus(`"${file.name}" no es una imagen.`, 'err'); continue; }
+    if (file.size > MAX_SIZE) { setStatus(`"${file.name}" supera ${CONFIG.maxSizeMB} MB.`, 'err'); continue; }
+    if (fotos.length >= CONFIG.maxFiles) { setStatus(`Máximo ${CONFIG.maxFiles} imágenes.`, 'err'); break; }
+    fotos.push({ file, url: URL.createObjectURL(file) });
+  }
+  renderPreviews();
+}
+
+previewGrid.addEventListener('click', e => {
+  const btn = e.target.closest('[data-rm]');
+  if (!btn) return;
+  const i = +btn.dataset.rm;
+  URL.revokeObjectURL(fotos[i].url);
+  fotos.splice(i, 1);
+  renderPreviews();
+});
+
+fileInput.addEventListener('change', e => { addFiles(e.target.files); fileInput.value = ''; });
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+});
+['dragenter', 'dragover'].forEach(ev => dropZone.addEventListener(ev, e => {
+  e.preventDefault(); dropZone.classList.add('drop-active');
+}));
+['dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, e => {
+  e.preventDefault(); dropZone.classList.remove('drop-active');
+}));
+dropZone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+sellForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!sellForm.reportValidity()) return;
+  if (fotos.length === 0) { setStatus('Sube al menos una foto de la cuenta.', 'err'); return; }
+
+  const fd = new FormData(sellForm);
+  fotos.forEach(f => fd.append('fotos', f.file, f.file.name));
+
+  submitBtn.disabled = true;
+  const label = submitBtn.textContent;
+  submitBtn.textContent = 'Enviando…';
+  setStatus('Subiendo tu cuenta y las imágenes…', 'info');
+
+  try {
+    const res = await fetch(CONFIG.webhookUrl, { method: 'POST', body: fd });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json().catch(() => ({}));
+    const folio = data.id ? ` Folio: ${data.id}.` : '';
+    setStatus(`¡Listo! Recibimos tu cuenta y ${fotos.length} imagen(es).${folio} Te contactaremos pronto.`, 'ok');
+    sellForm.reset();
+    fotos.forEach(f => URL.revokeObjectURL(f.url));
+    fotos = [];
+    renderPreviews();
+  } catch (err) {
+    setStatus('No se pudo enviar. Revisa tu conexión o el webhook e inténtalo de nuevo.', 'err');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = label;
+  }
+});
+</script>
+</body>
+</html>

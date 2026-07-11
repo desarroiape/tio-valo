@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tiovalostore gaming — Compra y venta de cuentas de Valorant</title>
+<link rel="icon" href="PHOTO-2026-05-05-19-31-46.jpg" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          /* Paleta cálida derivada del logo tiovalostore (mostaza + naranja + marrón) */
+          ink:      '#17110A',   /* base marrón casi negro */
+          'ink-2':  '#0F0A05',
+          surface:  '#241A0D',
+          'surface-2': '#2F2211',
+          line:     '#47351A',
+          red:      '#FF9F30',   /* naranja principal (rol de acento) */
+          'red-dim':'#E77A16',   /* naranja profundo (hover) */
+          cream:    '#FBF1DD',   /* crema cálido (texto) */
+          muted:    '#B39A72',   /* taupe cálido */
+          mint:     '#FFCA3A',   /* dorado/ámbar (acento secundario) */
+        },
+        fontFamily: {
+          display: ['"Baloo 2"', 'cursive'],
+          cond:    ['Oswald', 'sans-serif'],
+          body:    ['Inter', 'sans-serif'],
+          mono:    ['"Space Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root { --notch: 14px; }
+  html { scroll-behavior: smooth; background: #17110A; }
+  body { background-color: #17110A; }
+
+  /* Ambient layered radial gradients + grain — glows cálidos naranja/ámbar */
+  .atmosphere {
+    background-color: #17110A;
+    background-image:
+      radial-gradient(120% 80% at 85% -10%, rgba(255,159,48,0.18), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(255,202,58,0.10), transparent 55%),
+      radial-gradient(120% 90% at 50% 120%, rgba(231,122,22,0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  .grain::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Firma tiovalostore: esquinas redondeadas tipo burbuja (hace eco del logo) */
+  .notch-tr { border-radius: 14px; }
+  .notch-bl { border-radius: 14px; }
+  .notch-both { border-radius: 18px; }
+
+  .btn-red { border-radius: 12px; }
+
+  .layer-shadow {
+    box-shadow:
+      0 1px 0 rgba(255,241,221,0.05) inset,
+      0 18px 40px -20px rgba(0,0,0,0.85),
+      0 0 0 1px rgba(71,53,26,0.9);
+  }
+  .card { transition: transform .35s cubic-bezier(.2,.9,.25,1), box-shadow .35s ease; }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 26px 50px -22px rgba(0,0,0,0.85),
+      0 0 0 1px rgba(255,159,48,0.6),
+      0 0 34px -6px rgba(255,159,48,0.4);
+  }
+  .card:hover .card-img { transform: scale(1.06); }
+  .card-img { transition: transform .6s cubic-bezier(.2,.9,.25,1); }
+
+  .img-treat { position: relative; }
+  .img-treat::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(23,17,10,0.92) 4%, rgba(23,17,10,0.15) 55%, rgba(255,159,48,0.14));
+    mix-blend-mode: multiply;
+  }
+
+  a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .cta:active { transform: translateY(1px) scale(.99); }
+  :focus-visible { outline: 2px solid #FF9F30; outline-offset: 3px; }
+
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
+    border-radius: 3px;
+    background: #FF9F30; box-shadow: 0 0 14px rgba(255,159,48,0.65);
+  }
+
+  /* Detail overlay */
+  #overlay { transition: opacity .3s ease; }
+  #overlay.hidden-x { opacity: 0; pointer-events: none; }
+  #overlay-panel { transition: transform .4s cubic-bezier(.2,.9,.25,1), opacity .4s ease; }
+  #overlay.hidden-x #overlay-panel { transform: translateY(26px) scale(.985); opacity: 0; }
+
+  .tag { border-radius: 8px; }
+
+  #drop-zone.drop-active { border-color: #FFCA3A; background: rgba(255,202,58,0.08); }
+
+  /* fade-up on load */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp .7s cubic-bezier(.2,.9,.25,1) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body class="font-body text-cream antialiased atmosphere grain selection:bg-red selection:text-ink">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <a href="/" class="group flex items-center gap-3">
+      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(255,159,48,0.7)] transition-transform group-hover:-translate-y-0.5">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-xl font-800 lowercase tracking-tight text-cream">tiovalo<span class="text-red">store</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">gaming</span>
+      </span>
+    </a>
+    <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
+      <a href="/comprar" class="px-4 py-2 text-cream/80 hover:text-cream">Catálogo</a>
+      <a href="/vender" class="px-4 py-2 text-cream/80 hover:text-cream">Vender</a>
+      <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top" class="relative z-10">
+
+  <!-- ============ HERO / PORTADA ============ -->
+  <section class="mx-auto max-w-6xl px-5 pt-16 pb-16 md:pt-24 md:pb-24">
+    <p class="fade-up rail mb-6 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Tienda de cuentas verificadas</p>
+    <h1 class="fade-up font-display text-5xl leading-[0.92] tracking-tight text-cream sm:text-7xl md:text-8xl" style="animation-delay:.05s">
+      COMPRA Y VENDE<br>
+      CUENTAS DE <span class="text-red">VALORANT</span>
+    </h1>
+    <p class="fade-up mt-6 max-w-xl text-base leading-[1.7] text-muted" style="animation-delay:.12s">
+      Cuentas con skins, rangos y regiones reales, con correo original y trato directo por WhatsApp. ¿Qué quieres hacer hoy?
+    </p>
+
+    <!-- Dos caminos: comprar o vender -> cada uno a su página -->
+    <div class="fade-up mt-12 grid gap-6 md:grid-cols-2" style="animation-delay:.18s">
+
+      <!-- COMPRAR -->
+      <a href="/comprar" class="card group relative flex flex-col justify-between overflow-hidden bg-surface p-7 notch-both layer-shadow sm:p-9">
+        <div class="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-red/20 blur-2xl transition-opacity group-hover:opacity-100 opacity-70"></div>
+        <div>
+          <span class="grid h-14 w-14 place-items-center rounded-2xl bg-red text-ink shadow-[0_10px_24px_-8px_rgba(255,159,48,0.7)]">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/><path d="M6 6L5 3H2"/></svg>
+          </span>
+          <h2 class="mt-6 font-display text-3xl font-800 uppercase leading-none text-cream sm:text-4xl">Comprar cuenta</h2>
+          <p class="mt-3 max-w-sm text-sm leading-[1.7] text-muted">Explora el catálogo, revisa skins, rango y región de cada cuenta y ciérrala por WhatsApp.</p>
+        </div>
+        <span class="mt-8 flex items-center gap-2 font-cond text-sm font-700 uppercase tracking-[0.14em] text-red">
+          Ver catálogo
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+      <!-- VENDER -->
+      <a href="/vender" class="card group relative flex flex-col justify-between overflow-hidden bg-surface p-7 notch-both layer-shadow sm:p-9">
+        <div class="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-mint/20 blur-2xl transition-opacity group-hover:opacity-100 opacity-70"></div>
+        <div>
+          <span class="grid h-14 w-14 place-items-center rounded-2xl bg-mint text-ink shadow-[0_10px_24px_-8px_rgba(255,202,58,0.7)]">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4L13.4 20.6a2 2 0 01-2.8 0l-7.2-7.2a2 2 0 01-.6-1.4V4a1 1 0 011-1h7.6a2 2 0 011.4.6l7.8 7.8a2 2 0 010 3z"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor"/></svg>
+          </span>
+          <h2 class="mt-6 font-display text-3xl font-800 uppercase leading-none text-cream sm:text-4xl">Vender mi cuenta</h2>
+          <p class="mt-3 max-w-sm text-sm leading-[1.7] text-muted">Cuéntanos rango, región y skins, sube tus fotos y te hacemos una oferta. También te la compramos.</p>
+        </div>
+        <span class="mt-8 flex items-center gap-2 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint">
+          Vender ahora
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <!-- Confianza -->
+    <div class="fade-up mt-10 grid grid-cols-3 gap-px border border-line/60 bg-line/40 notch-tr" style="animation-delay:.24s">
+      <div class="bg-ink px-5 py-5">
+        <div class="font-display text-3xl font-800 text-cream">100%</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Correo incluido</div>
+      </div>
+      <div class="bg-ink px-5 py-5">
+        <div class="font-display text-3xl font-800 text-cream">LATAM+</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Todas las regiones</div>
+      </div>
+      <div class="bg-ink px-5 py-5">
+        <div class="font-display text-3xl font-800 text-mint">24/7</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Atención WhatsApp</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative z-10 border-t border-line/60">
+  <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center">
+    <div class="flex items-center gap-3">
+      <span class="grid h-9 w-9 place-items-center overflow-hidden rounded-lg ring-1 ring-red/40">
+        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="font-display text-base font-800 lowercase tracking-tight text-cream/80">tiovalo<span class="text-red">store</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">gaming</span></span>
+    </div>
+    <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+
+# Uploads generados por el formulario (datos de prueba)
+uploads/
+
+# Dependencias / temporales
+node_modules/
+*.log
