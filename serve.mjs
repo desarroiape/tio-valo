@@ -2,10 +2,25 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { handleVender } from './lib/telegram.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3008;
 const uploadsDir = path.join(__dirname, 'uploads');
+
+/* Carga .env.local (KEY=VALUE por línea) para pruebas en localhost. */
+(function loadEnvLocal() {
+  try {
+    const envFile = path.join(__dirname, '.env.local');
+    if (!fs.existsSync(envFile)) return;
+    for (const line of fs.readFileSync(envFile, 'utf8').split('\n')) {
+      const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/i.exec(line);
+      if (m && process.env[m[1]] === undefined) {
+        process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+      }
+    }
+  } catch { /* ignora errores de .env.local */ }
+})();
 
 const MIME = {
   '.html': 'text/html',
@@ -125,6 +140,25 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Endpoint real: reenvía la cuenta + fotos a Telegram (igual que en Vercel).
+  if (req.method === 'POST' && urlPath === '/api/vender') {
+    const chunks = [];
+    req.on('data', c => chunks.push(c));
+    req.on('end', async () => {
+      try {
+        const body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
+        const out = await handleVender(body, process.env);
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ ok: true, ...out }));
+      } catch (err) {
+        console.error('Error /api/vender:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ ok: false, error: String(err?.message || err) }));
+      }
+    });
+    return;
+  }
+
   // Servir archivos estáticos — con rutas limpias sin extensión
   // (p. ej. /comprar -> comprar.html, /vender -> vender.html)
   let file = urlPath === '/' ? '/index.html' : urlPath;
@@ -154,5 +188,9 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-  console.log(`Webhook mock (venta): POST http://localhost:${PORT}/webhook/venta`);
+  console.log(`Endpoint Telegram (venta): POST http://localhost:${PORT}/api/vender`);
+  const listo = process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID;
+  console.log(listo
+    ? '  ✓ TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID detectados'
+    : '  ⚠ Falta configurar TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID en .env.local');
 });

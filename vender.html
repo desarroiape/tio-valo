@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vender tu cuenta — tiovalostore gaming</title>
-<link rel="icon" href="PHOTO-2026-05-05-19-31-46.jpg" />
+<title>Vender tu cuenta — Trustify Market</title>
+<link rel="icon" href="logotrustifymarket.jpeg" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,17 +14,19 @@
     theme: {
       extend: {
         colors: {
-          /* Paleta cálida derivada del logo tiovalostore (mostaza + naranja + marrón) */
-          ink:      '#17110A',   /* base marrón casi negro */
-          'ink-2':  '#0F0A05',
-          surface:  '#241A0D',
-          'surface-2': '#2F2211',
-          line:     '#47351A',
-          red:      '#FF9F30',   /* naranja principal (rol de acento) */
-          'red-dim':'#E77A16',   /* naranja profundo (hover) */
-          cream:    '#FBF1DD',   /* crema cálido (texto) */
-          muted:    '#B39A72',   /* taupe cálido */
-          mint:     '#FFCA3A',   /* dorado/ámbar (acento secundario) */
+          /* Paleta del logo Trustify Market (naranja + púrpura + dorado sobre navy) */
+          ink:      '#0F1119',   /* base marrón casi negro */
+          'ink-2':  '#0A0B11',
+          surface:  '#181B27',
+          'surface-2': '#212536',
+          line:     '#2C3145',
+          red:      '#F26A21',   /* naranja principal (rol de acento) */
+          'red-dim':'#D8550F',   /* naranja profundo (hover) */
+          cream:    '#EEF0F6',   /* crema cálido (texto) */
+          muted:    '#8A93AC',   /* taupe cálido */
+          mint:     '#8B5CF6',   /* púrpura secundario (el orbe) */
+          gold:     '#F5B325',   /* dorado (la corona) — detalle */
+          blue:     '#2F81E8',   /* azul (el pico) — detalle */
         },
         fontFamily: {
           display: ['"Baloo 2"', 'cursive'],
@@ -38,16 +40,16 @@
 </script>
 <style>
   :root { --notch: 14px; }
-  html { scroll-behavior: smooth; background: #17110A; }
-  body { background-color: #17110A; }
+  html { scroll-behavior: smooth; background: #0F1119; }
+  body { background-color: #0F1119; }
 
-  /* Ambient layered radial gradients + grain — glows cálidos naranja/ámbar */
+  /* Ambient layered radial gradients + grain — glows naranja/púrpura sobre navy */
   .atmosphere {
-    background-color: #17110A;
+    background-color: #0F1119;
     background-image:
-      radial-gradient(120% 80% at 85% -10%, rgba(255,159,48,0.18), transparent 60%),
-      radial-gradient(90% 70% at -10% 10%, rgba(255,202,58,0.10), transparent 55%),
-      radial-gradient(120% 90% at 50% 120%, rgba(231,122,22,0.08), transparent 60%);
+      radial-gradient(120% 80% at 85% -10%, rgba(242,106,33,0.18), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(139,92,246,0.10), transparent 55%),
+      radial-gradient(120% 90% at 50% 120%, rgba(245,179,37,0.08), transparent 60%);
     background-attachment: fixed;
   }
   .grain::before {
@@ -56,7 +58,7 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Firma tiovalostore: esquinas redondeadas tipo burbuja (hace eco del logo) */
+  /* Firma Trustify Market: esquinas redondeadas tipo burbuja */
   .notch-tr { border-radius: 14px; }
   .notch-bl { border-radius: 14px; }
   .notch-both { border-radius: 18px; }
@@ -65,23 +67,23 @@
 
   .layer-shadow {
     box-shadow:
-      0 1px 0 rgba(255,241,221,0.05) inset,
+      0 1px 0 rgba(238,240,246,0.05) inset,
       0 18px 40px -20px rgba(0,0,0,0.85),
-      0 0 0 1px rgba(71,53,26,0.9);
+      0 0 0 1px rgba(44,49,69,0.9);
   }
 
   a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
   .cta:active { transform: translateY(1px) scale(.99); }
-  :focus-visible { outline: 2px solid #FF9F30; outline-offset: 3px; }
+  :focus-visible { outline: 2px solid #F26A21; outline-offset: 3px; }
 
   .rail { position: relative; }
   .rail::before {
     content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
     border-radius: 3px;
-    background: #FF9F30; box-shadow: 0 0 14px rgba(255,159,48,0.65);
+    background: #F26A21; box-shadow: 0 0 14px rgba(242,106,33,0.65);
   }
 
-  #drop-zone.drop-active { border-color: #FFCA3A; background: rgba(255,202,58,0.08); }
+  #drop-zone.drop-active { border-color: #8B5CF6; background: rgba(139,92,246,0.08); }
 
   /* fade-up on load */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
@@ -98,12 +100,12 @@
 <header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
     <a href="/" class="group flex items-center gap-3">
-      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(255,159,48,0.7)] transition-transform group-hover:-translate-y-0.5">
-        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(242,106,33,0.7)] transition-transform group-hover:-translate-y-0.5">
+        <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
       </span>
       <span class="flex flex-col leading-none">
-        <span class="font-display text-xl font-800 lowercase tracking-tight text-cream">tiovalo<span class="text-red">store</span></span>
-        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">gaming</span>
+        <span class="font-display text-xl font-800 tracking-tight text-cream">Trustify <span class="text-red">Market</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">marketplace</span>
       </span>
     </a>
     <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
@@ -257,9 +259,9 @@
   <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center">
     <a href="/" class="flex items-center gap-3">
       <span class="grid h-9 w-9 place-items-center overflow-hidden rounded-lg ring-1 ring-red/40">
-        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+        <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
       </span>
-      <span class="font-display text-base font-800 lowercase tracking-tight text-cream/80">tiovalo<span class="text-red">store</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">gaming</span></span>
+      <span class="font-display text-base font-800 tracking-tight text-cream/80">Trustify <span class="text-red">Market</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">marketplace</span></span>
     </a>
     <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games.</p>
   </div>
@@ -272,10 +274,12 @@
 const CONFIG = {
   whatsapp: '51940198935',              // <-- tu número con código de país, sin +, espacios ni guiones
   telegramBot: 'https://t.me/valobot',
-  // Webhook de n8n donde recibirás las cuentas + imágenes (multipart/form-data).
-  webhookUrl: 'https://n8n.srv1246097.hstgr.cloud/webhook/8928dfee-f847-464c-afac-8aa6f4a5e0ef',
+  // Endpoint propio que reenvía la cuenta + fotos a Telegram (sin n8n).
+  endpoint: '/api/vender',
   maxFiles: 12,                         // máximo de imágenes por envío
-  maxSizeMB: 8,                         // tamaño máximo por imagen
+  maxSizeMB: 8,                         // tamaño máximo por imagen antes de comprimir
+  compressMaxDim: 1600,                 // lado máximo (px) tras comprimir
+  compressQuality: 0.82,                // calidad JPEG al comprimir (0–1)
 };
 
 /* =====================================================================
@@ -350,31 +354,75 @@ dropZone.addEventListener('keydown', e => {
 }));
 dropZone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
 
+// Comprime una imagen en el navegador -> data URL JPEG (reduce tamaño para el envío).
+async function compressImage(file) {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, CONFIG.compressMaxDim / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';            // fondo para PNG con transparencia
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close?.();
+    return canvas.toDataURL('image/jpeg', CONFIG.compressQuality);
+  } catch {
+    // Fallback: envía el archivo original en base64 si no se pudo comprimir.
+    return await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+}
+
+async function postJSON(payload) {
+  const res = await fetch(CONFIG.endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.ok === false) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
 sellForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!sellForm.reportValidity()) return;
   if (fotos.length === 0) { setStatus('Sube al menos una foto de la cuenta.', 'err'); return; }
 
-  const fd = new FormData(sellForm);
-  fotos.forEach(f => fd.append('fotos', f.file, f.file.name));
+  const fields = Object.fromEntries(new FormData(sellForm));
+  const total = fotos.length;
+  const folio = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 
   submitBtn.disabled = true;
   const label = submitBtn.textContent;
   submitBtn.textContent = 'Enviando…';
-  setStatus('Subiendo tu cuenta y las imágenes…', 'info');
 
   try {
-    const res = await fetch(CONFIG.webhookUrl, { method: 'POST', body: fd });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json().catch(() => ({}));
-    const folio = data.id ? ` Folio: ${data.id}.` : '';
-    setStatus(`¡Listo! Recibimos tu cuenta y ${fotos.length} imagen(es).${folio} Te contactaremos pronto.`, 'ok');
+    // 1) Mensaje con los datos de la cuenta.
+    setStatus('Enviando los datos de tu cuenta…', 'info');
+    await postJSON({ kind: 'lead', folio, total, fields });
+
+    // 2) Fotos, una por una (se comprimen en el navegador).
+    for (let i = 0; i < fotos.length; i++) {
+      setStatus(`Enviando foto ${i + 1} de ${total}…`, 'info');
+      const dataUrl = await compressImage(fotos[i].file);
+      await postJSON({ kind: 'photo', folio, index: i + 1, total, filename: fotos[i].file.name, dataUrl });
+    }
+
+    setStatus(`¡Listo! Recibimos tu cuenta y ${total} imagen(es). Folio: ${folio}. Te contactaremos pronto.`, 'ok');
     sellForm.reset();
     fotos.forEach(f => URL.revokeObjectURL(f.url));
     fotos = [];
     renderPreviews();
   } catch (err) {
-    setStatus('No se pudo enviar. Revisa tu conexión o el webhook e inténtalo de nuevo.', 'err');
+    setStatus('No se pudo enviar: ' + (err.message || 'error') + '. Revisa tu conexión e inténtalo de nuevo.', 'err');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = label;

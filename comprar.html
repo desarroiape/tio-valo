@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Comprar cuentas — tiovalostore gaming</title>
-<link rel="icon" href="PHOTO-2026-05-05-19-31-46.jpg" />
+<title>Comprar cuentas — Trustify Market</title>
+<link rel="icon" href="logotrustifymarket.jpeg" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,17 +14,19 @@
     theme: {
       extend: {
         colors: {
-          /* Paleta cálida derivada del logo tiovalostore (mostaza + naranja + marrón) */
-          ink:      '#17110A',   /* base marrón casi negro */
-          'ink-2':  '#0F0A05',
-          surface:  '#241A0D',
-          'surface-2': '#2F2211',
-          line:     '#47351A',
-          red:      '#FF9F30',   /* naranja principal (rol de acento) */
-          'red-dim':'#E77A16',   /* naranja profundo (hover) */
-          cream:    '#FBF1DD',   /* crema cálido (texto) */
-          muted:    '#B39A72',   /* taupe cálido */
-          mint:     '#FFCA3A',   /* dorado/ámbar (acento secundario) */
+          /* Paleta del logo Trustify Market (naranja + púrpura + dorado sobre navy) */
+          ink:      '#0F1119',   /* base marrón casi negro */
+          'ink-2':  '#0A0B11',
+          surface:  '#181B27',
+          'surface-2': '#212536',
+          line:     '#2C3145',
+          red:      '#F26A21',   /* naranja principal (rol de acento) */
+          'red-dim':'#D8550F',   /* naranja profundo (hover) */
+          cream:    '#EEF0F6',   /* crema cálido (texto) */
+          muted:    '#8A93AC',   /* taupe cálido */
+          mint:     '#8B5CF6',   /* púrpura secundario (el orbe) */
+          gold:     '#F5B325',   /* dorado (la corona) — detalle */
+          blue:     '#2F81E8',   /* azul (el pico) — detalle */
         },
         fontFamily: {
           display: ['"Baloo 2"', 'cursive'],
@@ -38,16 +40,16 @@
 </script>
 <style>
   :root { --notch: 14px; }
-  html { scroll-behavior: smooth; background: #17110A; }
-  body { background-color: #17110A; }
+  html { scroll-behavior: smooth; background: #0F1119; }
+  body { background-color: #0F1119; }
 
-  /* Ambient layered radial gradients + grain — glows cálidos naranja/ámbar */
+  /* Ambient layered radial gradients + grain — glows naranja/púrpura sobre navy */
   .atmosphere {
-    background-color: #17110A;
+    background-color: #0F1119;
     background-image:
-      radial-gradient(120% 80% at 85% -10%, rgba(255,159,48,0.18), transparent 60%),
-      radial-gradient(90% 70% at -10% 10%, rgba(255,202,58,0.10), transparent 55%),
-      radial-gradient(120% 90% at 50% 120%, rgba(231,122,22,0.08), transparent 60%);
+      radial-gradient(120% 80% at 85% -10%, rgba(242,106,33,0.18), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(139,92,246,0.10), transparent 55%),
+      radial-gradient(120% 90% at 50% 120%, rgba(245,179,37,0.08), transparent 60%);
     background-attachment: fixed;
   }
   .grain::before {
@@ -56,7 +58,7 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Firma tiovalostore: esquinas redondeadas tipo burbuja (hace eco del logo) */
+  /* Firma Trustify Market: esquinas redondeadas tipo burbuja */
   .notch-tr { border-radius: 14px; }
   .notch-bl { border-radius: 14px; }
   .notch-both { border-radius: 18px; }
@@ -65,17 +67,17 @@
 
   .layer-shadow {
     box-shadow:
-      0 1px 0 rgba(255,241,221,0.05) inset,
+      0 1px 0 rgba(238,240,246,0.05) inset,
       0 18px 40px -20px rgba(0,0,0,0.85),
-      0 0 0 1px rgba(71,53,26,0.9);
+      0 0 0 1px rgba(44,49,69,0.9);
   }
   .card { transition: transform .35s cubic-bezier(.2,.9,.25,1), box-shadow .35s ease; }
   .card:hover {
     transform: translateY(-6px);
     box-shadow:
       0 26px 50px -22px rgba(0,0,0,0.85),
-      0 0 0 1px rgba(255,159,48,0.6),
-      0 0 34px -6px rgba(255,159,48,0.4);
+      0 0 0 1px rgba(242,106,33,0.6),
+      0 0 34px -6px rgba(242,106,33,0.4);
   }
   .card:hover .card-img { transform: scale(1.06); }
   .card-img { transition: transform .6s cubic-bezier(.2,.9,.25,1); }
@@ -83,19 +85,19 @@
   .img-treat { position: relative; }
   .img-treat::after {
     content: ""; position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(23,17,10,0.92) 4%, rgba(23,17,10,0.15) 55%, rgba(255,159,48,0.14));
+    background: linear-gradient(to top, rgba(15,17,25,0.92) 4%, rgba(15,17,25,0.15) 55%, rgba(242,106,33,0.14));
     mix-blend-mode: multiply;
   }
 
   a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
   .cta:active { transform: translateY(1px) scale(.99); }
-  :focus-visible { outline: 2px solid #FF9F30; outline-offset: 3px; }
+  :focus-visible { outline: 2px solid #F26A21; outline-offset: 3px; }
 
   .rail { position: relative; }
   .rail::before {
     content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px;
     border-radius: 3px;
-    background: #FF9F30; box-shadow: 0 0 14px rgba(255,159,48,0.65);
+    background: #F26A21; box-shadow: 0 0 14px rgba(242,106,33,0.65);
   }
 
   /* Detail overlay */
@@ -122,12 +124,12 @@
 <header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
     <a href="/" class="group flex items-center gap-3">
-      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(255,159,48,0.7)] transition-transform group-hover:-translate-y-0.5">
-        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+      <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(242,106,33,0.7)] transition-transform group-hover:-translate-y-0.5">
+        <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
       </span>
       <span class="flex flex-col leading-none">
-        <span class="font-display text-xl font-800 lowercase tracking-tight text-cream">tiovalo<span class="text-red">store</span></span>
-        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">gaming</span>
+        <span class="font-display text-xl font-800 tracking-tight text-cream">Trustify <span class="text-red">Market</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">marketplace</span>
       </span>
     </a>
     <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
@@ -163,9 +165,9 @@
   <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center">
     <a href="/" class="flex items-center gap-3">
       <span class="grid h-9 w-9 place-items-center overflow-hidden rounded-lg ring-1 ring-red/40">
-        <img src="PHOTO-2026-05-05-19-31-46.jpg" alt="tiovalostore gaming" class="h-full w-full scale-[1.08] object-cover" />
+        <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
       </span>
-      <span class="font-display text-base font-800 lowercase tracking-tight text-cream/80">tiovalo<span class="text-red">store</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">gaming</span></span>
+      <span class="font-display text-base font-800 tracking-tight text-cream/80">Trustify <span class="text-red">Market</span> <span class="font-mono text-[9px] font-700 uppercase tracking-[0.3em] text-mint">marketplace</span></span>
     </a>
     <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games.</p>
   </div>

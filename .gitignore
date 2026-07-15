@@ -7,3 +7,9 @@ uploads/
 # Dependencias / temporales
 node_modules/
 *.log
+
+# Secretos (tokens de Telegram, etc.) — NUNCA subir
+.env
+.env.local
+.env.*.local
+.vercel
