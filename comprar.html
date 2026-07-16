@@ -157,7 +157,57 @@
       <p class="hidden max-w-xs text-right text-sm leading-[1.6] text-muted sm:block">Haz clic en una cuenta para ver su descripción completa.</p>
     </div>
 
-    <div id="catalog-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    <div class="grid gap-8 lg:grid-cols-[240px_1fr]">
+
+      <!-- Sidebar de filtros -->
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <button id="filtros-toggle" class="mb-3 flex w-full items-center justify-between border border-line/70 bg-surface/60 px-4 py-3 font-cond text-sm font-600 uppercase tracking-[0.14em] text-cream notch-tr lg:hidden">
+          Filtros
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        </button>
+        <div id="filtros" class="hidden space-y-6 border border-line/70 bg-surface/50 p-5 notch-tr lg:block">
+          <div class="flex items-center justify-between">
+            <span class="font-cond text-sm font-600 uppercase tracking-[0.14em] text-cream">Filtros</span>
+            <button id="f-limpiar" class="font-mono text-[10px] uppercase tracking-wider text-muted hover:text-red">Limpiar</button>
+          </div>
+
+          <div>
+            <label class="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Skin destacada</label>
+            <input id="f-texto" type="search" placeholder="Ej. Reaver Vandal" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Tipo de cuenta</label>
+            <div id="f-rangos" class="space-y-2"></div>
+          </div>
+
+          <div>
+            <label class="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Región</label>
+            <div id="f-regiones" class="space-y-2"></div>
+          </div>
+
+          <div>
+            <label class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              <span>Skins (mínimo)</span><span id="f-skins-val" class="text-red">0</span>
+            </label>
+            <input id="f-skins" type="range" min="0" max="50" value="0" class="w-full accent-red" />
+          </div>
+
+          <div>
+            <label class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              <span>Precio máx.</span><span id="f-precio-val" class="text-red">—</span>
+            </label>
+            <input id="f-precio" type="range" min="0" max="500" value="500" class="w-full accent-red" />
+          </div>
+        </div>
+      </aside>
+
+      <!-- Catálogo -->
+      <div>
+        <div id="catalog-count" class="mb-4 font-mono text-xs uppercase tracking-wider text-muted"></div>
+        <div id="catalog-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"></div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -197,7 +247,8 @@ const CONFIG = {
    CATÁLOGO — se carga desde /api/cuentas (base de datos Supabase).
    Para agregar cuentas usa el panel /admin.
    ===================================================================== */
-let CUENTAS = [];
+let CUENTAS_ALL = [];   // todas las cuentas cargadas
+let CUENTAS = [];       // cuentas tras aplicar filtros (lo que se muestra)
 const PLACEHOLDER = 'https://placehold.co/720x480/181B27/8A93AC?text=Sin+foto';
 
 // Normaliza una fila de la base de datos al formato que usa la vista.
@@ -229,8 +280,8 @@ const grid = document.getElementById('catalog-grid');
 function renderGrid() {
   if (!CUENTAS.length) {
     grid.innerHTML = `<div class="col-span-full border border-line/60 bg-surface/50 px-6 py-14 text-center notch-tr">
-      <p class="font-cond text-lg font-600 uppercase tracking-wide text-cream">Aún no hay cuentas publicadas</p>
-      <p class="mt-2 text-sm text-muted">Vuelve pronto: estamos cargando nuevas cuentas al catálogo.</p>
+      <p class="font-cond text-lg font-600 uppercase tracking-wide text-cream">${CUENTAS_ALL.length ? 'Sin resultados' : 'Aún no hay cuentas publicadas'}</p>
+      <p class="mt-2 text-sm text-muted">${CUENTAS_ALL.length ? 'Prueba ajustando o limpiando los filtros.' : 'Vuelve pronto: estamos cargando nuevas cuentas al catálogo.'}</p>
     </div>`;
     return;
   }
@@ -262,19 +313,96 @@ function renderGrid() {
   `).join('');
 }
 
+const countEl = document.getElementById('catalog-count');
+
+/* =====================================================================
+   Filtros (barra lateral)
+   ===================================================================== */
+const F = {
+  texto:     document.getElementById('f-texto'),
+  rangos:    document.getElementById('f-rangos'),
+  regiones:  document.getElementById('f-regiones'),
+  skins:     document.getElementById('f-skins'),
+  skinsVal:  document.getElementById('f-skins-val'),
+  precio:    document.getElementById('f-precio'),
+  precioVal: document.getElementById('f-precio-val'),
+  limpiar:   document.getElementById('f-limpiar'),
+};
+
+function chipFiltro(grupo, valor) {
+  return `<label class="flex cursor-pointer items-center gap-2 text-sm text-cream/85 hover:text-cream">
+    <input type="checkbox" data-grupo="${grupo}" value="${valor}" class="peer sr-only" />
+    <span class="h-4 w-4 shrink-0 rounded border border-line bg-ink peer-checked:border-red peer-checked:bg-red"></span>
+    ${valor}
+  </label>`;
+}
+
+function construirFiltros() {
+  const rangos = [...new Set(CUENTAS_ALL.map(c => c.rango))].filter(v => v && v !== '—');
+  const regiones = [...new Set(CUENTAS_ALL.map(c => c.region))].filter(v => v && v !== '—');
+  F.rangos.innerHTML = rangos.length ? rangos.map(r => chipFiltro('rango', r)).join('') : '<span class="text-xs text-muted">—</span>';
+  F.regiones.innerHTML = regiones.length ? regiones.map(r => chipFiltro('region', r)).join('') : '<span class="text-xs text-muted">—</span>';
+
+  const maxSkins = Math.max(10, ...CUENTAS_ALL.map(c => Number(c.skins) || 0));
+  F.skins.max = maxSkins; F.skins.value = 0; F.skinsVal.textContent = '0';
+  const maxPrecio = Math.max(50, ...CUENTAS_ALL.map(c => Number(c.precio) || 0));
+  F.precio.max = maxPrecio; F.precio.value = maxPrecio; F.precioVal.textContent = '$' + maxPrecio;
+}
+
+function seleccionados(grupo) {
+  return new Set([...document.querySelectorAll(`input[data-grupo="${grupo}"]:checked`)].map(i => i.value));
+}
+
+function aplicarFiltros() {
+  const texto = (F.texto.value || '').trim().toLowerCase();
+  const rangos = seleccionados('rango');
+  const regiones = seleccionados('region');
+  const minSkins = Number(F.skins.value) || 0;
+  const maxPrecio = Number(F.precio.value);
+  F.skinsVal.textContent = String(minSkins);
+  F.precioVal.textContent = '$' + maxPrecio;
+
+  CUENTAS = CUENTAS_ALL.filter(c => {
+    if (rangos.size && !rangos.has(c.rango)) return false;
+    if (regiones.size && !regiones.has(c.region)) return false;
+    const s = Number(c.skins);
+    if (!Number.isNaN(s) && s < minSkins) return false;
+    if ((Number(c.precio) || 0) > maxPrecio) return false;
+    if (texto && !`${c.destacado} ${c.titulo}`.toLowerCase().includes(texto)) return false;
+    return true;
+  });
+  renderGrid();
+  countEl.textContent = `${CUENTAS.length} de ${CUENTAS_ALL.length} cuenta${CUENTAS_ALL.length === 1 ? '' : 's'}`;
+}
+
+[F.texto, F.rangos, F.regiones, F.skins, F.precio].forEach(el => {
+  el.addEventListener('input', aplicarFiltros);
+  el.addEventListener('change', aplicarFiltros);
+});
+F.limpiar.addEventListener('click', () => {
+  F.texto.value = '';
+  document.querySelectorAll('input[data-grupo]:checked').forEach(i => (i.checked = false));
+  F.skins.value = 0;
+  F.precio.value = F.precio.max;
+  aplicarFiltros();
+});
+const filtrosToggle = document.getElementById('filtros-toggle');
+filtrosToggle.addEventListener('click', () => document.getElementById('filtros').classList.toggle('hidden'));
+
 async function cargarCuentas() {
   grid.innerHTML = `<div class="col-span-full px-6 py-14 text-center font-mono text-sm text-muted">Cargando catálogo…</div>`;
   try {
     const res = await fetch('/api/cuentas');
     const data = await res.json();
-    CUENTAS = (data.cuentas || []).map(normalizar);
+    CUENTAS_ALL = (data.cuentas || []).map(normalizar);
   } catch {
-    CUENTAS = [];
+    CUENTAS_ALL = [];
   }
-  renderGrid();
+  construirFiltros();
+  aplicarFiltros();
   // Deep-link: /comprar?cuenta=ID abre el detalle de esa cuenta (usado en el anuncio de Discord).
   const wanted = new URLSearchParams(location.search).get('cuenta');
-  if (wanted && CUENTAS.some(c => c.id === String(wanted))) abrirDetalle(String(wanted));
+  if (wanted && CUENTAS_ALL.some(c => c.id === String(wanted))) abrirDetalle(String(wanted));
 }
 cargarCuentas();
 
@@ -287,7 +415,7 @@ const overlayBody = document.getElementById('overlay-body');
 window.swapImg = (el) => { document.getElementById('detalle-img').src = el.dataset.src; };
 
 function abrirDetalle(id) {
-  const c = CUENTAS.find(x => x.id === id);
+  const c = CUENTAS_ALL.find(x => x.id === id);
   if (!c) return;
   const msg = `¡Hola! Quiero comprar esta cuenta de Valorant:\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Rango: ${c.rango}\n• Región: ${c.region}\n• Skins: ${c.skins}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
   const link = waLink(msg);
