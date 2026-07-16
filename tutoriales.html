@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Preguntas frecuentes — Trustify Market</title>
+<title>Tutoriales — Trustify Market</title>
 <link rel="icon" href="logotrustifymarket.jpeg" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,11 +62,10 @@
   a, button, .chev { transition: color .2s ease, background-color .2s ease, transform .25s ease, box-shadow .2s ease, border-color .2s ease; }
   :focus-visible { outline: 2px solid #F26A21; outline-offset: 3px; }
 
-  /* Acordeón nativo (details/summary) */
   details > summary { list-style: none; cursor: pointer; }
   details > summary::-webkit-details-marker { display: none; }
   details[open] .chev { transform: rotate(180deg); }
-  details[open] > summary .q { color: #EEF0F6; }
+  details[open] > summary .t { color: #EEF0F6; }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .fade-up { animation: fadeUp .7s cubic-bezier(.2,.9,.25,1) both; }
@@ -77,7 +76,7 @@
 
 <!-- ============ HEADER ============ -->
 <header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-5 py-4">
     <a href="/" class="group flex items-center gap-3">
       <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40 shadow-[0_8px_20px_-8px_rgba(242,106,33,0.7)] transition-transform group-hover:-translate-y-0.5">
         <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
@@ -87,11 +86,11 @@
         <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">marketplace</span>
       </span>
     </a>
-    <nav class="flex flex-wrap items-center justify-end gap-1 gap-y-2 font-cond text-sm font-500 uppercase tracking-[0.14em]">
-      <a href="/comprar" class="px-4 py-2 text-cream/80 hover:text-cream">Catálogo</a>
-      <a href="/vender" class="px-4 py-2 text-cream/80 hover:text-cream">Vender</a>
-      <a href="/tutoriales" class="px-4 py-2 text-cream/80 hover:text-cream">Tutoriales</a>
-      <a href="/faq" class="px-4 py-2 text-cream" aria-current="page">FAQ</a>
+    <nav class="flex flex-wrap items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
+      <a href="/comprar" class="px-3 py-2 text-cream/80 hover:text-cream">Catálogo</a>
+      <a href="/vender" class="px-3 py-2 text-cream/80 hover:text-cream">Vender</a>
+      <a href="/tutoriales" class="px-3 py-2 text-cream" aria-current="page">Tutoriales</a>
+      <a href="/faq" class="px-3 py-2 text-cream/80 hover:text-cream">FAQ</a>
       <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
     </nav>
   </div>
@@ -103,23 +102,23 @@
     Inicio
   </a>
 
-  <p class="fade-up rail mb-5 mt-8 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Centro de ayuda</p>
+  <p class="fade-up rail mb-5 mt-8 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Guías paso a paso</p>
   <h1 class="fade-up font-display text-4xl leading-[0.95] tracking-tight text-cream sm:text-6xl" style="animation-delay:.05s">
-    Preguntas frecuentes
+    Tutoriales
   </h1>
   <p class="fade-up mt-5 max-w-xl text-base leading-[1.7] text-muted" style="animation-delay:.12s">
-    Todo lo que necesitas saber antes de comprar o vender una cuenta. ¿No encuentras tu respuesta? Escríbenos por WhatsApp.
+    Guías rápidas para vender tu cuenta y para asegurarla apenas la compras. Toca cada tutorial para ver los pasos.
   </p>
 
-  <div class="fade-up mt-12" style="animation-delay:.18s" id="faq"><!-- categorías inyectadas por JS --></div>
+  <div class="fade-up mt-12" style="animation-delay:.18s" id="tutoriales"><!-- inyectado por JS --></div>
 
   <!-- CTA -->
   <div class="fade-up mt-14 border border-mint/40 bg-mint/[0.06] p-6 notch-tr sm:p-8">
-    <h2 class="font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">¿Te quedó una duda?</h2>
-    <p class="mt-1 text-sm leading-[1.7] text-muted">Escríbenos y te respondemos directo. Atención por WhatsApp.</p>
+    <h2 class="font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">¿Necesitas ayuda con algún paso?</h2>
+    <p class="mt-1 text-sm leading-[1.7] text-muted">Te guiamos por WhatsApp durante todo el proceso.</p>
     <a id="wa-cta" href="#" target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 bg-mint px-5 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:brightness-95">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.01c-.24.68-1.42 1.3-1.95 1.34-.5.05-1.14.24-3.83-.8-3.22-1.27-5.28-4.55-5.44-4.76-.16-.21-1.31-1.74-1.31-3.32s.83-2.36 1.12-2.68c.24-.27.63-.39.99-.39.12 0 .24 0 .34.01.31.01.46.03.66.51.24.6.83 2.09.9 2.24.07.15.12.32.02.53-.09.21-.14.34-.28.53-.14.19-.29.42-.42.56-.14.15-.28.31-.12.6.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.36-.23.61-.14.25.09 1.61.76 1.88.9.28.14.46.21.53.32.07.12.07.66-.17 1.34z"/></svg>
-      Escríbenos por WhatsApp
+      Pedir ayuda por WhatsApp
     </a>
   </div>
 </main>
@@ -140,79 +139,122 @@
 <script>
 const WHATSAPP = '51940198935';
 document.getElementById('wa-cta').href =
-  `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('¡Hola! Tengo una duda sobre Trustify Market.')}`;
+  `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('¡Hola! Necesito ayuda con un tutorial de Trustify Market.')}`;
 
-const CATEGORIAS = [
+const GRUPOS = [
   {
-    titulo: 'Sobre la compra de cuentas',
-    items: [
-      ['¿Qué incluye una cuenta al comprarla?',
-       'Cada cuenta incluye acceso completo (usuario y contraseña), el rango actual, skins, agentes desbloqueados y cualquier otro detalle especificado en la publicación (nivel, región, correo asociado, etc.).'],
-      ['¿Puedo cambiar el correo y la contraseña después de comprar?',
-       'Sí, y de hecho lo recomendamos. Una vez confirmada la compra, deberías cambiar inmediatamente la contraseña y vincular tu propio correo para asegurar que la cuenta sea completamente tuya.'],
-      ['¿La cuenta puede ser recuperada por el vendedor después de la compra?',
-       'No debería, si se sigue el proceso correcto de cambio de credenciales y correo. Por eso insistimos en hacer estos cambios apenas se recibe la cuenta.'],
-      ['¿Qué pasa si la cuenta no coincide con la descripción (rango, skins, etc.)?',
-       'Ofrecemos garantía de devolución o reemplazo si la cuenta no corresponde a lo publicado, siempre que se reporte dentro del plazo establecido (ej. 24-48 horas tras la entrega).'],
+    titulo: 'Para vender tu cuenta',
+    tutoriales: [
+      {
+        titulo: 'Sacar fotos de tu inventario con el bot',
+        intro: 'Genera imágenes limpias de tus skins para tu publicación, sin capturas manuales.',
+        pasos: [
+          'Abre Telegram y entra al bot <b>@valobot</b> (tienes el enlace en la página de Vender).',
+          'Pulsa <b>Iniciar</b> o envía <b>/start</b> y sigue las instrucciones del bot.',
+          'El bot generará automáticamente las imágenes de tu inventario de skins.',
+          'Descarga esas imágenes a tu teléfono o computadora.',
+          'En la página <b>Vender</b>, arrástralas o súbelas en el apartado de fotos.',
+        ],
+        tip: 'Sube varias: inventario completo, skins destacadas y tu rango. Mientras más claro, más rápido se vende.',
+      },
+      {
+        titulo: 'Publicar tu cuenta para venderla',
+        intro: 'Envíanos los datos para tasarla y ponerla a la venta.',
+        pasos: [
+          'Ve a la sección <b>Vender</b>.',
+          'Completa tu contacto, región, rango, cantidad de skins y el precio que pides.',
+          'Sube las fotos de tu inventario (puedes usar @valobot).',
+          'Envía el formulario.',
+          'Te contactamos por WhatsApp para cerrar el trato; revisamos la cuenta antes de publicarla.',
+        ],
+        tip: 'Un precio realista y buenas fotos hacen que tu cuenta se venda mucho más rápido.',
+      },
     ],
   },
   {
-    titulo: 'Seguridad y garantías',
-    items: [
-      ['¿Es seguro comprar cuentas en esta página?',
-       'Todas las cuentas pasan por una verificación antes de publicarse, y el pago se libera al vendedor solo después de confirmar que el comprador recibió el acceso correctamente (sistema de intermediación/escrow).'],
-      ['¿Qué garantía tengo de que no me estafarán?',
-       'Usamos un sistema de retención de pago: el dinero no se transfiere al vendedor hasta que el comprador confirme que todo está en orden.'],
-      ['¿Qué pasa si la cuenta es baneada después de la compra?',
-       'Ofrecemos un periodo de garantía contra baneos que no hayan sido causados por el comprador (por ejemplo, 7 días tras la entrega). Los detalles se acuerdan al momento de la compra.'],
-    ],
-  },
-  {
-    titulo: 'Proceso de venta',
-    items: [
-      ['¿Cómo vendo mi cuenta aquí?',
-       'Debes crear una publicación con capturas de pantalla del rango, inventario de skins y detalles relevantes. El equipo revisa la publicación antes de que quede visible públicamente.'],
-      ['¿Cuánto tiempo tarda en venderse mi cuenta?',
-       'Varía según la demanda, el rango y el contenido cosmético de la cuenta. Las cuentas con skins raras o rangos altos suelen venderse más rápido.'],
-      ['¿Cuándo recibo el pago por mi cuenta?',
-       'Una vez el comprador confirma que recibió el acceso correctamente, se libera el pago según el método elegido (transferencia, PayPal, cripto, etc.).'],
-    ],
-  },
-  {
-    titulo: 'Pagos y métodos',
-    items: [
-      ['¿Qué métodos de pago aceptan?',
-       'Coordinamos el método de pago directamente contigo por WhatsApp al cerrar el trato. Trabajamos con opciones como transferencia bancaria, PayPal y criptomonedas.'],
-      ['¿Hay comisión por comprar o vender?',
-       'Te informamos de cualquier comisión aplicable de forma transparente antes de cerrar la operación, para que no haya sorpresas.'],
-    ],
-  },
-  {
-    titulo: 'Políticas y riesgos',
-    items: [
-      ['¿Esto viola los términos de servicio de Riot Games?',
-       'Sí. Riot Games prohíbe explícitamente la compra, venta o transferencia de cuentas en sus términos de servicio, y las cuentas involucradas corren riesgo de ser suspendidas o baneadas permanentemente. Queremos ser transparentes contigo sobre este riesgo.'],
-      ['¿Qué pasa si Riot banea mi cuenta por haberla comprado/vendido?',
-       'La compra y venta de cuentas conlleva un riesgo asumido por el usuario según los términos de Riot Games. Te recomendamos leer nuestros términos y condiciones antes de operar para conocer qué responsabilidad asume cada parte.'],
+    titulo: 'Seguridad de tu cuenta',
+    tutoriales: [
+      {
+        titulo: 'Qué hacer al recibir tu cuenta (checklist)',
+        intro: 'Sigue estos pasos apenas recibas el acceso para que la cuenta sea 100% tuya.',
+        pasos: [
+          'Cambia la <b>contraseña</b> de inmediato.',
+          'Vincula tu <b>propio correo</b> (cambia el correo de la cuenta).',
+          'Activa la <b>verificación en 2 pasos</b>.',
+          'Cierra sesión en otros dispositivos si la opción está disponible.',
+          'No compartas los datos de acceso con nadie.',
+        ],
+        tip: 'Haz los tres primeros pasos en los primeros minutos tras recibir la cuenta.',
+      },
+      {
+        titulo: 'Cambiar la contraseña',
+        intro: 'Lo primero que debes hacer al recibir una cuenta.',
+        pasos: [
+          'Entra a <b>account.riotgames.com</b> e inicia sesión con la cuenta.',
+          'Abre <b>Ajustes de la cuenta</b> y ve a la sección <b>Contraseña</b>.',
+          'Pulsa <b>Cambiar contraseña</b>.',
+          'Ingresa la contraseña actual y crea una nueva, fuerte y única.',
+          'Guarda los cambios.',
+        ],
+        tip: 'Usa una contraseña que no utilices en ningún otro sitio.',
+      },
+      {
+        titulo: 'Cambiar el correo de la cuenta',
+        intro: 'Vincula tu propio correo para tener el control total de la cuenta.',
+        pasos: [
+          'Entra a <b>account.riotgames.com</b> e inicia sesión.',
+          'Abre <b>Ajustes de la cuenta</b>.',
+          'En la sección de <b>correo electrónico</b>, pulsa el botón de editar / cambiar.',
+          'Escribe tu nuevo correo y confirma.',
+          'Revisa tu bandeja y <b>verifica</b> el correo con el enlace o código que te llega.',
+        ],
+        tip: 'Hazlo junto con el cambio de contraseña, apenas recibas la cuenta.',
+      },
+      {
+        titulo: 'Activar la verificación en 2 pasos (2FA)',
+        intro: 'Una capa extra de seguridad: pedirá un código al iniciar sesión.',
+        pasos: [
+          'Entra a <b>account.riotgames.com</b> e inicia sesión.',
+          'Abre <b>Ajustes de la cuenta</b>.',
+          'Busca <b>Verificación en dos pasos</b> (autenticación de dos factores).',
+          'Actívala: Riot enviará los códigos a tu correo vinculado.',
+          'Confirma con el código que recibes para terminar la activación.',
+        ],
+        tip: 'Funciona mejor si tu propio correo también tiene su verificación en 2 pasos activada.',
+      },
     ],
   },
 ];
 
-const cont = document.getElementById('faq');
-cont.innerHTML = CATEGORIAS.map((cat, ci) => `
-  <section class="${ci ? 'mt-12' : ''}">
+const cont = document.getElementById('tutoriales');
+cont.innerHTML = GRUPOS.map((g, gi) => `
+  <section class="${gi ? 'mt-12' : ''}">
     <div class="mb-4 flex items-center gap-3">
-      <span class="font-mono text-xs font-700 uppercase tracking-[0.24em] text-red">${String(ci + 1).padStart(2, '0')}</span>
-      <h2 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">${cat.titulo}</h2>
+      <span class="font-mono text-xs font-700 uppercase tracking-[0.24em] text-red">${String(gi + 1).padStart(2, '0')}</span>
+      <h2 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">${g.titulo}</h2>
     </div>
     <div class="grid gap-3">
-      ${cat.items.map(([q, a]) => `
+      ${g.tutoriales.map(t => `
         <details class="group border border-line/70 bg-surface/50 notch-tr">
           <summary class="flex items-center justify-between gap-4 px-5 py-4">
-            <span class="q font-cond text-base font-600 leading-snug text-cream/90">${q}</span>
+            <span class="t font-cond text-base font-600 leading-snug text-cream/90">${t.titulo}</span>
             <svg class="chev shrink-0 text-red" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </summary>
-          <div class="px-5 pb-5 text-sm leading-[1.75] text-muted">${a}</div>
+          <div class="px-5 pb-5">
+            <p class="mb-4 text-sm leading-[1.6] text-muted">${t.intro}</p>
+            <ol class="space-y-3">
+              ${t.pasos.map((p, i) => `
+                <li class="flex gap-3">
+                  <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-red/15 font-mono text-xs font-700 text-red">${i + 1}</span>
+                  <span class="pt-0.5 text-sm leading-[1.6] text-cream/85">${p}</span>
+                </li>`).join('')}
+            </ol>
+            ${t.tip ? `
+              <div class="mt-4 flex items-start gap-2 border border-mint/40 bg-mint/[0.06] p-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" class="mt-0.5 shrink-0 text-mint" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <p class="text-xs leading-[1.6] text-cream/80"><b class="text-mint">Tip:</b> ${t.tip}</p>
+              </div>` : ''}
+          </div>
         </details>`).join('')}
     </div>
   </section>
