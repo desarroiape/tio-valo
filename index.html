@@ -194,18 +194,122 @@
     </div>
 
     <!-- Confianza -->
-    <div class="fade-up mt-10 grid grid-cols-3 gap-px border border-line/60 bg-line/40 notch-tr" style="animation-delay:.24s">
+    <div class="fade-up mt-10 grid grid-cols-2 gap-px border border-line/60 bg-line/40 notch-tr md:grid-cols-4" style="animation-delay:.24s">
       <div class="bg-ink px-5 py-5">
-        <div class="font-display text-3xl font-800 text-cream">100%</div>
-        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Correo incluido</div>
+        <div class="font-display text-3xl font-800 text-red">+4,000</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Ventas realizadas</div>
       </div>
       <div class="bg-ink px-5 py-5">
-        <div class="font-display text-3xl font-800 text-cream">LATAM+</div>
-        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Todas las regiones</div>
+        <div class="font-display text-3xl font-800 text-cream">+4 años</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">En el mercado</div>
+      </div>
+      <div class="bg-ink px-5 py-5">
+        <div class="font-display text-3xl font-800 text-cream">+10 países</div>
+        <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Métodos de pago locales</div>
       </div>
       <div class="bg-ink px-5 py-5">
         <div class="font-display text-3xl font-800 text-mint">24/7</div>
         <div class="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Atención WhatsApp</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CÓMO FUNCIONA ============ -->
+  <section class="mx-auto max-w-6xl px-5 pb-20 md:pb-28">
+    <p class="rail mb-3 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Cómo funciona</p>
+    <h2 class="font-display text-3xl uppercase leading-none text-cream sm:text-5xl">Simple y sin vueltas</h2>
+    <p class="mt-4 max-w-xl text-sm leading-[1.7] text-muted">Dos procesos claros y directos, ya sea que quieras comprar o vender tu cuenta.</p>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+
+      <!-- Proceso COMPRAR -->
+      <div class="border border-line/70 bg-surface/50 p-7 notch-both layer-shadow sm:p-8">
+        <div class="mb-7 flex items-center gap-3">
+          <span class="grid h-11 w-11 place-items-center rounded-xl bg-red text-ink shadow-[0_10px_24px_-8px_rgba(242,106,33,0.7)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/><path d="M6 6L5 3H2"/></svg>
+          </span>
+          <h3 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">Comprar una cuenta</h3>
+        </div>
+        <ol>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-red/15 font-display text-base font-800 text-red ring-1 ring-red/30">1</span>
+              <span class="mt-1 w-px flex-1 bg-line/70"></span>
+            </div>
+            <div class="pb-6">
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Elige tu cuenta</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Explora nuestro catálogo y elige la cuenta que más te guste.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-red/15 font-display text-base font-800 text-red ring-1 ring-red/30">2</span>
+              <span class="mt-1 w-px flex-1 bg-line/70"></span>
+            </div>
+            <div class="pb-6">
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Contáctanos por WhatsApp</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Nos escribes y coordinamos el pago de forma segura.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-red/15 font-display text-base font-800 text-red ring-1 ring-red/30">3</span>
+            </div>
+            <div>
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Recibe tu cuenta</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Pagas y recibes usuario y correo en <span class="text-cream">menos de 24 horas</span>.</p>
+            </div>
+          </li>
+        </ol>
+        <a href="/comprar" class="cta mt-7 inline-flex items-center gap-2 bg-red px-5 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">
+          Ver catálogo
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <!-- Proceso VENDER -->
+      <div class="border border-line/70 bg-surface/50 p-7 notch-both layer-shadow sm:p-8">
+        <div class="mb-7 flex items-center gap-3">
+          <span class="grid h-11 w-11 place-items-center rounded-xl bg-mint text-ink shadow-[0_10px_24px_-8px_rgba(139,92,246,0.7)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4L13.4 20.6a2 2 0 01-2.8 0l-7.2-7.2a2 2 0 01-.6-1.4V4a1 1 0 011-1h7.6a2 2 0 011.4.6l7.8 7.8a2 2 0 010 3z"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor"/></svg>
+          </span>
+          <h3 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">Vender tu cuenta</h3>
+        </div>
+        <ol>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mint/15 font-display text-base font-800 text-mint ring-1 ring-mint/30">1</span>
+              <span class="mt-1 w-px flex-1 bg-line/70"></span>
+            </div>
+            <div class="pb-6">
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Publica tu cuenta</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Envíanos rango, región, skins y fotos de tu inventario.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mint/15 font-display text-base font-800 text-mint ring-1 ring-mint/30">2</span>
+              <span class="mt-1 w-px flex-1 bg-line/70"></span>
+            </div>
+            <div class="pb-6">
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Encontramos comprador</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Movemos tu cuenta y te conseguimos comprador en <span class="text-cream">3 a 10 días</span>.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mint/15 font-display text-base font-800 text-mint ring-1 ring-mint/30">3</span>
+            </div>
+            <div>
+              <h4 class="font-cond text-base font-600 uppercase tracking-wide text-cream">Recibes tu dinero</h4>
+              <p class="mt-1 text-sm leading-[1.6] text-muted">Apenas se cierra la venta, te pagamos por el método que prefieras.</p>
+            </div>
+          </li>
+        </ol>
+        <a href="/vender" class="cta mt-7 inline-flex items-center gap-2 border border-mint bg-mint/[0.08] px-5 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
+          Vender mi cuenta
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
     </div>
   </section>
