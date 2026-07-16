@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Panel — Trustify Market</title>
+<link rel="icon" href="logotrustifymarket.jpeg" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:      '#0F1119',
+          'ink-2':  '#0A0B11',
+          surface:  '#181B27',
+          'surface-2': '#212536',
+          line:     '#2C3145',
+          red:      '#F26A21',
+          'red-dim':'#D8550F',
+          cream:    '#EEF0F6',
+          muted:    '#8A93AC',
+          mint:     '#8B5CF6',
+          gold:     '#F5B325',
+          blue:     '#2F81E8',
+        },
+        fontFamily: {
+          display: ['"Baloo 2"', 'cursive'],
+          cond:    ['Oswald', 'sans-serif'],
+          body:    ['Inter', 'sans-serif'],
+          mono:    ['"Space Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; background: #0F1119; }
+  body { background-color: #0F1119; }
+  .atmosphere {
+    background-color: #0F1119;
+    background-image:
+      radial-gradient(120% 80% at 85% -10%, rgba(242,106,33,0.16), transparent 60%),
+      radial-gradient(90% 70% at -10% 10%, rgba(139,92,246,0.14), transparent 55%);
+    background-attachment: fixed;
+  }
+  .notch { border-radius: 18px; }
+  .btn-red { border-radius: 12px; }
+  .layer-shadow {
+    box-shadow: 0 1px 0 rgba(238,240,246,0.05) inset, 0 18px 40px -20px rgba(0,0,0,0.85), 0 0 0 1px rgba(44,49,69,0.9);
+  }
+  a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .cta:active { transform: translateY(1px) scale(.99); }
+  :focus-visible { outline: 2px solid #F26A21; outline-offset: 3px; }
+  #drop-zone.drop-active { border-color: #8B5CF6; background: rgba(139,92,246,0.10); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp .6s cubic-bezier(.2,.9,.25,1) both; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  input, select, textarea { color-scheme: dark; }
+</style>
+</head>
+<body class="font-body text-cream antialiased atmosphere">
+
+<header class="sticky top-0 z-40 border-b border-line/70 bg-ink/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+    <a href="/" class="group flex items-center gap-3">
+      <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl ring-1 ring-red/40">
+        <img src="logotrustifymarket.jpeg" alt="Trustify Market" class="h-full w-full scale-[1.08] object-cover" />
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-lg font-800 tracking-tight text-cream">Trustify <span class="text-red">Market</span></span>
+        <span class="mt-0.5 font-mono text-[9px] font-700 uppercase tracking-[0.42em] text-mint">panel admin</span>
+      </span>
+    </a>
+    <button id="logout-btn" class="hidden font-cond text-xs font-600 uppercase tracking-[0.14em] text-muted hover:text-red">Cerrar sesión</button>
+  </div>
+</header>
+
+<main class="relative z-10 mx-auto max-w-5xl px-5 py-10">
+
+  <!-- LOGIN -->
+  <section id="login-view" class="mx-auto hidden max-w-sm">
+    <div class="fade-up border border-line/70 bg-surface/60 p-7 notch layer-shadow">
+      <h1 class="font-display text-2xl font-800 uppercase text-cream">Acceso del dueño</h1>
+      <p class="mt-1 mb-6 text-sm text-muted">Introduce la contraseña para gestionar el catálogo.</p>
+      <form id="login-form">
+        <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Contraseña</label>
+        <input id="login-pass" type="password" autocomplete="current-password" required
+               class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none" />
+        <div id="login-status" class="mt-3 hidden text-sm"></div>
+        <button type="submit" class="cta mt-5 flex w-full items-center justify-center bg-red px-6 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PANEL -->
+  <section id="panel-view" class="hidden">
+    <div class="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
+
+      <!-- Crear cuenta -->
+      <div class="fade-up border border-line/70 bg-surface/60 p-6 notch layer-shadow">
+        <h2 class="mb-1 font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">Publicar cuenta</h2>
+        <p class="mb-5 text-sm text-muted">Se mostrará en el catálogo al guardarla.</p>
+        <form id="create-form">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Título <span class="text-red">*</span></label>
+              <input name="titulo" type="text" required placeholder="Ej. Cuenta Inmortal — Reaver Vandal" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Región</label>
+              <select name="region" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                <option>LATAM</option><option>NA</option><option>BR</option><option>EU</option><option>AP</option><option>KR</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango</label>
+              <select name="rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Precio (USD)</label>
+              <input name="precio" type="number" min="0" placeholder="Ej. 120" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Cantidad de skins</label>
+              <input name="skins" type="number" min="0" placeholder="Ej. 24" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Skins destacadas</label>
+              <input name="destacadas" type="text" placeholder="Ej. Reaver Vandal, Prime Phantom, Champions 2023" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Correo</label>
+              <select name="correo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                <option>Correo original incluido</option>
+                <option>Correo cambiable por uno nuevo</option>
+                <option>Sin correo original</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Descripción</label>
+              <textarea name="descripcion" rows="3" placeholder="Detalles de la cuenta, inventario, historial…" class="w-full resize-none border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="mb-1.5 flex items-center justify-between">
+              <label class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Fotos de la cuenta</label>
+              <span id="foto-count" class="font-mono text-[10px] text-mint"></span>
+            </div>
+            <div id="drop-zone" tabindex="0" role="button" aria-label="Subir fotos"
+                 class="cursor-pointer border border-dashed border-line bg-ink/60 px-4 py-6 text-center transition hover:border-red focus:border-red focus:outline-none">
+              <p class="text-sm font-500 text-cream">Arrastra imágenes o <span class="text-red underline underline-offset-2">haz clic para elegir</span></p>
+              <p class="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted">PNG · JPG · WEBP — hasta 12</p>
+            </div>
+            <input id="foto-input" type="file" accept="image/*" multiple class="hidden" />
+            <div id="preview-grid" class="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6"></div>
+          </div>
+
+          <div id="create-status" class="mt-4 hidden text-sm"></div>
+          <button id="create-submit" type="submit" class="cta mt-4 flex w-full items-center justify-center bg-red px-6 py-3.5 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim disabled:cursor-not-allowed disabled:opacity-60">Publicar cuenta</button>
+        </form>
+      </div>
+
+      <!-- Lista de cuentas -->
+      <div class="fade-up">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">Cuentas publicadas</h2>
+          <span id="lista-count" class="font-mono text-[11px] text-muted"></span>
+        </div>
+        <div id="lista" class="grid gap-3"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script>
+const CONFIG = { maxFiles: 12, compressMaxDim: 1600, compressQuality: 0.82 };
+
+const $ = s => document.querySelector(s);
+const loginView = $('#login-view'), panelView = $('#panel-view'), logoutBtn = $('#logout-btn');
+
+function setStatus(el, msg, type) {
+  const styles = { err: 'text-red', ok: 'text-mint', info: 'text-muted' };
+  el.className = (styles[type] || styles.info) + ' text-sm';
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  return { status: res.status, data };
+}
+
+/* ---------- Sesión ---------- */
+async function comprobarSesion() {
+  const { status, data } = await api('/api/admin/cuentas');
+  if (status === 200) { mostrarPanel(data.cuentas || []); }
+  else { mostrarLogin(); }
+}
+function mostrarLogin() {
+  loginView.classList.remove('hidden');
+  panelView.classList.add('hidden');
+  logoutBtn.classList.add('hidden');
+  $('#login-pass').focus();
+}
+function mostrarPanel(cuentas) {
+  loginView.classList.add('hidden');
+  panelView.classList.remove('hidden');
+  logoutBtn.classList.remove('hidden');
+  renderLista(cuentas);
+}
+
+$('#login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const { status, data } = await api('/api/admin/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ password: $('#login-pass').value }),
+  });
+  if (status === 200) { $('#login-pass').value = ''; comprobarSesion(); }
+  else { setStatus($('#login-status'), data.error || 'No se pudo entrar', 'err'); }
+});
+
+logoutBtn.addEventListener('click', async () => {
+  await api('/api/admin/logout', { method: 'POST' });
+  mostrarLogin();
+});
+
+/* ---------- Imágenes ---------- */
+const dropZone = $('#drop-zone'), fileInput = $('#foto-input'), previewGrid = $('#preview-grid'), fotoCount = $('#foto-count');
+let fotos = [];
+
+function renderPreviews() {
+  previewGrid.innerHTML = fotos.map((f, i) => `
+    <figure class="group relative overflow-hidden rounded-lg border border-line/70 bg-ink">
+      <img src="${f.url}" class="aspect-square w-full object-cover" />
+      <button type="button" data-rm="${i}" aria-label="Quitar" class="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded bg-ink/85 text-cream hover:bg-red hover:text-ink">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </figure>`).join('');
+  fotoCount.textContent = fotos.length ? `${fotos.length} / ${CONFIG.maxFiles}` : '';
+}
+function addFiles(list) {
+  for (const file of list) {
+    if (!file.type.startsWith('image/')) continue;
+    if (fotos.length >= CONFIG.maxFiles) break;
+    fotos.push({ file, url: URL.createObjectURL(file) });
+  }
+  renderPreviews();
+}
+previewGrid.addEventListener('click', e => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  const i = +b.dataset.rm; URL.revokeObjectURL(fotos[i].url); fotos.splice(i, 1); renderPreviews();
+});
+fileInput.addEventListener('change', e => { addFiles(e.target.files); fileInput.value = ''; });
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('drop-active'); }));
+['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('drop-active'); }));
+dropZone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+async function compressImage(file) {
+  try {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, CONFIG.compressMaxDim / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * scale)), h = Math.max(1, Math.round(bmp.height * scale));
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); ctx.drawImage(bmp, 0, 0, w, h); bmp.close?.();
+    return cv.toDataURL('image/jpeg', CONFIG.compressQuality);
+  } catch {
+    return await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = no; r.readAsDataURL(file); });
+  }
+}
+
+/* ---------- Crear cuenta ---------- */
+const createForm = $('#create-form'), createBtn = $('#create-submit'), createStatus = $('#create-status');
+createForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!createForm.reportValidity()) return;
+  const fields = Object.fromEntries(new FormData(createForm));
+  createBtn.disabled = true;
+  const label = createBtn.textContent; createBtn.textContent = 'Publicando…';
+  try {
+    const urls = [];
+    for (let i = 0; i < fotos.length; i++) {
+      setStatus(createStatus, `Subiendo foto ${i + 1} de ${fotos.length}…`, 'info');
+      const dataUrl = await compressImage(fotos[i].file);
+      const { status, data } = await api('/api/admin/upload', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dataUrl }),
+      });
+      if (status !== 200) throw new Error(data.error || 'Error subiendo imagen');
+      urls.push(data.url);
+    }
+    setStatus(createStatus, 'Guardando cuenta…', 'info');
+    const { status, data } = await api('/api/admin/cuentas', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...fields, imagenes: urls }),
+    });
+    if (status !== 200) throw new Error(data.error || 'Error guardando');
+    setStatus(createStatus, '¡Cuenta publicada!', 'ok');
+    createForm.reset();
+    fotos.forEach(f => URL.revokeObjectURL(f.url)); fotos = []; renderPreviews();
+    recargarLista();
+  } catch (err) {
+    setStatus(createStatus, 'Error: ' + (err.message || err), 'err');
+  } finally {
+    createBtn.disabled = false; createBtn.textContent = label;
+  }
+});
+
+/* ---------- Lista / gestión ---------- */
+const lista = $('#lista');
+function badge(estado) {
+  const map = { disponible: 'text-mint', vendida: 'text-red', oculta: 'text-muted' };
+  return `<span class="font-mono text-[10px] uppercase tracking-wider ${map[estado] || 'text-muted'}">${estado}</span>`;
+}
+function renderLista(cuentas) {
+  $('#lista-count').textContent = `${cuentas.length} en total`;
+  if (!cuentas.length) { lista.innerHTML = `<p class="text-sm text-muted">Aún no has publicado cuentas.</p>`; return; }
+  lista.innerHTML = cuentas.map(c => {
+    const img = (c.imagenes && c.imagenes[0]) || 'https://placehold.co/120x120/181B27/8A93AC?text=—';
+    const codigo = 'VAL-' + String(c.id).padStart(3, '0');
+    return `
+    <div class="flex items-center gap-3 border border-line/70 bg-surface/60 p-3 notch" data-id="${c.id}">
+      <img src="${esc(img)}" class="h-14 w-14 shrink-0 rounded-lg object-cover ring-1 ring-line/70" />
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-[10px] uppercase tracking-wider text-muted">${codigo}</span>
+          ${badge(c.estado)}
+        </div>
+        <p class="truncate font-cond text-sm font-600 uppercase tracking-wide text-cream">${esc(c.titulo)}</p>
+        <p class="font-mono text-[11px] text-muted">${esc(c.rango || '—')} · ${esc(c.region || '—')} · <span class="text-red">$${c.precio ?? 0}</span></p>
+      </div>
+      <div class="flex shrink-0 flex-col gap-1.5">
+        <button data-toggle="${c.id}" data-estado="${c.estado}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-mint hover:text-mint">
+          ${c.estado === 'disponible' ? 'Marcar vendida' : 'Marcar disponible'}
+        </button>
+        <button data-del="${c.id}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-red hover:text-red">Borrar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function recargarLista() {
+  const { status, data } = await api('/api/admin/cuentas');
+  if (status === 200) renderLista(data.cuentas || []);
+  else mostrarLogin();
+}
+lista.addEventListener('click', async e => {
+  const tgl = e.target.closest('[data-toggle]');
+  const del = e.target.closest('[data-del]');
+  if (tgl) {
+    const nuevo = tgl.dataset.estado === 'disponible' ? 'vendida' : 'disponible';
+    tgl.disabled = true;
+    await api('/api/admin/cuentas', { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: tgl.dataset.toggle, patch: { estado: nuevo } }) });
+    recargarLista();
+  }
+  if (del) {
+    if (!confirm('¿Borrar esta cuenta? Esta acción no se puede deshacer.')) return;
+    del.disabled = true;
+    await api('/api/admin/cuentas?id=' + encodeURIComponent(del.dataset.del), { method: 'DELETE' });
+    recargarLista();
+  }
+});
+
+comprobarSesion();
+</script>
+</body>
+</html>

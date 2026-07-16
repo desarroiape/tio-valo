@@ -3,6 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { handleVender } from './lib/telegram.mjs';
+import cuentasHandler from './api/cuentas.js';
+import adminLoginHandler from './api/admin/login.js';
+import adminLogoutHandler from './api/admin/logout.js';
+import adminUploadHandler from './api/admin/upload.js';
+import adminCuentasHandler from './api/admin/cuentas.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3008;
@@ -137,6 +142,33 @@ const server = http.createServer((req, res) => {
 
   if (req.method === 'POST' && urlPath === '/webhook/venta') {
     handleWebhook(req, res);
+    return;
+  }
+
+  // Rutas de la API que reutilizan las mismas funciones serverless de Vercel.
+  // (adaptamos `res` para que tenga .status().json() como en Vercel)
+  const routes = {
+    'GET /api/cuentas': cuentasHandler,
+    'POST /api/admin/login': adminLoginHandler,
+    'POST /api/admin/logout': adminLogoutHandler,
+    'POST /api/admin/upload': adminUploadHandler,
+    'GET /api/admin/cuentas': adminCuentasHandler,
+    'POST /api/admin/cuentas': adminCuentasHandler,
+    'PATCH /api/admin/cuentas': adminCuentasHandler,
+    'DELETE /api/admin/cuentas': adminCuentasHandler,
+  };
+  const handler = routes[`${req.method} ${urlPath}`];
+  if (handler) {
+    res.status = (c) => { res.statusCode = c; return res; };
+    res.json = (o) => {
+      if (!res.headersSent) res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(o));
+      return res;
+    };
+    Promise.resolve(handler(req, res)).catch(err => {
+      console.error('Error en', urlPath, err);
+      if (!res.headersSent) { res.statusCode = 500; res.end(JSON.stringify({ ok: false, error: 'Error interno' })); }
+    });
     return;
   }
 

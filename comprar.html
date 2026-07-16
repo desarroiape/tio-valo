@@ -135,6 +135,7 @@
     <nav class="flex items-center gap-1 font-cond text-sm font-500 uppercase tracking-[0.14em]">
       <a href="/comprar" class="px-4 py-2 text-cream" aria-current="page">Catálogo</a>
       <a href="/vender" class="px-4 py-2 text-cream/80 hover:text-cream">Vender</a>
+      <a href="/faq" class="px-4 py-2 text-cream/80 hover:text-cream">FAQ</a>
       <a href="/vender" class="ml-1 border border-line px-4 py-2 font-600 text-cream/90 btn-red hover:border-mint hover:text-mint">Vender cuenta</a>
     </nav>
   </div>
@@ -193,102 +194,89 @@ const CONFIG = {
 };
 
 /* =====================================================================
-   CATÁLOGO — edita, agrega o elimina cuentas aquí
+   CATÁLOGO — se carga desde /api/cuentas (base de datos Supabase).
+   Para agregar cuentas usa el panel /admin.
    ===================================================================== */
-const CUENTAS = [
-  {
-    id: 'VAL-001', titulo: 'Cuenta Inmortal — Reaver Vandal',
-    rango: 'Inmortal 2', region: 'LATAM', skins: 24, precio: 120,
-    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-001',
-    destacado: 'Reaver Vandal · Prime Phantom',
-    descripcion: 'Cuenta competitiva con historial limpio y rango alto de la temporada actual. Correo original incluido para transferencia total. Ideal para quien busca entrar directo a rangos altos con skins premium.',
-    detalles: ['Reaver Vandal (full)', 'Prime Phantom', 'Elderflame Operator', 'Sovereign Sword', 'Battlepass completo E7'],
-    correo: 'Correo original incluido', nivel: 142, vp: 350,
-  },
-  {
-    id: 'VAL-002', titulo: 'Cuenta Diamante — Colección Prime',
-    rango: 'Diamante 1', region: 'NA', skins: 17, precio: 85,
-    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-002',
-    destacado: 'Prime Vandal · Glitchpop',
-    descripcion: 'Buena base de skins y rango sólido. Perfecta para seguir subiendo esta temporada. Se entrega con correo vinculado y datos completos.',
-    detalles: ['Prime Vandal', 'Glitchpop Phantom', 'Ion Sheriff', 'Spectrum knife', 'Agentes: 14 desbloqueados'],
-    correo: 'Correo original incluido', nivel: 98, vp: 120,
-  },
-  {
-    id: 'VAL-003', titulo: 'Cuenta Radiante — Full Skins',
-    rango: 'Radiante', region: 'EU', skins: 41, precio: 260,
-    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-003',
-    destacado: 'Champions 2023 · Elderflame',
-    descripcion: 'Cuenta tope de gama: rango Radiante confirmado y una de las colecciones más completas del catálogo. Inventario premium con bundles completos y cuchillos exclusivos.',
-    detalles: ['Champions 2023 Vandal', 'Elderflame Vandal + Operator', 'Araxys bundle', 'RGX 11z Pro (full)', 'Todos los agentes'],
-    correo: 'Correo original incluido', nivel: 231, vp: 800,
-  },
-  {
-    id: 'VAL-004', titulo: 'Cuenta Ascendente — Glitchpop',
-    rango: 'Ascendente 3', region: 'BR', skins: 12, precio: 60,
-    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-004',
-    destacado: 'Glitchpop Vandal · Oni',
-    descripcion: 'Relación precio-valor excelente para empezar con buen inventario. Skins llamativas y rango competitivo estable.',
-    detalles: ['Glitchpop Vandal', 'Oni Phantom', 'Ruination Sword', 'Agentes: 11 desbloqueados', 'Battlepass E6'],
-    correo: 'Correo original incluido', nivel: 76, vp: 45,
-  },
-  {
-    id: 'VAL-005', titulo: 'Cuenta Oro — Starter con Skins',
-    rango: 'Oro 2', region: 'LATAM', skins: 8, precio: 35,
-    img: 'https://placehold.co/720x480/241A0D/FF9F30?text=VAL-005',
-    destacado: 'Prime Spectre · Sovereign',
-    descripcion: 'Cuenta económica ideal para iniciar sin empezar de cero. Rango decente y varias skins para jugar cómodo desde el día uno.',
-    detalles: ['Prime Spectre', 'Sovereign Ghost', 'Nunca Olvidado Marshal', 'Agentes: 9 desbloqueados'],
-    correo: 'Correo original incluido', nivel: 54, vp: 20,
-  },
-  {
-    id: 'VAL-006', titulo: 'Cuenta Inmortal — Araxys Bundle',
-    rango: 'Inmortal 1', region: 'AP', skins: 29, precio: 140,
-    img: 'https://placehold.co/720x480/2F2211/FBF1DD?text=VAL-006',
-    destacado: 'Araxys · Recon Phantom',
-    descripcion: 'Inventario moderno y agresivo con bundles recientes. Rango alto y cuenta lista para competir al máximo nivel. Correo original garantizado.',
-    detalles: ['Araxys Vandal + Sheriff', 'Recon Phantom', 'Gaia\'s Vengeance', 'Kuronami bundle', 'Todos los agentes'],
-    correo: 'Correo original incluido', nivel: 167, vp: 500,
-  },
-];
+let CUENTAS = [];
+const PLACEHOLDER = 'https://placehold.co/720x480/181B27/8A93AC?text=Sin+foto';
 
-/* =====================================================================
-   Utilidades WhatsApp
-   ===================================================================== */
+// Normaliza una fila de la base de datos al formato que usa la vista.
+function normalizar(row) {
+  const imgs = Array.isArray(row.imagenes) ? row.imagenes.filter(Boolean) : [];
+  return {
+    id: String(row.id),
+    codigo: 'VAL-' + String(row.id).padStart(3, '0'),
+    titulo: row.titulo || 'Cuenta',
+    rango: row.rango || '—',
+    region: row.region || '—',
+    skins: row.skins ?? '—',
+    precio: row.precio ?? 0,
+    imagenes: imgs,
+    img: imgs[0] || PLACEHOLDER,
+    destacado: row.destacadas || '',
+    descripcion: row.descripcion || '',
+    correo: row.correo || '',
+  };
+}
+
+/* Utilidad WhatsApp */
 function waLink(mensaje) {
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
 }
 
-/* =====================================================================
-   Render del catálogo
-   ===================================================================== */
 const grid = document.getElementById('catalog-grid');
-grid.innerHTML = CUENTAS.map((c, i) => `
-  <article class="card group cursor-pointer bg-surface notch-tr layer-shadow" data-id="${c.id}" tabindex="0" role="button" aria-label="Ver ${c.titulo}">
-    <div class="img-treat aspect-[3/2] overflow-hidden">
-      <img src="${c.img}" alt="${c.titulo}" class="card-img h-full w-full object-cover" loading="lazy" />
-      <span class="tag absolute left-3 top-3 z-10 bg-red px-2.5 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">${c.rango}</span>
-      <span class="absolute bottom-3 left-3 z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/70">${c.id}</span>
-    </div>
-    <div class="p-5">
-      <h3 class="font-cond text-lg font-600 uppercase leading-tight tracking-wide text-cream">${c.titulo}</h3>
-      <p class="mt-1 text-sm text-muted">${c.destacado}</p>
-      <div class="mt-4 flex items-center justify-between border-t border-line/60 pt-4">
-        <div class="flex gap-4 font-mono text-[11px] uppercase tracking-wider text-muted">
-          <span><span class="text-cream">${c.region}</span> · región</span>
-          <span><span class="text-cream">${c.skins}</span> skins</span>
-        </div>
-        <div class="text-right">
-          <span class="font-display text-2xl text-red">$${c.precio}</span>
-        </div>
+
+function renderGrid() {
+  if (!CUENTAS.length) {
+    grid.innerHTML = `<div class="col-span-full border border-line/60 bg-surface/50 px-6 py-14 text-center notch-tr">
+      <p class="font-cond text-lg font-600 uppercase tracking-wide text-cream">Aún no hay cuentas publicadas</p>
+      <p class="mt-2 text-sm text-muted">Vuelve pronto: estamos cargando nuevas cuentas al catálogo.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = CUENTAS.map(c => `
+    <article class="card group cursor-pointer bg-surface notch-tr layer-shadow" data-id="${c.id}" tabindex="0" role="button" aria-label="Ver ${c.titulo}">
+      <div class="img-treat aspect-[3/2] overflow-hidden">
+        <img src="${c.img}" alt="${c.titulo}" class="card-img h-full w-full object-cover" loading="lazy" />
+        <span class="tag absolute left-3 top-3 z-10 bg-red px-2.5 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">${c.rango}</span>
+        <span class="absolute bottom-3 left-3 z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/70">${c.codigo}</span>
       </div>
-      <span class="mt-4 flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">
-        Ver detalle
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </span>
-    </div>
-  </article>
-`).join('');
+      <div class="p-5">
+        <h3 class="font-cond text-lg font-600 uppercase leading-tight tracking-wide text-cream">${c.titulo}</h3>
+        <p class="mt-1 text-sm text-muted">${c.destacado || '&nbsp;'}</p>
+        <div class="mt-4 flex items-center justify-between border-t border-line/60 pt-4">
+          <div class="flex gap-4 font-mono text-[11px] uppercase tracking-wider text-muted">
+            <span><span class="text-cream">${c.region}</span> · región</span>
+            <span><span class="text-cream">${c.skins}</span> skins</span>
+          </div>
+          <div class="text-right">
+            <span class="font-display text-2xl text-red">$${c.precio}</span>
+          </div>
+        </div>
+        <span class="mt-4 flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">
+          Ver detalle
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </article>
+  `).join('');
+}
+
+async function cargarCuentas() {
+  grid.innerHTML = `<div class="col-span-full px-6 py-14 text-center font-mono text-sm text-muted">Cargando catálogo…</div>`;
+  try {
+    const res = await fetch('/api/cuentas');
+    const data = await res.json();
+    CUENTAS = (data.cuentas || []).map(normalizar);
+  } catch {
+    CUENTAS = [];
+  }
+  renderGrid();
+  // Deep-link: /comprar?cuenta=ID abre el detalle de esa cuenta (usado en el anuncio de Discord).
+  const wanted = new URLSearchParams(location.search).get('cuenta');
+  if (wanted && CUENTAS.some(c => c.id === String(wanted))) abrirDetalle(String(wanted));
+}
+cargarCuentas();
 
 /* =====================================================================
    Overlay de detalle
@@ -296,21 +284,32 @@ grid.innerHTML = CUENTAS.map((c, i) => `
 const overlay = document.getElementById('overlay');
 const overlayBody = document.getElementById('overlay-body');
 
+window.swapImg = (el) => { document.getElementById('detalle-img').src = el.dataset.src; };
+
 function abrirDetalle(id) {
   const c = CUENTAS.find(x => x.id === id);
   if (!c) return;
-  const msg = `¡Hola! Quiero comprar esta cuenta de Valorant:\n\n• ID: ${c.id}\n• ${c.titulo}\n• Rango: ${c.rango}\n• Región: ${c.region}\n• Skins: ${c.skins}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
+  const msg = `¡Hola! Quiero comprar esta cuenta de Valorant:\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Rango: ${c.rango}\n• Región: ${c.region}\n• Skins: ${c.skins}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
   const link = waLink(msg);
+
+  const destacadas = (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
+  const galeria = c.imagenes.length > 1 ? `
+    <div class="flex gap-2 overflow-x-auto px-6 pt-4 sm:px-8">
+      ${c.imagenes.map((u, i) => `
+        <img data-src="${u}" onclick="swapImg(this)" src="${u}" alt="Foto ${i + 1}"
+             class="h-16 w-16 shrink-0 cursor-pointer rounded-lg object-cover ring-1 ring-line/70 hover:ring-red" />`).join('')}
+    </div>` : '';
 
   overlayBody.innerHTML = `
     <div class="img-treat aspect-[16/7] overflow-hidden">
-      <img src="${c.img}" alt="${c.titulo}" class="h-full w-full object-cover" />
+      <img id="detalle-img" src="${c.img}" alt="${c.titulo}" class="h-full w-full object-cover" />
       <span class="tag absolute left-4 top-4 z-10 bg-red px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">${c.rango}</span>
     </div>
+    ${galeria}
     <div class="p-6 sm:p-8">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-red">${c.id}</p>
+          <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-red">${c.codigo}</p>
           <h3 class="mt-1 font-display text-3xl uppercase leading-none text-cream sm:text-4xl">${c.titulo}</h3>
         </div>
         <div class="shrink-0 text-right">
@@ -319,28 +318,30 @@ function abrirDetalle(id) {
         </div>
       </div>
 
-      <div class="mt-6 grid grid-cols-2 gap-px border border-line/60 bg-line/40 notch-tr sm:grid-cols-4">
-        ${[['Región', c.region],['Skins', c.skins],['Nivel', c.nivel],['VP', c.vp]].map(([k,v]) => `
+      <div class="mt-6 grid grid-cols-3 gap-px border border-line/60 bg-line/40 notch-tr">
+        ${[['Región', c.region],['Skins', c.skins],['Rango', c.rango]].map(([k,v]) => `
           <div class="bg-ink px-4 py-3">
             <div class="font-display text-xl text-cream">${v}</div>
             <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${k}</div>
           </div>`).join('')}
       </div>
 
-      <p class="mt-6 text-sm leading-[1.75] text-cream/80">${c.descripcion}</p>
+      ${c.descripcion ? `<p class="mt-6 text-sm leading-[1.75] text-cream/80">${c.descripcion}</p>` : ''}
 
-      <h4 class="mt-6 mb-3 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Inventario destacado</h4>
-      <ul class="grid gap-2 sm:grid-cols-2">
-        ${c.detalles.map(d => `
-          <li class="flex items-center gap-2 text-sm text-cream/85">
-            <svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-red" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${d}
-          </li>`).join('')}
-      </ul>
+      ${destacadas.length ? `
+        <h4 class="mt-6 mb-3 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Inventario destacado</h4>
+        <ul class="grid gap-2 sm:grid-cols-2">
+          ${destacadas.map(d => `
+            <li class="flex items-center gap-2 text-sm text-cream/85">
+              <svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-red" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${d}
+            </li>`).join('')}
+        </ul>` : ''}
 
-      <div class="mt-5 flex items-center gap-2 text-sm text-mint">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>
-        ${c.correo}
-      </div>
+      ${c.correo ? `
+        <div class="mt-5 flex items-center gap-2 text-sm text-mint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>
+          ${c.correo}
+        </div>` : ''}
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <a href="${link}" target="_blank" rel="noopener" class="cta flex flex-1 items-center justify-center gap-2 bg-red px-6 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">
