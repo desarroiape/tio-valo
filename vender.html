@@ -136,40 +136,7 @@
       <!-- Requisitos -->
       <div>
         <h2 class="mb-6 font-cond text-sm font-600 uppercase tracking-[0.2em] text-mint">Lo que necesitamos</h2>
-        <ol class="space-y-4">
-          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
-            <span class="font-display text-2xl leading-none text-mint">01</span>
-            <div>
-              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Correo vinculado</div>
-              <p class="mt-1 text-sm leading-[1.6] text-muted">¿Entregas el correo original vinculado a la cuenta? Es indispensable para transferirla de forma segura.</p>
-            </div>
-          </li>
-          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
-            <span class="font-display text-2xl leading-none text-mint">02</span>
-            <div>
-              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Región</div>
-              <p class="mt-1 text-sm leading-[1.6] text-muted">¿En qué región está la cuenta? (LATAM, NA, EU, BR, AP…).</p>
-            </div>
-          </li>
-          <li class="flex gap-4 border border-line/60 bg-surface/40 p-5 notch-tr layer-shadow">
-            <span class="font-display text-2xl leading-none text-mint">03</span>
-            <div>
-              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Cantidad de skins</div>
-              <p class="mt-1 text-sm leading-[1.6] text-muted">¿Cuántas skins tiene la cuenta? El valor sube según cuáles y cuántas sean.</p>
-            </div>
-          </li>
-          <li class="flex gap-4 border border-mint/50 bg-mint/[0.06] p-5 notch-tr layer-shadow">
-            <span class="font-display text-2xl leading-none text-mint">04</span>
-            <div>
-              <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">Fotos de la cuenta</div>
-              <p class="mt-1 text-sm leading-[1.6] text-muted">
-                Envía capturas del inventario. Usa el bot de Telegram
-                <a href="https://t.me/valobot" target="_blank" rel="noopener" class="font-600 text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">@valobot</a>
-                para sacar las imágenes de tus skins automáticamente y adjúntalas.
-              </p>
-            </div>
-          </li>
-        </ol>
+        <ol id="requisitos" class="space-y-4"><!-- inyectado por JS según el juego --></ol>
       </div>
 
       <!-- Formulario: datos + subida de imágenes -> webhook -->
@@ -277,7 +244,7 @@
             <div id="preview-grid" class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4"></div>
           </div>
 
-          <div class="mt-4 flex items-start gap-2 border border-mint/40 bg-mint/[0.06] p-3">
+          <div class="solo-valorant mt-4 flex items-start gap-2 border border-mint/40 bg-mint/[0.06] p-3">
             <svg width="16" height="16" viewBox="0 0 24 24" class="mt-0.5 shrink-0 text-mint" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
             <p class="text-xs leading-[1.6] text-cream/80">¿No sabes qué fotos subir? Genera las imágenes de tu inventario con el bot <a href="https://t.me/valobot" target="_blank" rel="noopener" class="font-600 text-mint underline underline-offset-2">@valobot</a> en Telegram y súbelas aquí.</p>
           </div>
@@ -336,10 +303,36 @@ let fotos = [];
 
 // Muestra los campos según el juego elegido
 const juegoSel = document.getElementById('v-juego');
+const REQUISITOS = {
+  valorant: [
+    ['Correo vinculado', '¿Entregas el correo original vinculado a la cuenta? Es indispensable para transferirla de forma segura.'],
+    ['Región', '¿En qué región está la cuenta? (LATAM, NA, EU, BR, AP…).'],
+    ['Cantidad de skins', '¿Cuántas skins tiene la cuenta? El valor sube según cuáles y cuántas sean.'],
+    ['Fotos de la cuenta', 'Envía capturas del inventario. Usa el bot de Telegram <a href="https://t.me/valobot" target="_blank" rel="noopener" class="font-600 text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">@valobot</a> para sacar las imágenes de tus skins automáticamente y adjúntalas.'],
+  ],
+  fortnite: [
+    ['Correo vinculado', '¿Entregas el correo original vinculado a la cuenta? Es indispensable para transferirla de forma segura.'],
+    ['Plataforma', '¿En qué plataforma está? (PC, PlayStation, Xbox, Nintendo Switch, Móvil).'],
+    ['Skins, pavos y OG', '¿Cuántas skins y pavos tiene? ¿Es cuenta OG? El valor sube con skins raras y cuentas antiguas.'],
+    ['Fotos de la cuenta', 'Envía capturas de tu casillero de skins y objetos. Mientras más claras y completas, más rápido se vende.'],
+  ],
+};
 function actualizarCamposJuego() {
   const ft = juegoSel.value === 'fortnite';
   document.querySelector('.campo-valorant').classList.toggle('hidden', ft);
   document.querySelector('.campo-fortnite').classList.toggle('hidden', !ft);
+  document.querySelectorAll('.solo-valorant').forEach(el => el.classList.toggle('hidden', ft));
+  const pasos = REQUISITOS[ft ? 'fortnite' : 'valorant'];
+  document.getElementById('requisitos').innerHTML = pasos.map((p, i) => {
+    const last = i === pasos.length - 1;
+    return `<li class="flex gap-4 border ${last ? 'border-mint/50 bg-mint/[0.06]' : 'border-line/60 bg-surface/40'} p-5 notch-tr layer-shadow">
+      <span class="font-display text-2xl leading-none text-mint">0${i + 1}</span>
+      <div>
+        <div class="font-cond text-base font-600 uppercase tracking-wide text-cream">${p[0]}</div>
+        <p class="mt-1 text-sm leading-[1.6] text-muted">${p[1]}</p>
+      </div>
+    </li>`;
+  }).join('');
 }
 juegoSel.addEventListener('change', actualizarCamposJuego);
 actualizarCamposJuego();
