@@ -415,6 +415,41 @@ const overlayBody = document.getElementById('overlay-body');
 
 window.swapImg = (el) => { document.getElementById('detalle-img').src = el.dataset.src; };
 
+/* =====================================================================
+   Métodos de pago por país (edítalos según lo que manejes)
+   ===================================================================== */
+const PAISES = [
+  { code: 'pe',  flag: '🇵🇪', nombre: 'Perú',       metodos: ['Yape', 'Plin', 'Transferencia BCP / Interbank / BBVA'] },
+  { code: 'ar',  flag: '🇦🇷', nombre: 'Argentina',  metodos: ['Mercado Pago', 'Transferencia (CBU / CVU)', 'Ualá'] },
+  { code: 'br',  flag: '🇧🇷', nombre: 'Brasil',     metodos: ['Pix', 'Mercado Pago', 'Nubank'] },
+  { code: 'ec',  flag: '🇪🇨', nombre: 'Ecuador',    metodos: ['Transferencia (Pichincha / Guayaquil)', 'DeUna', 'Banco del Pacífico'] },
+  { code: 'co',  flag: '🇨🇴', nombre: 'Colombia',   metodos: ['Nequi', 'Daviplata', 'Bancolombia / PSE'] },
+  { code: 'mx',  flag: '🇲🇽', nombre: 'México',     metodos: ['Transferencia SPEI', 'Mercado Pago', 'OXXO'] },
+  { code: 'cl',  flag: '🇨🇱', nombre: 'Chile',      metodos: ['Transferencia bancaria', 'Mercado Pago', 'MACH'] },
+  { code: 'bo',  flag: '🇧🇴', nombre: 'Bolivia',    metodos: ['Transferencia (BCP / Banco Unión)', 'Tigo Money'] },
+  { code: 've',  flag: '🇻🇪', nombre: 'Venezuela',  metodos: ['Pago Móvil', 'Zelle', 'Binance (USDT)'] },
+  { code: 'otro',flag: '🌎', nombre: 'Otro país',  metodos: ['PayPal', 'Binance / USDT (cripto)', 'Wise'] },
+];
+
+window.mostrarMetodos = (code) => {
+  const p = PAISES.find(x => x.code === code);
+  if (!p) return;
+  document.querySelectorAll('[data-pais]').forEach(b => {
+    const on = b.dataset.pais === code;
+    b.classList.toggle('border-red', on);
+    b.classList.toggle('bg-red/10', on);
+    b.classList.toggle('text-cream', on);
+    b.classList.toggle('border-line', !on);
+    b.classList.toggle('text-cream/70', !on);
+  });
+  document.getElementById('pay-methods').innerHTML = `
+    <div class="flex flex-wrap gap-2">
+      ${p.metodos.map(m => `<span class="inline-flex items-center gap-1.5 rounded-lg border border-mint/40 bg-mint/[0.06] px-3 py-1.5 text-sm text-cream">
+        <svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${m}</span>`).join('')}
+    </div>
+    <p class="mt-3 text-xs leading-[1.6] text-muted">Coordinamos el método exacto contigo por WhatsApp. <span class="text-mint">Sin comisiones.</span></p>`;
+};
+
 function abrirDetalle(id) {
   const c = CUENTAS_ALL.find(x => x.id === id);
   if (!c) return;
@@ -471,6 +506,16 @@ function abrirDetalle(id) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>
           ${c.correo}
         </div>` : ''}
+
+      <!-- Métodos de pago por país (interactivo, sin comisión) -->
+      <div class="mt-7 border-t border-line/60 pt-6">
+        <h4 class="mb-1 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Métodos de pago sin comisión</h4>
+        <p class="mb-3 text-xs leading-[1.6] text-muted">Elige tu país y te mostramos con qué puedes pagar.</p>
+        <div class="flex flex-wrap gap-2">
+          ${PAISES.map(p => `<button type="button" data-pais="${p.code}" onclick="mostrarMetodos('${p.code}')" class="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-sm text-cream/70 hover:border-red hover:text-cream"><span>${p.flag}</span>${p.nombre}</button>`).join('')}
+        </div>
+        <div id="pay-methods" class="mt-4"></div>
+      </div>
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <a href="${link}" target="_blank" rel="noopener" class="cta flex flex-1 items-center justify-center gap-2 bg-red px-6 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">
