@@ -14,15 +14,23 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const b = await readJson(req);
       if (!b.titulo || !String(b.titulo).trim()) throw new Error('El título es obligatorio');
+      const juego = b.juego === 'fortnite' ? 'fortnite' : 'valorant';
       const cuenta = await createCuenta({
+        juego,
         titulo: String(b.titulo).trim(),
         descripcion: b.descripcion || null,
         precio: numOrNull(b.precio),
-        rango: b.rango || null,
-        region: b.region || null,
         skins: numOrNull(b.skins),
         destacadas: b.destacadas || null,
         correo: b.correo || null,
+        // Valorant
+        rango: juego === 'valorant' ? (b.rango || null) : null,
+        region: juego === 'valorant' ? (b.region || null) : null,
+        // Fortnite
+        pavos: juego === 'fortnite' ? numOrNull(b.pavos) : null,
+        nivel: juego === 'fortnite' ? numOrNull(b.nivel) : null,
+        plataforma: juego === 'fortnite' ? (b.plataforma || null) : null,
+        og: juego === 'fortnite' ? !!b.og : false,
         imagenes: Array.isArray(b.imagenes) ? b.imagenes : [],
         estado: 'disponible',
       });

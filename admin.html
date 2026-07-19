@@ -108,20 +108,57 @@
         <form id="create-form">
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Juego <span class="text-red">*</span></label>
+              <select id="f-juego" name="juego" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                <option value="valorant">Valorant</option>
+                <option value="fortnite">Fortnite</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Título <span class="text-red">*</span></label>
               <input name="titulo" type="text" required placeholder="Ej. Cuenta Inmortal — Reaver Vandal" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
             </div>
-            <div>
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Región</label>
-              <select name="region" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                <option>LATAM</option><option>NA</option><option>BR</option><option>EU</option><option>AP</option><option>KR</option>
-              </select>
+
+            <!-- Campos de Valorant -->
+            <div class="campo-valorant sm:col-span-2">
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Región</label>
+                  <select name="region" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option>LATAM</option><option>NA</option><option>BR</option><option>EU</option><option>AP</option><option>KR</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango</label>
+                  <select name="rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango</label>
-              <select name="rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
-              </select>
+
+            <!-- Campos de Fortnite -->
+            <div class="campo-fortnite hidden sm:col-span-2">
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Plataforma</label>
+                  <select name="plataforma" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option>PC</option><option>PlayStation</option><option>Xbox</option><option>Nintendo Switch</option><option>Móvil</option><option>Cross-platform</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Nivel</label>
+                  <input name="nivel" type="number" min="0" placeholder="Ej. 120" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+                </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Pavos (V-Bucks)</label>
+                  <input name="pavos" type="number" min="0" placeholder="Ej. 2000" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+                </div>
+                <div class="flex items-center gap-2 pt-7">
+                  <input id="f-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-red" />
+                  <label for="f-og" class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Es cuenta OG?</label>
+                </div>
+              </div>
             </div>
             <div>
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Precio (USD)</label>
@@ -284,6 +321,15 @@ async function compressImage(file) {
 
 /* ---------- Crear cuenta ---------- */
 const createForm = $('#create-form'), createBtn = $('#create-submit'), createStatus = $('#create-status');
+const juegoSel = $('#f-juego');
+function actualizarCamposJuego() {
+  const ft = juegoSel.value === 'fortnite';
+  document.querySelector('.campo-valorant').classList.toggle('hidden', ft);
+  document.querySelector('.campo-fortnite').classList.toggle('hidden', !ft);
+}
+juegoSel.addEventListener('change', actualizarCamposJuego);
+actualizarCamposJuego();
+
 createForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!createForm.reportValidity()) return;
@@ -309,6 +355,7 @@ createForm.addEventListener('submit', async e => {
     if (status !== 200) throw new Error(data.error || 'Error guardando');
     setStatus(createStatus, '¡Cuenta publicada!', 'ok');
     createForm.reset();
+    actualizarCamposJuego();
     fotos.forEach(f => URL.revokeObjectURL(f.url)); fotos = []; renderPreviews();
     recargarLista();
   } catch (err) {
@@ -329,17 +376,23 @@ function renderLista(cuentas) {
   if (!cuentas.length) { lista.innerHTML = `<p class="text-sm text-muted">Aún no has publicado cuentas.</p>`; return; }
   lista.innerHTML = cuentas.map(c => {
     const img = (c.imagenes && c.imagenes[0]) || 'https://placehold.co/120x120/181B27/8A93AC?text=—';
-    const codigo = 'VAL-' + String(c.id).padStart(3, '0');
+    const ft = c.juego === 'fortnite';
+    const codigo = (ft ? 'FN-' : 'VAL-') + String(c.id).padStart(3, '0');
+    const juegoTxt = ft ? 'Fortnite' : 'Valorant';
+    const meta = ft
+      ? `${esc(c.plataforma || '—')} · Nivel ${c.nivel ?? '—'} · ${c.pavos ?? 0} pavos`
+      : `${esc(c.rango || '—')} · ${esc(c.region || '—')}`;
     return `
     <div class="flex items-center gap-3 border border-line/70 bg-surface/60 p-3 notch" data-id="${c.id}">
       <img src="${esc(img)}" class="h-14 w-14 shrink-0 rounded-lg object-cover ring-1 ring-line/70" />
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2">
           <span class="font-mono text-[10px] uppercase tracking-wider text-muted">${codigo}</span>
+          <span class="rounded bg-line/60 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-cream/70">${juegoTxt}</span>
           ${badge(c.estado)}
         </div>
         <p class="truncate font-cond text-sm font-600 uppercase tracking-wide text-cream">${esc(c.titulo)}</p>
-        <p class="font-mono text-[11px] text-muted">${esc(c.rango || '—')} · ${esc(c.region || '—')} · <span class="text-red">$${c.precio ?? 0}</span></p>
+        <p class="font-mono text-[11px] text-muted">${meta} · <span class="text-red">$${c.precio ?? 0}</span></p>
       </div>
       <div class="flex shrink-0 flex-col gap-1.5">
         <button data-toggle="${c.id}" data-estado="${c.estado}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-mint hover:text-mint">
