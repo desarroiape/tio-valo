@@ -3,6 +3,9 @@ import { isAuthed } from '../../lib/auth.mjs';
 import { listCuentas, createCuenta, updateCuenta, deleteCuenta } from '../../lib/supabase.mjs';
 import { anunciarCuenta } from '../../lib/discord.mjs';
 
+// Más margen: publicar descarga las fotos y las sube a Discord.
+export const config = { maxDuration: 30 };
+
 export default async function handler(req, res) {
   if (!isAuthed(req.headers)) return res.status(401).json({ ok: false, error: 'No autorizado' });
   try {
