@@ -158,6 +158,19 @@ const GRUPOS = [
         tip: 'Sube varias: inventario completo, skins destacadas y tu rango. Mientras más claro, más rápido se vende.',
       },
       {
+        titulo: 'Sacar las fotos de tu Valorant (Explorant)',
+        intro: 'Trae los datos reales de tu cuenta (rango, skins, nivel) con Explorant, sin dar tu contraseña.',
+        pasos: [
+          '<b>Ir al login de Riot.</b> En el navegador (mejor Chrome o Edge), entra a <b>Explorant</b> y busca la opción "Login using URL" o similar. Te llevará a la URL oficial de autenticación de Riot (algo como <code>auth.riotgames.com/…</code>).',
+          '<b>Inicia sesión en Riot.</b> Escribe el usuario y contraseña de la cuenta de Valorant que quieres vender en esa página. <b>Verifica bien que la URL sea riotgames.com</b> (nunca la pongas en otro dominio). Si tiene verificación en dos pasos, complétala.',
+          '<b>Copia la URL de redirección.</b> Al terminar el login, Riot te redirige a una URL rara tipo <code>localhost</code> o <code>playvalorant.com/…#access_token=…</code>. Copia esa URL <b>completa</b> desde la barra de direcciones.',
+          '<b>Saca la cookie SSID.</b> Pulsa <b>F12</b> (o clic derecho → "Inspeccionar") → pestaña <b>Application</b> (Chrome/Edge) o <b>Almacenamiento</b> (Firefox) → <b>Cookies</b> → dominio <code>auth.riotgames.com</code>. Busca la cookie <b>ssid</b>, haz doble clic en su valor y cópialo completo (texto largo tipo JWT).',
+          '<b>Pega los datos en Explorant.</b> Pega la URL del paso 3 y el valor de la cookie SSID del paso 4, y dale a <b>Conectar / Link Account</b>. Explorant consultará la API de Riot y traerá los datos de tu cuenta (rango, skins, nivel…) sin necesidad de tu contraseña.',
+          '<b>Genera el link o las capturas.</b> Con el perfil cargado, copia el <b>link público de preview</b> o toma capturas de pantalla para tu anuncio de venta.',
+        ],
+        tip: 'Solo escribe tu contraseña en riotgames.com. La cookie SSID es sensible (da acceso a la cuenta): úsala solo en Explorant y, al terminar, cierra sesión en Riot para invalidarla.',
+      },
+      {
         titulo: 'Publicar tu cuenta para venderla',
         intro: 'Envíanos los datos para tasarla y ponerla a la venta.',
         pasos: [
