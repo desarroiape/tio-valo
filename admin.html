@@ -129,16 +129,18 @@
                   </select>
                 </div>
                 <div>
-                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango</label>
-                  <select name="rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                    <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">País</label>
+                  <select name="pais" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option value="">—</option><option>Perú</option><option>Argentina</option><option>Chile</option><option>Colombia</option><option>México</option><option>Ecuador</option><option>Bolivia</option><option>Venezuela</option><option>Uruguay</option><option>Paraguay</option><option>Brasil</option><option>España</option><option>Estados Unidos</option><option>Otro</option>
                   </select>
                 </div>
                 <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango actual</label>
+                  <select name="rango" id="f-rango" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none"></select>
+                </div>
+                <div>
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango máximo alcanzado</label>
-                  <select name="rango_maximo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                    <option value="">—</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
-                  </select>
+                  <select name="rango_maximo" id="f-rango-max" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none"></select>
                 </div>
                 <div>
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Agentes</label>
@@ -384,6 +386,17 @@ function limpiarEtiquetas() {
 const agentesSel = document.getElementById('f-agentes');
 const agentesEditar = document.getElementById('agentes-editar');
 agentesSel.addEventListener('change', () => agentesEditar.classList.toggle('hidden', agentesSel.value !== '__editar__'));
+
+// Rangos con niveles I / II / III (Radiante y Sin rango no llevan nivel)
+const RANGOS_TIER = ['Hierro', 'Bronce', 'Plata', 'Oro', 'Platino', 'Diamante', 'Ascendente', 'Inmortal'];
+function opcionesRango(conVacio) {
+  let o = conVacio ? '<option value="">—</option>' : '<option>Sin rango / Unranked</option>';
+  for (const t of RANGOS_TIER) for (const n of ['I', 'II', 'III']) o += `<option>${t} ${n}</option>`;
+  o += '<option>Radiante</option>';
+  return o;
+}
+document.getElementById('f-rango').innerHTML = opcionesRango(false);
+document.getElementById('f-rango-max').innerHTML = opcionesRango(true);
 
 createForm.addEventListener('submit', async e => {
   e.preventDefault();

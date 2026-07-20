@@ -26,6 +26,7 @@ export default async function handler(req, res) {
         // Valorant
         rango: juego === 'valorant' ? (b.rango || null) : null,
         region: juego === 'valorant' ? (b.region || null) : null,
+        pais: juego === 'valorant' ? (b.pais || null) : null,
         rango_maximo: juego === 'valorant' ? (b.rango_maximo || null) : null,
         agentes: juego === 'valorant' ? (b.agentes || null) : null,
         // Fortnite

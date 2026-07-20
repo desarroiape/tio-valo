@@ -68,6 +68,7 @@
       img: imgs[0] || PLACEHOLDER,
       rango: row.rango || '',
       region: row.region || '',
+      pais: row.pais || '',
       pavos: row.pavos,
       nivel: row.nivel,
       plataforma: row.plataforma || '',
@@ -81,6 +82,8 @@
   }
   const waLink = (m) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(m)}`;
   const num = (v) => (v == null || v === '' ? NaN : Number(v));
+  // Tier base del rango (quita el nivel I/II/III para agrupar el filtro)
+  const baseTier = (r) => String(r || '').replace(/\s+I{1,3}$/, '').trim();
 
   /* ---------- Sidebar de filtros (según juego) ---------- */
   function chip(grupo, valor) {
@@ -135,7 +138,7 @@
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
       setSlider('f-pavos', 'f-pavos-val', ALL.map(c => num(c.pavos)), 1000, false, ' ');
     } else {
-      const rangos = set('rango'), regiones = set('region');
+      const rangos = [...new Set(ALL.map(c => baseTier(c.rango)))].filter(v => v && v !== '—'), regiones = set('region');
       document.getElementById('f-rangos').innerHTML = rangos.length ? rangos.map(r => chip('rango', r)).join('') : '<span class="text-xs text-muted">—</span>';
       document.getElementById('f-regiones').innerHTML = regiones.length ? regiones.map(r => chip('region', r)).join('') : '<span class="text-xs text-muted">—</span>';
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
@@ -184,7 +187,7 @@
         const p = num(c.pavos);
         if (!Number.isNaN(p) && p < minPavos) return false;
       } else {
-        if (rangos.size && !rangos.has(c.rango)) return false;
+        if (rangos.size && !rangos.has(baseTier(c.rango))) return false;
         if (regiones.size && !regiones.has(c.region)) return false;
       }
       return true;
@@ -252,7 +255,7 @@
     if (ES_FT) {
       rows = [['Plataforma', c.plataforma || '—'], ['Nivel', c.nivel ?? '—'], ['Skins', c.skins ?? '—'], ['Pavos', c.pavos ?? '—']];
     } else {
-      rows = [['Región', c.region || '—'], ['Skins', c.skins ?? '—'], ['Rango', c.rango || '—']];
+      rows = [['Región', c.pais ? `${c.region || '—'} · ${c.pais}` : (c.region || '—')], ['Skins', c.skins ?? '—'], ['Rango', c.rango || '—']];
       if (c.rango_maximo) rows.push(['Rango máx', c.rango_maximo]);
     }
     const cols = rows.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3';
