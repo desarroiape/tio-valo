@@ -72,6 +72,11 @@
       nivel: row.nivel,
       plataforma: row.plataforma || '',
       og: !!row.og,
+      rango_maximo: row.rango_maximo || '',
+      agentes: row.agentes || '',
+      recibos: !!row.recibos,
+      recuperacion: !!row.recuperacion,
+      link: row.link || '',
     };
   }
   const waLink = (m) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(m)}`;
@@ -243,9 +248,13 @@
 
   /* ---------- Detalle ---------- */
   function statsDetalle(c) {
-    const rows = ES_FT
-      ? [['Plataforma', c.plataforma || '—'], ['Nivel', c.nivel ?? '—'], ['Skins', c.skins ?? '—'], ['Pavos', c.pavos ?? '—']]
-      : [['Región', c.region || '—'], ['Skins', c.skins ?? '—'], ['Rango', c.rango || '—']];
+    let rows;
+    if (ES_FT) {
+      rows = [['Plataforma', c.plataforma || '—'], ['Nivel', c.nivel ?? '—'], ['Skins', c.skins ?? '—'], ['Pavos', c.pavos ?? '—']];
+    } else {
+      rows = [['Región', c.region || '—'], ['Skins', c.skins ?? '—'], ['Rango', c.rango || '—']];
+      if (c.rango_maximo) rows.push(['Rango máx', c.rango_maximo]);
+    }
     const cols = rows.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3';
     return `<div class="mt-6 grid ${cols} gap-px border border-line/60 bg-line/40 notch-tr">
       ${rows.map(([k, v]) => `<div class="bg-ink px-4 py-3"><div class="font-display text-xl text-cream">${v}</div><div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${k}</div></div>`).join('')}
@@ -292,6 +301,17 @@
           </ul>` : ''}
 
         ${c.correo ? `<div class="mt-5 flex items-center gap-2 text-sm text-mint"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>${c.correo}</div>` : ''}
+
+        ${(c.agentes || c.recibos || c.recuperacion) ? `
+          <div class="mt-4 space-y-2">
+            ${c.agentes ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg><span><span class="text-muted">Agentes:</span> ${c.agentes}</span></div>` : ''}
+            ${c.recibos ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>Recibos de compra incluidos</div>` : ''}
+            ${c.recuperacion ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>Respuestas de preguntas de recuperación incluidas</div>` : ''}
+          </div>` : ''}
+
+        ${c.link ? `<a href="${c.link}" target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 rounded-lg border border-blue/50 bg-blue/[0.08] px-4 py-2 text-sm font-600 text-blue hover:bg-blue hover:text-ink">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>
+          Explorar nombre</a>` : ''}
 
         <div class="mt-7 border-t border-line/60 pt-6">
           <h4 class="mb-1 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Métodos de pago sin comisión</h4>

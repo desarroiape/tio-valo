@@ -134,6 +134,24 @@
                     <option>Sin rango / Unranked</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
                   </select>
                 </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Rango máximo alcanzado</label>
+                  <select name="rango_maximo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option value="">—</option><option>Hierro</option><option>Bronce</option><option>Plata</option><option>Oro</option><option>Platino</option><option>Diamante</option><option>Ascendente</option><option>Inmortal</option><option>Radiante</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Agentes</label>
+                  <select id="f-agentes" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option value="Todos los agentes">Todos</option>
+                    <option value="Agentes principales">Principales</option>
+                    <option value="__editar__">Editar…</option>
+                  </select>
+                </div>
+                <div id="agentes-editar" class="hidden sm:col-span-2">
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Detalle de agentes</label>
+                  <input id="f-agentes-custom" type="text" placeholder="Ej. 18 agentes desbloqueados, faltan Clove y Vyse" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+                </div>
               </div>
             </div>
 
@@ -175,6 +193,14 @@
                 <option>Correo cambiable por uno nuevo</option>
                 <option>Sin correo original</option>
               </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Link (explorar nombre) <span class="text-muted/60">(opcional)</span></label>
+              <input name="link" type="url" placeholder="https://tracker.gg/valorant/... o el enlace que quieras" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
+              <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recibos" value="1" class="h-4 w-4 accent-red" /> Incluye recibos de compra</label>
+              <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recuperacion" value="1" class="h-4 w-4 accent-red" /> Incluye respuestas de preguntas de recuperación</label>
             </div>
             <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Etiquetas destacadas <span class="text-muted/60">(clic para agregar)</span></label>
@@ -354,11 +380,21 @@ function limpiarEtiquetas() {
   });
 }
 
+// Agentes: muestra el campo de detalle cuando se elige "Editar"
+const agentesSel = document.getElementById('f-agentes');
+const agentesEditar = document.getElementById('agentes-editar');
+agentesSel.addEventListener('change', () => agentesEditar.classList.toggle('hidden', agentesSel.value !== '__editar__'));
+
 createForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!createForm.reportValidity()) return;
   const fields = Object.fromEntries(new FormData(createForm));
   fields.destacadas = etiquetasSeleccionadas().join(', ');
+  if (juegoSel.value === 'fortnite') {
+    delete fields.rango_maximo; delete fields.agentes;
+  } else {
+    fields.agentes = agentesSel.value === '__editar__' ? (document.getElementById('f-agentes-custom').value || '').trim() : agentesSel.value;
+  }
   createBtn.disabled = true;
   const label = createBtn.textContent; createBtn.textContent = 'Publicando…';
   try {
@@ -382,6 +418,7 @@ createForm.addEventListener('submit', async e => {
     createForm.reset();
     actualizarCamposJuego();
     limpiarEtiquetas();
+    agentesEditar.classList.add('hidden');
     fotos.forEach(f => URL.revokeObjectURL(f.url)); fotos = []; renderPreviews();
     recargarLista();
   } catch (err) {

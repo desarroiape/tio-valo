@@ -26,11 +26,17 @@ export default async function handler(req, res) {
         // Valorant
         rango: juego === 'valorant' ? (b.rango || null) : null,
         region: juego === 'valorant' ? (b.region || null) : null,
+        rango_maximo: juego === 'valorant' ? (b.rango_maximo || null) : null,
+        agentes: juego === 'valorant' ? (b.agentes || null) : null,
         // Fortnite
         pavos: juego === 'fortnite' ? numOrNull(b.pavos) : null,
         nivel: juego === 'fortnite' ? numOrNull(b.nivel) : null,
         plataforma: juego === 'fortnite' ? (b.plataforma || null) : null,
         og: juego === 'fortnite' ? !!b.og : false,
+        // Compartidos
+        recibos: !!b.recibos,
+        recuperacion: !!b.recuperacion,
+        link: b.link ? String(b.link).trim() : null,
         imagenes: Array.isArray(b.imagenes) ? b.imagenes : [],
         estado: 'disponible',
       });
