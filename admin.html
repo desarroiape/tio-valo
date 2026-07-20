@@ -169,10 +169,6 @@
               <input name="skins" type="number" min="0" placeholder="Ej. 24" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
             </div>
             <div class="sm:col-span-2">
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Skins destacadas</label>
-              <input name="destacadas" type="text" placeholder="Ej. Reaver Vandal, Prime Phantom, Champions 2023" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
-            </div>
-            <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Correo</label>
               <select name="correo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
                 <option>Correo original incluido</option>
@@ -181,8 +177,8 @@
               </select>
             </div>
             <div class="sm:col-span-2">
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Descripción</label>
-              <textarea name="descripcion" rows="3" placeholder="Detalles de la cuenta, inventario, historial…" class="w-full resize-none border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none"></textarea>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Etiquetas destacadas <span class="text-muted/60">(clic para agregar)</span></label>
+              <div id="etiquetas" class="flex flex-wrap gap-2"></div>
             </div>
           </div>
 
@@ -330,10 +326,39 @@ function actualizarCamposJuego() {
 juegoSel.addEventListener('change', actualizarCamposJuego);
 actualizarCamposJuego();
 
+// Etiquetas destacadas (clic para agregar)
+const ETIQUETAS = [
+  'Vandal Exelio', 'Cuenta chetada', 'Cuenta verificada', 'Exclusiva', 'Cuenta económica',
+  'Unranked - sin skins', 'Skins beta', 'Sheriff Neo Frontier', 'Skins RGX', 'Skins Soberanas',
+  'Vandal Araxys', 'Pack Arcane', 'Vandal Kuronami', 'Cuchillo Xenocazador', 'Packs Champions todo',
+  'Vandal Evori', 'Skins VCT', 'Cuchillo Ignite',
+];
+const etiquetasCont = document.getElementById('etiquetas');
+etiquetasCont.innerHTML = ETIQUETAS.map(t => `<button type="button" data-tag="${t}" class="rounded-lg border border-line px-2.5 py-1.5 text-xs text-cream/70 hover:border-red hover:text-cream">${t}</button>`).join('');
+etiquetasCont.addEventListener('click', e => {
+  const b = e.target.closest('[data-tag]'); if (!b) return;
+  const on = b.classList.toggle('is-on');
+  b.classList.toggle('border-red', on);
+  b.classList.toggle('bg-red/10', on);
+  b.classList.toggle('text-cream', on);
+  b.classList.toggle('border-line', !on);
+  b.classList.toggle('text-cream/70', !on);
+});
+function etiquetasSeleccionadas() {
+  return [...etiquetasCont.querySelectorAll('.is-on')].map(b => b.dataset.tag);
+}
+function limpiarEtiquetas() {
+  etiquetasCont.querySelectorAll('.is-on').forEach(b => {
+    b.classList.remove('is-on', 'border-red', 'bg-red/10', 'text-cream');
+    b.classList.add('border-line', 'text-cream/70');
+  });
+}
+
 createForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!createForm.reportValidity()) return;
   const fields = Object.fromEntries(new FormData(createForm));
+  fields.destacadas = etiquetasSeleccionadas().join(', ');
   createBtn.disabled = true;
   const label = createBtn.textContent; createBtn.textContent = 'Publicando…';
   try {
@@ -356,6 +381,7 @@ createForm.addEventListener('submit', async e => {
     setStatus(createStatus, '¡Cuenta publicada!', 'ok');
     createForm.reset();
     actualizarCamposJuego();
+    limpiarEtiquetas();
     fotos.forEach(f => URL.revokeObjectURL(f.url)); fotos = []; renderPreviews();
     recargarLista();
   } catch (err) {
