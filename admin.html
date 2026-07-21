@@ -566,6 +566,7 @@ function badge(estado) {
   return `<span class="font-mono text-[10px] uppercase tracking-wider ${map[estado] || 'text-muted'}">${estado}</span>`;
 }
 function renderLista(cuentas) {
+  CUENTAS = cuentas; // guarda la lista actual para Modificar / anunciar
   $('#lista-count').textContent = `${cuentas.length} en total`;
   if (!cuentas.length) { lista.innerHTML = `<p class="text-sm text-muted">Aún no has publicado cuentas.</p>`; return; }
   lista.innerHTML = cuentas.map(c => {
