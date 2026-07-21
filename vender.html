@@ -171,6 +171,32 @@
               </select>
             </div>
 
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Origen de la cuenta <span class="text-red">*</span></label>
+              <select name="origen" required class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                <option value="">Selecciona…</option>
+                <option>Soy el creador original de la cuenta</option>
+                <option>La compré a otra persona</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Dinero invertido en la cuenta (USD)</label>
+              <input name="inversion" type="number" min="0" placeholder="Ej. 450" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+              <a href="https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
+                ¿Cómo ver mi historial de compras?
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Enlace de Explorant <span class="text-muted/60">(tracker de la cuenta)</span></label>
+              <input name="explorant" type="url" placeholder="https://www.explorant.space/…" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+              <a href="https://www.explorant.space/" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
+                Genera tu enlace en explorant.space
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+
             <!-- Campos de Valorant -->
             <div class="campo-valorant sm:col-span-2">
               <div class="grid gap-4 sm:grid-cols-2">
@@ -259,6 +285,17 @@
             <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Notas adicionales</label>
               <textarea name="notas" rows="2" placeholder="Cualquier detalle extra que debamos saber" class="w-full resize-none border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none"></textarea>
+            </div>
+            <div class="sm:col-span-2 flex flex-col gap-2 border border-mint/40 bg-mint/[0.06] p-3 notch-tr">
+              <a href="/faq#modalidad-en-cuotas-para-el-vendedor" target="_blank" rel="noopener" class="group inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-mint hover:text-mint/80 focus-visible:underline">
+                Modalidad de venta en cuotas
+                <svg class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </a>
+              <p class="text-xs leading-[1.6] text-muted">Podemos vender tu cuenta en pagos por cuotas para cerrar el trato más rápido. <a href="/faq#modalidad-en-cuotas-para-el-vendedor" target="_blank" rel="noopener" class="text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">Ver cómo funciona</a>. ¿Lo aceptas?</p>
+              <select name="cuotas" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                <option value="Sí">Sí, acepto la venta en cuotas</option>
+                <option value="No">No, solo pago completo</option>
+              </select>
             </div>
           </div>
 
