@@ -51,6 +51,24 @@
       <p class="mt-3 text-xs leading-[1.6] text-muted">Coordinamos el método exacto contigo por WhatsApp. <span class="text-mint">Sin comisiones.</span></p>`;
   };
   window.swapImg = (el) => { document.getElementById('detalle-img').src = el.dataset.src; };
+  window.ampliarImg = (src) => {
+    let lb = document.getElementById('lightbox');
+    if (!lb) {
+      lb = document.createElement('div');
+      lb.id = 'lightbox';
+      lb.className = 'fixed inset-0 z-[100] hidden items-center justify-center bg-ink/90 backdrop-blur-sm p-4 cursor-zoom-out';
+      lb.innerHTML = `<img id="lightbox-img" src="" alt="Imagen ampliada" class="max-h-[92vh] max-w-[92vw] rounded-lg object-contain shadow-2xl" />
+        <button type="button" aria-label="Cerrar" class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-line/60 bg-ink/70 text-cream hover:border-red hover:text-red">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>`;
+      lb.addEventListener('click', () => lb.classList.add('hidden'));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.add('hidden'); });
+      document.body.appendChild(lb);
+    }
+    document.getElementById('lightbox-img').src = src;
+    lb.classList.remove('hidden');
+    lb.classList.add('flex');
+  };
 
   /* ---------- Datos ---------- */
   function normalizar(row) {
@@ -58,6 +76,7 @@
     return {
       id: String(row.id),
       codigo: (row.codigo && String(row.codigo).trim()) ? String(row.codigo).trim() : (PREFIX + String(row.id).padStart(3, '0')),
+      estado: row.estado || 'disponible',
       titulo: row.titulo || 'Cuenta',
       precio: row.precio ?? 0,
       skins: row.skins,
@@ -205,20 +224,56 @@
   }
 
   /* ---------- Grid ---------- */
-  function metaCard(c) {
-    if (ES_FT) {
-      const parts = [];
-      if (c.nivel != null) parts.push(`<span><span class="text-cream">Nv ${c.nivel}</span></span>`);
-      if (c.skins != null) parts.push(`<span><span class="text-cream">${c.skins}</span> skins</span>`);
-      if (c.pavos != null) parts.push(`<span><span class="text-cream">${c.pavos}</span> pavos</span>`);
-      return parts.join('');
-    }
-    return `<span><span class="text-cream">${c.region || '—'}</span> · región</span><span><span class="text-cream">${c.skins ?? '—'}</span> skins</span>`;
+  const TIPO_TAGS = [
+    { test: t => /cheta/i.test(t), label: 'Cuenta chetada', color: 'red' },
+    { test: t => /econ/i.test(t), label: 'Cuenta económica', color: 'green' },
+    { test: t => /exclusiv/i.test(t), label: 'Exclusiva', color: 'gold' },
+  ];
+  function tiposDe(c) {
+    const tags = (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
+    return TIPO_TAGS.filter(t => tags.some(tag => t.test(tag)));
   }
-  function badgeCard(c) {
-    const txt = ES_FT ? (c.plataforma || 'Fortnite') : (c.rango || '—');
-    return `<span class="tag absolute left-3 top-3 z-10 bg-red px-2.5 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">${txt}</span>
-      ${ES_FT && c.og ? `<span class="tag absolute right-3 top-3 z-10 bg-gold px-2 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">OG</span>` : ''}`;
+  function tagPill(color, label, big, { bg = `bg-${color}/[0.08]`, extra = '' } = {}) {
+    const pad = big ? 'px-3 py-1' : 'px-2.5 py-1', size = big ? 'text-[11px]' : 'text-[10px]';
+    return `<span class="tag ${extra} border border-${color}/50 ${bg} ${pad} font-mono ${size} font-700 uppercase tracking-wider text-${color}">${label}</span>`;
+  }
+  function tagTipoHtml(t, big) {
+    return tagPill(t.color, t.label, big);
+  }
+  function estadoBadgeHtml(c, big) {
+    const vendida = c.estado === 'vendida';
+    const pos = big ? 'left-4 top-4' : 'left-3 top-3';
+    const color = vendida ? 'muted' : 'red';
+    return tagPill(color, vendida ? 'Vendida' : 'Disponible', big, { bg: 'bg-ink/70 backdrop-blur-sm', extra: `absolute ${pos} z-10` });
+  }
+  function correoIncluido(c) {
+    return /correo original incluido/i.test(c.correo || '');
+  }
+  // Resumen del preview: specs como recuadros (valor resaltado) + garantías como mini-lista.
+  function resumenCard(c) {
+    const specs = [];
+    if (ES_FT) {
+      if (c.nivel != null) specs.push(['Nivel', c.nivel]);
+      if (c.pavos != null) specs.push(['Pavos', c.pavos]);
+      if (c.skins != null && c.skins !== '') specs.push(['Skins', c.skins]);
+    } else {
+      if (c.skins != null && c.skins !== '') specs.push(['Skins', c.skins]);
+      if (c.region) specs.push(['Región', c.region]);
+      if (c.pais) specs.push(['País', c.pais]);
+    }
+    const chips = specs.map(([label, val]) => `<span class="inline-flex items-baseline gap-1 rounded-md border border-line/70 bg-ink/50 px-2 py-1">
+      <span class="font-cond text-sm font-700 leading-none text-cream">${val}</span>
+      <span class="font-mono text-[9px] uppercase tracking-wider text-muted">${label}</span></span>`).join('');
+
+    const gar = [];
+    if (correoIncluido(c)) gar.push('Correo original incluido');
+    if (c.recibos) gar.push('Recibos de compra incluidos');
+    if (c.recuperacion) gar.push('Preguntas de recuperación incluidas');
+    const garHtml = gar.length ? `<ul class="mt-3 flex flex-col gap-1.5">
+      ${gar.map(g => `<li class="flex items-center gap-1.5 text-[11px] leading-tight text-cream/70"><svg width="12" height="12" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>${g}</li>`).join('')}
+    </ul>` : '';
+
+    return `<div class="mt-3 flex flex-wrap gap-1.5">${chips}</div>${garHtml}`;
   }
   function renderGrid() {
     if (!VIEW.length) {
@@ -228,25 +283,31 @@
       </div>`;
       return;
     }
-    grid.innerHTML = VIEW.map(c => `
-      <article class="card group cursor-pointer bg-surface notch-tr layer-shadow" data-id="${c.id}" tabindex="0" role="button" aria-label="Ver ${c.titulo}">
+    grid.innerHTML = VIEW.map(c => {
+      const vendida = c.estado === 'vendida';
+      const tipos = tiposDe(c);
+      return `
+      <article class="card group cursor-pointer bg-surface notch-tr layer-shadow${vendida ? ' [filter:grayscale(1)]' : ''}" data-id="${c.id}" tabindex="0" role="button" aria-label="Ver ${c.titulo}">
         <div class="img-treat aspect-[3/2] overflow-hidden">
           <img src="${c.img}" alt="${c.titulo}" class="card-img h-full w-full object-cover" loading="lazy" />
-          ${badgeCard(c)}
-          <span class="absolute bottom-3 left-3 z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/70">${c.codigo}</span>
+          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-1/2 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent"></div>
+          ${estadoBadgeHtml(c, false)}
+          ${ES_FT && c.og ? `<span class="tag absolute right-3 top-3 z-10 bg-gold px-2 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">OG</span>` : ''}
+          <span class="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/85"><span class="h-2 w-[2px] bg-red"></span>${c.codigo}</span>
         </div>
-        <div class="p-5">
+        ${tipos.length ? `<div class="flex flex-wrap gap-1.5 px-5 pt-3">${tipos.map(t => tagTipoHtml(t, false)).join('')}</div>` : ''}
+        <div class="p-5${tipos.length ? ' pt-2.5' : ''}">
           <h3 class="font-cond text-lg font-600 uppercase leading-tight tracking-wide text-cream">${c.titulo}</h3>
-          <p class="mt-1 text-sm text-muted">${c.destacado || '&nbsp;'}</p>
+          ${resumenCard(c)}
           <div class="mt-4 flex items-center justify-between border-t border-line/60 pt-4">
-            <div class="flex gap-4 font-mono text-[11px] uppercase tracking-wider text-muted">${metaCard(c)}</div>
-            <div class="text-right"><span class="font-display text-2xl text-red">$${c.precio}</span></div>
+            <span class="flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">Ver detalle
+              <svg width="14" height="14" viewBox="0 0 24 24" class="transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+            <span class="font-display text-2xl text-red">$${c.precio}</span>
           </div>
-          <span class="mt-4 flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">Ver detalle
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
         </div>
-      </article>`).join('');
+      </article>`;
+    }).join('');
   }
 
   /* ---------- Detalle ---------- */
@@ -259,62 +320,76 @@
       if (c.rango_maximo) rows.push(['Rango máx', c.rango_maximo]);
     }
     const cols = rows.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3';
-    return `<div class="mt-6 grid ${cols} gap-px border border-line/60 bg-line/40 notch-tr">
-      ${rows.map(([k, v]) => `<div class="bg-ink px-4 py-3"><div class="font-display text-xl text-cream">${v}</div><div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${k}</div></div>`).join('')}
+    return `<div class="mt-6 grid ${cols} gap-px overflow-hidden border border-line/60 bg-line/40 notch-tr">
+      ${rows.map(([k, v]) => `<div class="bg-ink px-4 py-4 transition-colors hover:bg-surface/60"><div class="font-display text-xl leading-tight text-cream">${v}</div><div class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${k}</div></div>`).join('')}
     </div>`;
+  }
+  // Encabezado de sección con barra-acento naranja (eco del eyebrow de la página).
+  function seccion(titulo) {
+    return `<div class="mb-3 flex items-center gap-2.5"><span class="h-3.5 w-[3px] shrink-0 bg-red"></span><h4 class="font-cond text-sm font-700 uppercase tracking-[0.18em] text-cream">${titulo}</h4></div>`;
   }
   function abrirDetalle(id) {
     const c = ALL.find(x => x.id === id);
     if (!c) return;
+    const vendida = c.estado === 'vendida';
     const msg = `¡Hola! Quiero comprar esta cuenta (${ES_FT ? 'Fortnite' : 'Valorant'}):\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
     const link = waLink(msg);
     const destacadas = (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
+    const tiposDetalle = tiposDe(c);
     const galeria = c.imagenes.length > 1 ? `
       <div class="flex gap-2 overflow-x-auto px-6 pt-4 sm:px-8">
         ${c.imagenes.map((u, i) => `<img data-src="${u}" onclick="swapImg(this)" src="${u}" alt="Foto ${i + 1}" class="h-16 w-16 shrink-0 cursor-pointer rounded-lg object-cover ring-1 ring-line/70 hover:ring-red" />`).join('')}
       </div>` : '';
 
+    const chip = (icono, texto) => `<span class="inline-flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/[0.07] px-3.5 py-2 text-sm font-500 text-cream">
+      <svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2">${icono}</svg>${texto}</span>`;
+    const chips = [];
+    if (correoIncluido(c)) chips.push(chip('<path d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"/><path d="M3.5 7l8.5 6 8.5-6"/>', c.correo));
+    if (c.recibos) chips.push(chip('<path d="M7 3h10a1 1 0 011 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/>', 'Recibos de compra'));
+    if (c.recuperacion) chips.push(chip('<path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/><path d="M9 12l2 2 4-4"/>', 'Preguntas de recuperación'));
+
     overlayBody.innerHTML = `
-      <div class="img-treat aspect-[16/7] overflow-hidden">
-        <img id="detalle-img" src="${c.img}" alt="${c.titulo}" class="h-full w-full object-cover" />
-        <span class="tag absolute left-4 top-4 z-10 bg-red px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">${ES_FT ? (c.plataforma || 'Fortnite') : (c.rango || '—')}</span>
+      <div class="${vendida ? '[filter:grayscale(1)]' : ''}">
+      <div class="img-treat relative aspect-[16/7] overflow-hidden">
+        <img id="detalle-img" src="${c.img}" alt="${c.titulo}" onclick="ampliarImg(this.src)" class="h-full w-full cursor-zoom-in object-cover" />
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-2/3 bg-gradient-to-t from-ink via-ink/55 to-transparent"></div>
+        ${estadoBadgeHtml(c, true)}
         ${ES_FT && c.og ? `<span class="tag absolute right-4 top-4 z-10 bg-gold px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">OG 👑</span>` : ''}
+        ${tiposDetalle.length ? `<div class="absolute bottom-4 left-4 z-10 flex flex-wrap gap-2">${tiposDetalle.map(t => tagTipoHtml(t, false)).join('')}</div>` : ''}
+        <div class="absolute bottom-4 right-4 z-10 flex items-baseline gap-1.5 border border-red/40 bg-ink/80 px-4 py-2 notch-tr backdrop-blur-sm">
+          <span class="font-display text-3xl leading-none text-red">$${c.precio}</span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">USD</span>
+        </div>
       </div>
       ${galeria}
       <div class="p-6 sm:p-8">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-red">${c.codigo}</p>
-            <h3 class="mt-1 font-display text-3xl uppercase leading-none text-cream sm:text-4xl">${c.titulo}</h3>
-          </div>
-          <div class="shrink-0 text-right">
-            <div class="font-display text-4xl text-red">$${c.precio}</div>
-            <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">USD</div>
-          </div>
-        </div>
+        <p class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.24em] text-red"><span class="h-2.5 w-[3px] bg-red"></span>${c.codigo}</p>
+        <h3 class="mt-2 font-display text-3xl uppercase leading-none text-cream sm:text-4xl">${c.titulo}</h3>
 
         ${statsDetalle(c)}
 
         ${c.descripcion ? `<p class="mt-6 text-sm leading-[1.75] text-cream/80">${c.descripcion}</p>` : ''}
 
         ${destacadas.length ? `
-          <h4 class="mt-6 mb-3 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">${ES_FT ? 'Skins destacadas' : 'Inventario destacado'}</h4>
-          <ul class="grid gap-2 sm:grid-cols-2">
-            ${destacadas.map(d => `<li class="flex items-center gap-2 text-sm text-cream/85"><svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-red" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${d}</li>`).join('')}
-          </ul>` : ''}
-
-        ${c.correo ? `<div class="mt-5 flex items-center gap-2 text-sm text-mint"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/></svg>${c.correo}</div>` : ''}
-
-        ${(c.agentes || c.recibos || c.recuperacion) ? `
-          <div class="mt-4 space-y-2">
-            ${c.agentes ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg><span><span class="text-muted">Agentes:</span> ${c.agentes}</span></div>` : ''}
-            ${c.recibos ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>Recibos de compra incluidos</div>` : ''}
-            ${c.recuperacion ? `<div class="flex items-center gap-2 text-sm text-cream/85"><svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>Respuestas de preguntas de recuperación incluidas</div>` : ''}
+          <div class="mt-7">
+            ${seccion(ES_FT ? 'Skins destacadas' : 'Inventario destacado')}
+            <div class="border border-line/60 bg-surface/30 notch-tr p-5">
+              <ul class="grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+                ${destacadas.map(d => `<li class="flex items-center gap-2.5 text-sm text-cream/90"><span class="h-1.5 w-1.5 shrink-0 rotate-45 bg-red"></span>${d}</li>`).join('')}
+              </ul>
+            </div>
           </div>` : ''}
 
-        ${c.link ? `<a href="${c.link}" target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 rounded-lg border border-blue/50 bg-blue/[0.08] px-4 py-2 text-sm font-600 text-blue hover:bg-blue hover:text-ink">
+        ${(chips.length || c.agentes) ? `
+          <div class="mt-6">
+            ${seccion('Garantías')}
+            ${chips.length ? `<div class="flex flex-wrap gap-2.5">${chips.join('')}</div>` : ''}
+            ${c.agentes ? `<div class="mt-3 flex items-start gap-2.5 border-l-2 border-mint/50 bg-surface/30 px-3.5 py-2.5"><span class="mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Agentes</span><span class="text-sm text-cream/85">${c.agentes}</span></div>` : ''}
+          </div>` : ''}
+
+        ${c.link ? `<a href="${c.link}" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 rounded-lg border border-red/50 bg-red/[0.08] px-4 py-2 text-sm font-600 text-red hover:bg-red hover:text-ink">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>
-          Explorar nombre</a>` : ''}
+          LINK EXPLORANT</a>` : ''}
 
         <div class="mt-7 border-t border-line/60 pt-6">
           <h4 class="mb-1 font-cond text-sm font-600 uppercase tracking-[0.18em] text-red">Métodos de pago sin comisión</h4>
@@ -330,6 +405,7 @@
           <a href="${link}" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" class="cta flex items-center justify-center gap-2 border border-mint bg-mint/[0.08] px-5 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.01c-.24.68-1.42 1.3-1.95 1.34-.5.05-1.14.24-3.83-.8-3.22-1.27-5.28-4.55-5.44-4.76-.16-.21-1.31-1.74-1.31-3.32s.83-2.36 1.12-2.68c.24-.27.63-.39.99-.39.12 0 .24 0 .34.01.31.01.46.03.66.51.24.6.83 2.09.9 2.24.07.15.12.32.02.53-.09.21-.14.34-.28.53-.14.19-.29.42-.42.56-.14.15-.28.31-.12.6.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.36-.23.61-.14.25.09 1.61.76 1.88.9.28.14.46.21.53.32.07.12.07.66-.17 1.34z"/></svg>WhatsApp</a>
         </div>
+      </div>
       </div>`;
 
     overlay.classList.remove('hidden-x');

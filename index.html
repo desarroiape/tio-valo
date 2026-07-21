@@ -8,7 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script>
   tailwind.config = {
     theme: {
@@ -29,7 +29,7 @@
           blue:     '#2F81E8',   /* azul (el pico) — detalle */
         },
         fontFamily: {
-          display: ['"Baloo 2"', 'cursive'],
+          display: ['Oswald','sans-serif'],
           cond:    ['Oswald', 'sans-serif'],
           body:    ['Inter', 'sans-serif'],
           mono:    ['"Space Mono"', 'monospace'],
@@ -87,6 +87,7 @@
     content: ""; position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(15,17,25,0.92) 4%, rgba(15,17,25,0.15) 55%, rgba(242,106,33,0.14));
     mix-blend-mode: multiply;
+    pointer-events: none;
   }
 
   a, button { transition: color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
@@ -113,6 +114,7 @@
   /* fade-up on load */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .fade-up { animation: fadeUp .7s cubic-bezier(.2,.9,.25,1) both; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } } .floaty { animation: floaty 4.5s ease-in-out infinite; }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -149,13 +151,35 @@
   <!-- ============ HERO / PORTADA ============ -->
   <section class="mx-auto max-w-6xl px-5 pt-16 pb-16 md:pt-24 md:pb-24">
     <p class="fade-up rail mb-6 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Tienda de cuentas verificadas</p>
-    <h1 class="fade-up font-display text-5xl leading-[0.92] tracking-tight text-cream sm:text-7xl md:text-8xl" style="animation-delay:.05s">
-      COMPRA Y VENDE<br>
-      CUENTAS DE <span class="text-red">VALORANT</span><br class="hidden sm:block"> Y <span class="text-blue">FORTNITE</span>
-    </h1>
+    <div class="flex items-center justify-between gap-8">
+      <h1 class="fade-up font-display font-700 text-5xl uppercase leading-[0.95] tracking-tight text-cream sm:text-7xl md:text-8xl" style="animation-delay:.05s">
+        Eleva tu <span class="text-red">experiencia</span><br class="hidden sm:block"> de juego<span class="text-red">.</span>
+      </h1>
+      <div id="top-account" class="hidden shrink-0 lg:block"></div>
+    </div>
     <p class="fade-up mt-6 max-w-xl text-base leading-[1.7] text-muted" style="animation-delay:.12s">
-      Cuentas verificadas con correo original y trato directo por WhatsApp, en Valorant y Fortnite. ¿Qué quieres hacer hoy?
+      Cuentas Fortnite y Valorant con acceso completo, listas para jugar. Skins desbloqueadas, rangos conseguidos. Al mejor precio.
     </p>
+
+    <!-- Disponibilidad en vivo (según cuentas publicadas) -->
+    <div class="fade-up mt-8 flex flex-wrap gap-3" style="animation-delay:.16s">
+      <div class="inline-flex items-center gap-3 rounded-xl border border-line/70 bg-surface/60 px-4 py-3 layer-shadow">
+        <img src="/valorant-logo.jpeg" alt="Valorant" class="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-red/30" />
+        <div class="leading-tight">
+          <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Valorant</div>
+          <div class="mt-0.5"><span id="count-val" class="font-display text-lg text-cream">—</span> <span class="text-xs text-muted">disponibles</span></div>
+        </div>
+        <span id="dot-val" class="relative ml-2 flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70"></span><span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green"></span></span>
+      </div>
+      <div class="inline-flex items-center gap-3 rounded-xl border border-line/70 bg-surface/60 px-4 py-3 layer-shadow">
+        <img src="/fortnite-logo.png" alt="Fortnite" class="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-blue/30" />
+        <div class="leading-tight">
+          <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Fortnite</div>
+          <div class="mt-0.5"><span id="count-ft" class="font-display text-lg text-cream">—</span> <span class="text-xs text-muted">disponibles</span></div>
+        </div>
+        <span id="dot-ft" class="relative ml-2 flex h-2.5 w-2.5"><span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue"></span></span>
+      </div>
+    </div>
 
     <!-- Dos caminos: comprar o vender -> cada uno a su página -->
     <div class="fade-up mt-12 grid gap-6 md:grid-cols-2" style="animation-delay:.18s">
@@ -327,6 +351,64 @@
     <p>Trato directo y seguro por WhatsApp. No afiliado a Riot Games ni Epic Games.</p>
   </div>
 </footer>
+
+<script>
+  // Contadores de disponibilidad + cuenta más cara del momento.
+  (async () => {
+    async function cargar(juego) {
+      try {
+        const r = await fetch('/api/cuentas?juego=' + juego);
+        if (!r.ok) return null;
+        const d = await r.json();
+        return (d.cuentas || []).filter(c => c.estado === 'disponible');
+      } catch { return null; }
+    }
+    const setC = (idNum, idDot, lista) => {
+      const n = lista == null ? null : lista.length;
+      const el = document.getElementById(idNum);
+      if (el) el.textContent = n == null ? '—' : n;
+      const dot = document.getElementById(idDot);
+      if (dot && n === 0) dot.innerHTML = '<span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-muted"></span>';
+    };
+    const [val, ft] = await Promise.all([cargar('valorant'), cargar('fortnite')]);
+    setC('count-val', 'dot-val', val);
+    setC('count-ft', 'dot-ft', ft);
+
+    // La más cara entre ambos juegos.
+    const todas = [
+      ...(val || []).map(c => ({ ...c, juego: 'valorant' })),
+      ...(ft || []).map(c => ({ ...c, juego: 'fortnite' })),
+    ];
+    const host = document.getElementById('top-account');
+    if (host && todas.length) {
+      const top = todas.reduce((a, b) => ((Number(b.precio) || 0) > (Number(a.precio) || 0) ? b : a));
+      const img = (Array.isArray(top.imagenes) && top.imagenes.filter(Boolean)[0]) || 'https://placehold.co/400x267';
+      const titulo = top.titulo || (top.juego === 'valorant' ? 'Cuenta de Valorant' : 'Cuenta de Fortnite');
+      const juegoLabel = top.juego === 'valorant' ? 'Valorant' : 'Fortnite';
+      host.innerHTML = `
+        <a href="/${top.juego}?cuenta=${encodeURIComponent(top.id)}" class="floaty card group block w-[320px] overflow-hidden bg-surface notch-tr layer-shadow">
+          <span class="img-treat block aspect-[3/2] overflow-hidden">
+            <img src="${img}" alt="${titulo}" class="card-img h-full w-full object-cover" />
+            <span class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-1/2 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent"></span>
+            <span class="tag absolute left-3 top-3 z-10 flex items-center gap-1.5 border border-red/50 bg-ink/70 px-2.5 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-red backdrop-blur-sm">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 20.5l1.4-6.8L2.2 9l6.9-.7z"/></svg>
+              La más cara del momento
+            </span>
+            <span class="absolute bottom-3 left-3 z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/85">${juegoLabel}</span>
+          </span>
+          <span class="block p-5">
+            <span class="block font-cond text-lg font-600 uppercase leading-tight tracking-wide text-cream group-hover:text-red">${titulo}</span>
+            <span class="mt-4 flex items-center justify-between border-t border-line/60 pt-4">
+              <span class="flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">Ver detalle
+                <svg width="14" height="14" viewBox="0 0 24 24" class="transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+              <span class="font-display text-2xl text-red">$${top.precio}</span>
+            </span>
+          </span>
+        </a>`;
+    }
+  })();
+</script>
 
 </body>
 </html>

@@ -55,7 +55,11 @@ export default async function handler(req, res) {
     if (req.method === 'PATCH') {
       const b = await readJson(req);
       if (!b.id) throw new Error('Falta id');
-      const cuenta = await updateCuenta(b.id, b.patch || {});
+      const patch = { ...(b.patch || {}) };
+      // Al marcar vendida se guarda la fecha (se muestra 7 días más y luego se oculta sola).
+      if (patch.estado === 'vendida') patch.vendida_en = new Date().toISOString();
+      else if (patch.estado === 'disponible') patch.vendida_en = null;
+      const cuenta = await updateCuenta(b.id, patch);
       return res.status(200).json({ ok: true, cuenta });
     }
 
