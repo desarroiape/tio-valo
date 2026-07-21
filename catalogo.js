@@ -168,7 +168,9 @@
       document.getElementById('f-rangos').innerHTML = rangos.length ? rangos.map(r => chip('rango', r)).join('') : '<span class="text-xs text-muted">—</span>';
       document.getElementById('f-regiones').innerHTML = regiones.length ? regiones.map(r => chip('region', r)).join('') : '<span class="text-xs text-muted">—</span>';
       const tags = [...new Set(ALL.flatMap(c => (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean)))];
-      document.getElementById('f-otros').innerHTML = tags.length ? tags.map(t => chip('otros', t)).join('') : '<span class="text-xs text-muted">—</span>';
+      // Muestra la etiqueta sin el prefijo "Cuenta " (el valor se conserva para filtrar).
+      const etiquetaCorta = (t) => { const s = t.replace(/^Cuenta\s+/i, ''); return s.charAt(0).toUpperCase() + s.slice(1); };
+      document.getElementById('f-otros').innerHTML = tags.length ? tags.map(t => chip('otros', t, etiquetaCorta(t))).join('') : '<span class="text-xs text-muted">—</span>';
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
     }
     setSlider('f-precio', 'f-precio-val', ALL.map(c => num(c.precio)), 50, true, '$');
@@ -246,8 +248,8 @@
 
   /* ---------- Grid ---------- */
   const TIPO_TAGS = [
-    { test: t => /cheta/i.test(t), label: 'Cuenta chetada', color: 'red' },
-    { test: t => /econ/i.test(t), label: 'Cuenta económica', color: 'green' },
+    { test: t => /cheta/i.test(t), label: 'Chetada', color: 'red' },
+    { test: t => /econ/i.test(t), label: 'Económica', color: 'green' },
     { test: t => /exclusiv/i.test(t), label: 'Exclusiva', color: 'gold' },
   ];
   function tiposDe(c) {
@@ -453,6 +455,9 @@
       const res = await fetch('/api/cuentas?juego=' + JUEGO);
       const data = await res.json();
       ALL = (data.cuentas || []).map(normalizar);
+      // Orden descendente por número de cuenta (el mayor primero).
+      const numDe = (c) => { const m = String(c.codigo || '').match(/\d+/g); return m ? parseInt(m[m.length - 1], 10) : -Infinity; };
+      ALL.sort((a, b) => numDe(b) - numDe(a));
     } catch { ALL = []; }
     poblarFiltros();
     aplicarFiltros();
