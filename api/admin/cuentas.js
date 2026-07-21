@@ -2,6 +2,7 @@
 import { isAuthed } from '../../lib/auth.mjs';
 import { listCuentas, createCuenta, updateCuenta, deleteCuenta } from '../../lib/supabase.mjs';
 import { anunciarCuenta } from '../../lib/discord.mjs';
+import { anunciarCuentaTelegram } from '../../lib/telegram.mjs';
 
 // Más margen: publicar descarga las fotos y las sube a Discord.
 export const config = { maxDuration: 30 };
@@ -46,9 +47,11 @@ export default async function handler(req, res) {
         imagenes: Array.isArray(b.imagenes) ? b.imagenes : [],
         estado: 'disponible',
       });
-      // Anuncio en Discord (no bloquea la publicación si falla).
+      // Anuncios (no bloquean la publicación si fallan).
       try { await anunciarCuenta(cuenta); }
       catch (e) { console.error('Anuncio Discord:', e.message); }
+      try { await anunciarCuentaTelegram(cuenta); }
+      catch (e) { console.error('Anuncio Telegram:', e.message); }
       return res.status(200).json({ ok: true, cuenta });
     }
 
