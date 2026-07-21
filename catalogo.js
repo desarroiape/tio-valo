@@ -11,6 +11,9 @@
   const PREFIX = ES_FT ? 'FN-' : 'VAL-';
   const PLACEHOLDER = 'https://placehold.co/720x480/181B27/8A93AC?text=Sin+foto';
 
+  // Si el admin deja el precio vacío, mostramos "Consultar precio" en su lugar.
+  const tienePrecio = (p) => p != null && Number(p) > 0;
+
   const grid = document.getElementById('catalog-grid');
   const countEl = document.getElementById('catalog-count');
   const host = document.getElementById('filtros-host');
@@ -78,7 +81,7 @@
       codigo: (row.codigo && String(row.codigo).trim()) ? String(row.codigo).trim() : (PREFIX + String(row.id).padStart(3, '0')),
       estado: row.estado || 'disponible',
       titulo: row.titulo || 'Cuenta',
-      precio: row.precio ?? 0,
+      precio: (row.precio === '' || row.precio == null) ? null : Number(row.precio),
       skins: row.skins,
       destacado: row.destacadas || '',
       descripcion: row.descripcion || '',
@@ -321,7 +324,9 @@
             <span class="flex items-center gap-1.5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-cream/70 group-hover:text-red">Ver detalle
               <svg width="14" height="14" viewBox="0 0 24 24" class="transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </span>
-            <span class="font-display text-2xl text-red">$${c.precio}</span>
+            ${tienePrecio(c.precio)
+              ? `<span class="font-display text-2xl text-red">$${c.precio}</span>`
+              : `<span class="font-cond text-sm font-700 uppercase tracking-[0.1em] text-red">Consultar precio</span>`}
           </div>
         </div>
       </article>`;
@@ -350,7 +355,8 @@
     const c = ALL.find(x => x.id === id);
     if (!c) return;
     const vendida = c.estado === 'vendida';
-    const msg = `¡Hola! Quiero comprar esta cuenta (${ES_FT ? 'Fortnite' : 'Valorant'}):\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Precio: $${c.precio} USD\n\n¿Sigue disponible?`;
+    const precioMsg = tienePrecio(c.precio) ? `$${c.precio} USD` : 'a consultar';
+    const msg = `¡Hola! Quiero comprar esta cuenta (${ES_FT ? 'Fortnite' : 'Valorant'}):\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Precio: ${precioMsg}\n\n¿Sigue disponible?`;
     const link = waLink(msg);
     const destacadas = (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
     const tiposDetalle = tiposDe(c);
@@ -375,8 +381,9 @@
         ${ES_FT && c.og ? `<span class="tag absolute right-4 top-4 z-10 bg-gold px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">OG 👑</span>` : ''}
         ${tiposDetalle.length ? `<div class="absolute bottom-4 left-4 z-10 flex flex-wrap gap-2">${tiposDetalle.map(t => tagTipoHtml(t, false)).join('')}</div>` : ''}
         <div class="absolute bottom-4 right-4 z-10 flex items-baseline gap-1.5 border border-red/40 bg-ink/80 px-4 py-2 notch-tr backdrop-blur-sm">
-          <span class="font-display text-3xl leading-none text-red">$${c.precio}</span>
-          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">USD</span>
+          ${tienePrecio(c.precio)
+            ? `<span class="font-display text-3xl leading-none text-red">$${c.precio}</span><span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">USD</span>`
+            : `<span class="font-cond text-base font-700 uppercase tracking-[0.1em] text-red">Consultar precio</span>`}
         </div>
       </div>
       ${galeria}
