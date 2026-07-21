@@ -105,25 +105,29 @@
   const baseTier = (r) => String(r || '').replace(/\s+I{1,3}$/, '').trim();
 
   /* ---------- Sidebar de filtros (según juego) ---------- */
-  function chip(grupo, valor) {
+  function chip(grupo, valor, etiqueta = valor) {
     return `<label class="flex cursor-pointer items-center gap-2 text-sm text-cream/85 hover:text-cream">
       <input type="checkbox" data-grupo="${grupo}" value="${valor}" class="peer sr-only" />
-      <span class="h-4 w-4 shrink-0 rounded border border-line bg-ink peer-checked:border-red peer-checked:bg-red"></span>${valor}</label>`;
+      <span class="h-4 w-4 shrink-0 rounded border border-line bg-ink peer-checked:border-red peer-checked:bg-red"></span>${etiqueta}</label>`;
   }
   const lbl = (t) => `<label class="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted">${t}</label>`;
   const sliderVal = (t, id) => `<label class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted"><span>${t}</span><span id="${id}" class="text-red">0</span></label>`;
 
   function construirSidebar() {
     const b = [];
-    b.push(`<div>${lbl('Skin destacada')}<input id="f-texto" type="search" placeholder="Ej. ${ES_FT ? 'Renegade Raider' : 'Reaver Vandal'}" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" /></div>`);
+    b.push(`<div>${lbl('Skins destacadas')}<input id="f-texto" type="search" placeholder="Ej. ${ES_FT ? 'Renegade Raider' : 'Reaver Vandal'}" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" /></div>`);
     if (ES_FT) {
       b.push(`<div>${lbl('Plataforma')}<div id="f-plataformas" class="space-y-2"></div></div>`);
       b.push(`<div>${lbl('Cuenta')}<label class="flex cursor-pointer items-center gap-2 text-sm text-cream/85 hover:text-cream"><input id="f-og" type="checkbox" class="peer sr-only" /><span class="h-4 w-4 shrink-0 rounded border border-line bg-ink peer-checked:border-red peer-checked:bg-red"></span>Solo cuentas OG 👑</label></div>`);
       b.push(`<div>${sliderVal('Skins (mínimo)', 'f-skins-val')}<input id="f-skins" type="range" min="0" max="200" value="0" class="w-full accent-red" /></div>`);
       b.push(`<div>${sliderVal('Pavos (mínimo)', 'f-pavos-val')}<input id="f-pavos" type="range" min="0" max="10000" value="0" class="w-full accent-red" /></div>`);
     } else {
-      b.push(`<div>${lbl('Tipo de cuenta')}<div id="f-rangos" class="space-y-2"></div></div>`);
+      b.push(`<div>${lbl('Rango')}<div id="f-rangos" class="space-y-2"></div></div>`);
       b.push(`<div>${lbl('Región')}<div id="f-regiones" class="space-y-2"></div></div>`);
+      b.push(`<div>${lbl('Recibos de compra')}<div class="space-y-2">${chip('recibos', 'si', 'Sí incluye')}${chip('recibos', 'no', 'No incluye')}</div></div>`);
+      b.push(`<div>${lbl('Preguntas de recuperación')}<div class="space-y-2">${chip('recuperacion', 'si', 'Sí incluye')}${chip('recuperacion', 'no', 'No incluye')}</div></div>`);
+      b.push(`<div>${lbl('Agentes')}<input id="f-agentes" type="search" placeholder="Ej. todos los agentes" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" /></div>`);
+      b.push(`<div>${lbl('Otros')}<div id="f-otros" class="space-y-2"></div></div>`);
       b.push(`<div>${sliderVal('Skins (mínimo)', 'f-skins-val')}<input id="f-skins" type="range" min="0" max="50" value="0" class="w-full accent-red" /></div>`);
     }
     b.push(`<div>${sliderVal('Precio máx.', 'f-precio-val')}<input id="f-precio" type="range" min="0" max="500" value="500" class="w-full accent-red" /></div>`);
@@ -160,6 +164,8 @@
       const rangos = [...new Set(ALL.map(c => baseTier(c.rango)))].filter(v => v && v !== '—'), regiones = set('region');
       document.getElementById('f-rangos').innerHTML = rangos.length ? rangos.map(r => chip('rango', r)).join('') : '<span class="text-xs text-muted">—</span>';
       document.getElementById('f-regiones').innerHTML = regiones.length ? regiones.map(r => chip('region', r)).join('') : '<span class="text-xs text-muted">—</span>';
+      const tags = [...new Set(ALL.flatMap(c => (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean)))];
+      document.getElementById('f-otros').innerHTML = tags.length ? tags.map(t => chip('otros', t)).join('') : '<span class="text-xs text-muted">—</span>';
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
     }
     setSlider('f-precio', 'f-precio-val', ALL.map(c => num(c.precio)), 50, true, '$');
@@ -185,6 +191,7 @@
     const pcv = document.getElementById('f-precio-val'); if (pcv) pcv.textContent = '$' + maxPrecio;
 
     let minPavos = 0, soloOg = false, plats = null, rangos = null, regiones = null;
+    let recibosSel = null, recupSel = null, otrosSel = null, agentesTxt = '';
     if (ES_FT) {
       minPavos = Number(val('f-pavos') || 0);
       const pvv = document.getElementById('f-pavos-val'); if (pvv) pvv.textContent = String(minPavos);
@@ -193,6 +200,10 @@
     } else {
       rangos = seleccionados('rango');
       regiones = seleccionados('region');
+      recibosSel = seleccionados('recibos');
+      recupSel = seleccionados('recuperacion');
+      otrosSel = seleccionados('otros');
+      agentesTxt = (val('f-agentes') || '').trim().toLowerCase();
     }
 
     VIEW = ALL.filter(c => {
@@ -208,6 +219,13 @@
       } else {
         if (rangos.size && !rangos.has(baseTier(c.rango))) return false;
         if (regiones.size && !regiones.has(c.region)) return false;
+        if (recibosSel.size && !recibosSel.has(c.recibos ? 'si' : 'no')) return false;
+        if (recupSel.size && !recupSel.has(c.recuperacion ? 'si' : 'no')) return false;
+        if (agentesTxt && !String(c.agentes || '').toLowerCase().includes(agentesTxt)) return false;
+        if (otrosSel.size) {
+          const tags = (c.destacado || '').split(/[,·]/).map(t => t.trim());
+          if (![...otrosSel].some(t => tags.includes(t))) return false;
+        }
       }
       return true;
     });
@@ -215,7 +233,7 @@
     countEl.textContent = `${VIEW.length} de ${ALL.length} cuenta${ALL.length === 1 ? '' : 's'}`;
   }
   function limpiar() {
-    if (val('f-texto') != null) document.getElementById('f-texto').value = '';
+    document.querySelectorAll('#filtros input[type="search"]').forEach(i => (i.value = ''));
     document.querySelectorAll('input[data-grupo]:checked').forEach(i => (i.checked = false));
     const og = document.getElementById('f-og'); if (og) og.checked = false;
     ['f-skins', 'f-pavos'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
