@@ -2,6 +2,15 @@
    Google Apps Script — recibe el formulario de venta y lo agrega
    como una fila a tu Google Sheet.
 
+   Las cuentas se guardan en DOS pestañas separadas según el juego:
+   "Valorant" y "Fortnite". Cada una lleva solo sus columnas (la de
+   Valorant ya no muestra plataforma/nivel/pavos, y viceversa). Se crean
+   solas la primera vez que llega una cuenta de ese juego.
+
+   IMPORTANTE: si ya tenías este script implementado, después de pegar
+   esta versión debes RE-IMPLEMENTAR para que los cambios surtan efecto:
+   Implementar → Gestionar implementaciones → (editar la actual) →
+   Versión: "Nueva versión" → Implementar. La URL /exec no cambia.
    ─────────────────────────────────────────────────────────────────────
    CÓMO CONECTARLO (una sola vez):
    1. Abre tu hoja:
@@ -22,7 +31,7 @@
    ===================================================================== */
 
 var SECRET = 'CAMBIA_ESTE_SECRETO';         // debe coincidir con SHEETS_SECRET
-var SHEET_NAME = 'Cuentas en venta';         // pestaña donde se escriben las filas
+var SHEET_NAME = 'Cuentas en venta';         // pestaña por defecto (si no llega body.sheet)
 
 // Encabezados legibles para la primera fila (mismo orden que `columns`).
 var HEADERS = {
@@ -32,6 +41,9 @@ var HEADERS = {
   nombre: 'Nombre / usuario',
   whatsapp: 'WhatsApp',
   instagram: 'Instagram',
+  origen: 'Origen de la cuenta',
+  inversion: 'Invertido (USD)',
+  explorant: 'Enlace Explorant',
   region: 'Región',
   pais: 'País',
   rango_actual: 'Rango actual',
@@ -47,6 +59,7 @@ var HEADERS = {
   skins_destacadas: 'Skins destacadas',
   recibos: 'Recibos de compra',
   preguntas_recuperacion: 'Preguntas de recuperación',
+  cuotas: 'Acepta cuotas',
   notas: 'Notas',
 };
 
@@ -60,8 +73,10 @@ function doPost(e) {
     var columns = body.columns || Object.keys(body.row || {});
     var row = body.row || {};
 
+    // Pestaña según el juego (body.sheet: "Valorant" / "Fortnite").
+    var sheetName = body.sheet || SHEET_NAME;
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+    var sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
 
     // Crea la fila de encabezados si la hoja está vacía.
     if (sheet.getLastRow() === 0) {
