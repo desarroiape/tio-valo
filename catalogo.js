@@ -7,7 +7,7 @@
   const CFG = window.CATALOGO || {};
   const JUEGO = CFG.juego === 'fortnite' ? 'fortnite' : 'valorant';
   const ES_FT = JUEGO === 'fortnite';
-  const WHATSAPP = CFG.whatsapp || '51940198935';
+  const WHATSAPP = CFG.whatsapp || '51904812870';
   const PREFIX = ES_FT ? 'FN-' : 'VAL-';
   const PLACEHOLDER = 'https://placehold.co/720x480/181B27/8A93AC?text=Sin+foto';
 
