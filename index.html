@@ -66,6 +66,41 @@
 
   .btn-red { border-radius: 12px; }
 
+  /* Botón sólido con halo difuminado (estilo Signup) — naranja por defecto */
+  .btn-glow {
+    position: relative;
+    border-radius: 11px;
+    background-color: #F26A21;
+    color: #0F1119;
+    isolation: isolate;
+    transition: transform .25s cubic-bezier(.16,1,.3,1), filter .25s ease;
+  }
+  .btn-glow::before {
+    content: "";
+    position: absolute; inset: -6px;
+    border-radius: 14px;
+    background-color: #F26A21;
+    filter: blur(16px);
+    opacity: .42;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity .3s ease, inset .3s ease, filter .3s ease;
+  }
+  .btn-glow:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .btn-glow:hover::before { opacity: .68; inset: -10px; filter: blur(22px); }
+  .btn-glow:active { transform: translateY(0); filter: brightness(.98); }
+  .btn-glow:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #0F1119, 0 0 0 4px rgba(245,179,37,0.9);
+  }
+  /* Variante púrpura (Vender mi cuenta) */
+  .btn-glow--mint { background-color: #8B5CF6; color: #FFFFFF; }
+  .btn-glow--mint::before { background-color: #8B5CF6; }
+  .btn-glow--mint:focus-visible { box-shadow: 0 0 0 2px #0F1119, 0 0 0 4px rgba(139,92,246,0.9); }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-glow, .btn-glow::before { transition: none; }
+  }
+
   .layer-shadow {
     box-shadow:
       0 1px 0 rgba(238,240,246,0.05) inset,
@@ -123,9 +158,69 @@
   a:hover > .nav-flip > span, a:focus-visible > .nav-flip > span { transform: translateY(-100%); }
 
 
+  /* ===== Mapa plano de ventas por país ===== */
+  #world-map path { fill: #212536; stroke: #2C3145; stroke-width: .5; }
+  /* Sin marco: el mapa se desvanece hacia el fondo de la página */
+  #world-map {
+    -webkit-mask-image: radial-gradient(115% 105% at 50% 45%, #000 62%, transparent 96%);
+    mask-image: radial-gradient(115% 105% at 50% 45%, #000 62%, transparent 96%);
+  }
+  @keyframes live-pulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+  @keyframes live-ring {
+    0%   { transform: scale(1);   opacity: .55; }
+    100% { transform: scale(3.2); opacity: 0; }
+  }
+  .map-marker { position: absolute; transform: translate(-50%, -50%); }
+  .map-dot {
+    position: relative; display: grid; place-items: center;
+    width: 26px; height: 26px; cursor: pointer;
+    background: none; border: none; padding: 0;
+  }
+  .map-dot::before { /* anillo expansivo */
+    content: ""; position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: #F26A21; animation: live-ring 1.8s ease-out infinite;
+  }
+  .map-dot::after { /* punto rojo */
+    content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: #F26A21; box-shadow: 0 0 10px #F26A21;
+    animation: live-pulse 1.5s ease-in-out infinite;
+  }
+  .map-dot:focus-visible { outline: 2px solid #F5B325; outline-offset: 3px; border-radius: 50%; }
+  .map-badge {
+    position: absolute; bottom: calc(100% + 6px); left: 50%; translate: -50% 0;
+    display: flex; align-items: center; gap: .45rem;
+    padding: .38rem .65rem; border-radius: 6px; white-space: nowrap;
+    background: linear-gradient(135deg, #181B27 0%, #212536 100%);
+    border: 1px solid #2C3145;
+    box-shadow: 0 10px 24px -8px rgba(0,0,0,.6);
+    opacity: 0; filter: blur(6px); pointer-events: none;
+    transition: opacity .35s ease, filter .35s ease;
+    z-index: 5;
+  }
+  .map-marker:hover .map-badge,
+  .map-marker.is-active .map-badge,
+  .map-dot:focus-visible + .map-badge { opacity: 1; filter: blur(0); }
+  .map-marker:hover, .map-marker.is-active { z-index: 10; }
+  .map-badge .live-tag {
+    display: inline-flex; align-items: center; gap: .3rem;
+    font-family: "Space Mono", monospace; font-size: .58rem; font-weight: 700;
+    letter-spacing: .1em; color: #F26A21; text-transform: uppercase;
+  }
+  .map-badge .live-tag::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: #F26A21; box-shadow: 0 0 8px #F26A21;
+    animation: live-pulse 1.5s ease-in-out infinite;
+  }
+  .map-badge .badge-data {
+    font-size: .68rem; color: #EEF0F6; padding-left: .5rem;
+    border-left: 1px solid #2C3145;
+  }
+  .map-badge .badge-data b { color: #8B5CF6; font-weight: 600; }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     .card:hover { transform: none; }
+    .map-dot::before { display: none; }
   }
 </style>
 </head>
@@ -148,7 +243,7 @@
       <a href="/vender" class="px-4 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="Vender">Vender</span></span></a>
       <a href="/tutoriales" class="px-4 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="Tutoriales">Tutoriales</span></span></a>
       <a href="/faq" class="px-4 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="FAQ">FAQ</span></span></a>
-      <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
+      <a href="/comprar" class="btn-glow ml-1 px-5 py-2 font-700 text-ink">Comprar ahora</a>
     </nav>
   </div>
 </header>
@@ -245,6 +340,88 @@
     </div>
   </section>
 
+  <!-- ============ PRESENCIA GLOBAL (mapa) ============ -->
+  <section id="mapa-ventas" class="mx-auto max-w-6xl px-5 pb-20 md:pb-28">
+    <p class="rail mb-3 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Presencia global</p>
+    <h2 class="font-display text-3xl uppercase leading-none text-cream sm:text-5xl">Vendemos en todo el mundo</h2>
+    <p class="mt-3 max-w-xl text-sm leading-[1.7] text-muted">Cuentas entregadas en Latinoamérica, España y Estados Unidos. Pasa el cursor por los puntos naranjas para ver las ventas de cada país.</p>
+
+    <div id="map-wrap" class="relative mt-6 w-full" style="aspect-ratio: 1000 / 470;">
+      <svg id="world-map" viewBox="0 0 1000 470" class="h-full w-full" role="img" aria-label="Mapa mundial con ventas por país"></svg>
+      <div id="map-markers" class="absolute inset-0"></div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+  <script>
+  (async () => {
+    const section = document.getElementById('mapa-ventas');
+    try {
+      const world = await (await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')).json();
+      const countries = topojson.feature(world, world.objects.countries);
+
+      const W = 1000, H = 470;
+      const projection = d3.geoNaturalEarth1().fitSize([W, H], { type: 'Sphere' });
+      const path = d3.geoPath(projection);
+
+      const svg = d3.select('#world-map');
+      svg.selectAll('path')
+        .data(countries.features.filter(f => f.properties.name !== 'Antarctica'))
+        .join('path')
+        .attr('d', path);
+
+      /* Ventas por país (lon, lat) */
+      const ventas = [
+        { pais: 'Perú',        coords: [-77.0, -12.0], cuentas: '+800' },
+        { pais: 'México',      coords: [-99.1,  19.4], cuentas: '+650' },
+        { pais: 'Argentina',   coords: [-58.4, -34.6], cuentas: '+520' },
+        { pais: 'Colombia',    coords: [-74.1,   4.7], cuentas: '+450' },
+        { pais: 'España',      coords: [ -3.7,  40.4], cuentas: '+380' },
+        { pais: 'Chile',       coords: [-70.7, -33.5], cuentas: '+300' },
+        { pais: 'EE.UU.',      coords: [-80.2,  25.8], cuentas: '+270' },
+        { pais: 'Ecuador',     coords: [-78.5,  -0.2], cuentas: '+190' },
+        { pais: 'Uruguay',     coords: [-56.2, -34.9], cuentas: '+160' },
+        { pais: 'Panamá',      coords: [-79.5,   9.0], cuentas: '+150' },
+        { pais: 'El Salvador', coords: [-89.2,  13.7], cuentas: '+140' },
+        { pais: 'Puerto Rico', coords: [-66.1,  18.4], cuentas: '+120' },
+      ];
+
+      const layer = document.getElementById('map-markers');
+      ventas.forEach(v => {
+        const [x, y] = projection(v.coords);
+        const marker = document.createElement('div');
+        marker.className = 'map-marker';
+        marker.style.left = (x / W * 100) + '%';
+        marker.style.top  = (y / H * 100) + '%';
+        marker.innerHTML =
+          '<button class="map-dot" type="button" aria-label="' + v.pais + ': ' + v.cuentas + ' cuentas vendidas"></button>' +
+          '<div class="map-badge"><span class="live-tag">Live</span>' +
+          '<span class="badge-data"><b>' + v.cuentas + '</b> cuentas vendidas · ' + v.pais + '</span></div>';
+        layer.appendChild(marker);
+      });
+
+      /* Rotación automática del badge activo; se pausa si el usuario interactúa */
+      const markers = Array.from(layer.children);
+      let idx = 0, hovering = false;
+      layer.addEventListener('pointerenter', () => { hovering = true; }, true);
+      layer.addEventListener('pointerleave', () => { hovering = false; }, true);
+      const activarSiguiente = () => {
+        if (hovering) return;
+        markers.forEach(m => m.classList.remove('is-active'));
+        markers[idx % markers.length].classList.add('is-active');
+        idx++;
+      };
+      activarSiguiente(); /* primer badge visible desde el inicio */
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setInterval(activarSiguiente, 2400);
+      }
+    } catch (e) {
+      section.style.display = 'none'; /* sin red: ocultamos la sección en vez de romper la página */
+    }
+  })();
+  </script>
+
   <!-- ============ CÓMO FUNCIONA ============ -->
   <section class="mx-auto max-w-6xl px-5 pb-20 md:pb-28">
     <p class="rail mb-3 pl-4 font-mono text-xs uppercase tracking-[0.3em] text-red">// Cómo funciona</p>
@@ -292,7 +469,7 @@
             </div>
           </li>
         </ol>
-        <a href="/comprar" class="cta mt-7 inline-flex items-center gap-2 bg-red px-5 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">
+        <a href="/comprar" class="btn-glow cta mt-7 inline-flex items-center gap-2 px-6 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink">
           Ver catálogo
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
@@ -337,7 +514,7 @@
             </div>
           </li>
         </ol>
-        <a href="/vender" class="cta mt-7 inline-flex items-center gap-2 border border-mint bg-mint/[0.08] px-5 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
+        <a href="/vender" class="btn-glow btn-glow--mint cta mt-7 inline-flex items-center gap-2 px-6 py-3 font-cond text-sm font-700 uppercase tracking-[0.14em]">
           Vender mi cuenta
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
@@ -393,7 +570,6 @@
           <li><a href="https://www.instagram.com/trustifymarketog/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-cream"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="shrink-0 text-[#E1306C]"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.97.25 2.43.42.61.24 1.05.52 1.51.98.46.46.74.9.98 1.51.17.46.37 1.26.42 2.43.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.97-.42 2.43-.24.61-.52 1.05-.98 1.51-.46.46-.9.74-1.51.98-.46.17-1.26.37-2.43.42-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.25-2.43-.42a4.06 4.06 0 01-1.51-.98 4.06 4.06 0 01-.98-1.51c-.17-.46-.37-1.26-.42-2.43C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.97.42-2.43.24-.61.52-1.05.98-1.51.46-.46.9-.74 1.51-.98.46-.17 1.26-.37 2.43-.42C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-1.15.05-1.77.24-2.19.41-.55.21-.94.47-1.36.89-.42.42-.68.81-.89 1.36-.17.42-.36 1.04-.41 2.19-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.05 1.15.24 1.77.41 2.19.21.55.47.94.89 1.36.42.42.81.68 1.36.89.42.17 1.04.36 2.19.41 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c1.15-.05 1.77-.24 2.19-.41.55-.21.94-.47 1.36-.89.42-.42.68-.81.89-1.36.17-.42.36-1.04.41-2.19.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.05-1.15-.24-1.77-.41-2.19a3.66 3.66 0 00-.89-1.36 3.66 3.66 0 00-1.36-.89c-.42-.17-1.04-.36-2.19-.41-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.46 5.46 0 110 10.92 5.46 5.46 0 010-10.92zm0 9a3.54 3.54 0 100-7.08 3.54 3.54 0 000 7.08zm6.95-9.19a1.27 1.27 0 11-2.55 0 1.27 1.27 0 012.55 0z"/></svg>Instagram</a></li>
           <li><a href="https://t.me/+i1XloEpiLsQyMGRh" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-cream"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="shrink-0 text-[#2AABEE]"><path d="M21.94 4.51L2.5 12.05c-.86.35-.85.83-.15 1.04l4.98 1.55 1.92 5.9c.23.64.12.9.79.9.52 0 .75-.24 1.04-.53.18-.18 1.28-1.24 2.5-2.43l5.2 3.84c.96.53 1.65.26 1.89-.89l3.42-16.14c.35-1.4-.53-2.04-1.15-1.72z"/></svg>Telegram</a></li>
           <li><a href="https://discord.gg/h9e3mYVY4j" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-cream"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="shrink-0 text-mint"><path d="M20.32 4.37A19.8 19.8 0 0015.45 3l-.24.44a18.3 18.3 0 014.3 1.34 12.6 12.6 0 00-15 0A18.3 18.3 0 018.8 3.44L8.55 3A19.8 19.8 0 003.68 4.37 20.26 20.26 0 00.2 18.06a19.9 19.9 0 006.1 3.07l.79-1.28a12.9 12.9 0 01-2.02-.97l.5-.38a14.2 14.2 0 0012.06 0l.5.38c-.64.38-1.32.71-2.02.97l.79 1.28a19.9 19.9 0 006.1-3.07 20.26 20.26 0 00-3.48-13.69zM8.02 15.33c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43zm7.96 0c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43z"/></svg>Discord</a></li>
-          <li>Métodos de pago locales, sin comisión</li>
         </ul>
       </div>
     </div>
