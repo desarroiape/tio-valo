@@ -17,9 +17,11 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const b = await readJson(req);
       if (!b.titulo || !String(b.titulo).trim()) throw new Error('El título es obligatorio');
+      if (!b.codigo || !String(b.codigo).trim()) throw new Error('El ID es obligatorio');
       const juego = b.juego === 'fortnite' ? 'fortnite' : 'valorant';
       const cuenta = await createCuenta({
         juego,
+        codigo: String(b.codigo).trim(),
         titulo: String(b.titulo).trim(),
         descripcion: b.descripcion || null,
         precio: numOrNull(b.precio),

@@ -118,6 +118,10 @@
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Título <span class="text-red">*</span></label>
               <input name="titulo" type="text" required placeholder="Ej. Cuenta Inmortal — Reaver Vandal" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
             </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">ID <span class="text-red">*</span> <span class="text-muted/60">(lo pones vos a mano)</span></label>
+              <input name="codigo" type="text" required placeholder="Ej. TM-1234" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+            </div>
 
             <!-- Campos de Valorant -->
             <div class="campo-valorant sm:col-span-2">
@@ -453,7 +457,7 @@ function renderLista(cuentas) {
   lista.innerHTML = cuentas.map(c => {
     const img = (c.imagenes && c.imagenes[0]) || 'https://placehold.co/120x120/181B27/8A93AC?text=—';
     const ft = c.juego === 'fortnite';
-    const codigo = (ft ? 'FN-' : 'VAL-') + String(c.id).padStart(3, '0');
+    const codigo = (c.codigo && String(c.codigo).trim()) ? c.codigo : ((ft ? 'FN-' : 'VAL-') + String(c.id).padStart(3, '0'));
     const juegoTxt = ft ? 'Fortnite' : 'Valorant';
     const meta = ft
       ? `${esc(c.plataforma || '—')} · Nivel ${c.nivel ?? '—'} · ${c.pavos ?? 0} pavos`

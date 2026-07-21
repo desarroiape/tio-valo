@@ -57,7 +57,7 @@
     const imgs = Array.isArray(row.imagenes) ? row.imagenes.filter(Boolean) : [];
     return {
       id: String(row.id),
-      codigo: PREFIX + String(row.id).padStart(3, '0'),
+      codigo: (row.codigo && String(row.codigo).trim()) ? String(row.codigo).trim() : (PREFIX + String(row.id).padStart(3, '0')),
       titulo: row.titulo || 'Cuenta',
       precio: row.precio ?? 0,
       skins: row.skins,
