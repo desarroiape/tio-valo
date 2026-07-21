@@ -17,6 +17,22 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       const b = await readJson(req);
+
+      // Modo "solo anunciar": reenvía una cuenta ya existente a Discord + Telegram
+      // (para publicar cuentas que se subieron antes de tener los anuncios).
+      if (b.accion === 'anunciar') {
+        if (!b.id) throw new Error('Falta id');
+        const cuentas = await listCuentas({ soloDisponibles: false });
+        const cuenta = cuentas.find(c => String(c.id) === String(b.id));
+        if (!cuenta) throw new Error('Cuenta no encontrada');
+        const out = { discord: false, telegram: false, errores: [] };
+        try { await anunciarCuenta(cuenta); out.discord = true; }
+        catch (e) { out.errores.push('Discord: ' + e.message); }
+        try { await anunciarCuentaTelegram(cuenta); out.telegram = true; }
+        catch (e) { out.errores.push('Telegram: ' + e.message); }
+        return res.status(200).json({ ok: true, ...out });
+      }
+
       if (!b.titulo || !String(b.titulo).trim()) throw new Error('El título es obligatorio');
       if (!b.codigo || !String(b.codigo).trim()) throw new Error('El ID es obligatorio');
       const juego = b.juego === 'fortnite' ? 'fortnite' : 'valorant';

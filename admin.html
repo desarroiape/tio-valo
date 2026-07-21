@@ -103,8 +103,8 @@
 
       <!-- Crear cuenta -->
       <div class="fade-up border border-line/70 bg-surface/60 p-6 notch layer-shadow">
-        <h2 class="mb-1 font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">Publicar cuenta</h2>
-        <p class="mb-5 text-sm text-muted">Se mostrará en el catálogo al guardarla.</p>
+        <h2 id="form-title" class="mb-1 font-cond text-lg font-600 uppercase tracking-[0.14em] text-cream">Publicar cuenta</h2>
+        <p id="form-subtitle" class="mb-5 text-sm text-muted">Se mostrará en el catálogo al guardarla.</p>
         <form id="create-form">
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
@@ -229,7 +229,10 @@
           </div>
 
           <div id="create-status" class="mt-4 hidden text-sm"></div>
-          <button id="create-submit" type="submit" class="cta mt-4 flex w-full items-center justify-center bg-red px-6 py-3.5 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim disabled:cursor-not-allowed disabled:opacity-60">Publicar cuenta</button>
+          <div class="mt-4 flex gap-2">
+            <button id="create-submit" type="submit" class="cta flex flex-1 items-center justify-center bg-red px-6 py-3.5 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim disabled:cursor-not-allowed disabled:opacity-60">Publicar cuenta</button>
+            <button id="edit-cancel" type="button" class="hidden rounded border border-line px-5 font-cond text-xs font-600 uppercase tracking-[0.14em] text-muted hover:border-red hover:text-red">Cancelar</button>
+          </div>
         </form>
       </div>
 
@@ -402,6 +405,108 @@ function opcionesRango(conVacio) {
 document.getElementById('f-rango').innerHTML = opcionesRango(false);
 document.getElementById('f-rango-max').innerHTML = opcionesRango(true);
 
+let editandoId = null;
+const editCancelBtn = document.getElementById('edit-cancel');
+
+function admNumOrNull(v) { return v != null && v !== '' && !Number.isNaN(Number(v)) ? Number(v) : null; }
+
+// Construye el objeto de cambios (PATCH) con los tipos correctos. No incluye
+// descripcion para no borrar la existente (el formulario no la edita).
+function construirPatch(fields, urls) {
+  const ft = fields.juego === 'fortnite';
+  return {
+    juego: ft ? 'fortnite' : 'valorant',
+    titulo: String(fields.titulo || '').trim(),
+    codigo: String(fields.codigo || '').trim(),
+    precio: admNumOrNull(fields.precio),
+    skins: admNumOrNull(fields.skins),
+    destacadas: fields.destacadas || null,
+    correo: fields.correo || null,
+    link: fields.link ? String(fields.link).trim() : null,
+    rango: ft ? null : (fields.rango || null),
+    region: ft ? null : (fields.region || null),
+    pais: ft ? null : (fields.pais || null),
+    rango_maximo: ft ? null : (fields.rango_maximo || null),
+    agentes: ft ? null : (fields.agentes || null),
+    plataforma: ft ? (fields.plataforma || null) : null,
+    nivel: ft ? admNumOrNull(fields.nivel) : null,
+    pavos: ft ? admNumOrNull(fields.pavos) : null,
+    og: ft ? !!fields.og : false,
+    recibos: !!fields.recibos,
+    recuperacion: !!fields.recuperacion,
+    imagenes: urls,
+  };
+}
+
+function setVal(name, value) { const el = createForm.elements[name]; if (el) el.value = value ?? ''; }
+
+function entrarEdicion(c) {
+  editandoId = c.id;
+  const ft = c.juego === 'fortnite';
+  juegoSel.value = ft ? 'fortnite' : 'valorant';
+  actualizarCamposJuego();
+  setVal('titulo', c.titulo);
+  setVal('codigo', (c.codigo && String(c.codigo).trim()) ? c.codigo : '');
+  setVal('precio', c.precio ?? '');
+  setVal('skins', c.skins ?? '');
+  setVal('correo', c.correo || '');
+  setVal('link', c.link || '');
+  if (ft) {
+    setVal('plataforma', c.plataforma || 'PC');
+    setVal('nivel', c.nivel ?? '');
+    setVal('pavos', c.pavos ?? '');
+    document.getElementById('f-og').checked = !!c.og;
+  } else {
+    setVal('region', c.region || 'LATAM');
+    setVal('pais', c.pais || '');
+    setVal('rango', c.rango || '');
+    setVal('rango_maximo', c.rango_maximo || '');
+    if (c.agentes === 'Todos los agentes' || c.agentes === 'Agentes principales') {
+      agentesSel.value = c.agentes; agentesEditar.classList.add('hidden');
+    } else if (c.agentes) {
+      agentesSel.value = '__editar__'; agentesEditar.classList.remove('hidden');
+      document.getElementById('f-agentes-custom').value = c.agentes;
+    } else {
+      agentesSel.value = 'Todos los agentes'; agentesEditar.classList.add('hidden');
+    }
+  }
+  createForm.elements['recibos'].checked = !!c.recibos;
+  createForm.elements['recuperacion'].checked = !!c.recuperacion;
+  limpiarEtiquetas();
+  const dest = String(c.destacadas || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
+  etiquetasCont.querySelectorAll('[data-tag]').forEach(b => {
+    if (dest.includes(b.dataset.tag)) {
+      b.classList.add('is-on', 'border-red', 'bg-red/10', 'text-cream');
+      b.classList.remove('border-line', 'text-cream/70');
+    }
+  });
+  fotos.forEach(f => { if (!f.remote) URL.revokeObjectURL(f.url); });
+  fotos = (Array.isArray(c.imagenes) ? c.imagenes : []).filter(Boolean).map(url => ({ url, remote: true }));
+  renderPreviews();
+  document.getElementById('form-title').textContent = 'Modificar cuenta';
+  document.getElementById('form-subtitle').textContent = 'Los cambios solo se ven en la web. No se reenvían los anuncios.';
+  createBtn.textContent = 'Guardar cambios';
+  editCancelBtn.classList.remove('hidden');
+  createStatus.classList.add('hidden');
+  createForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function salirEdicion() {
+  editandoId = null;
+  createForm.reset();
+  actualizarCamposJuego();
+  limpiarEtiquetas();
+  agentesEditar.classList.add('hidden');
+  fotos.forEach(f => { if (!f.remote) URL.revokeObjectURL(f.url); });
+  fotos = []; renderPreviews();
+  document.getElementById('form-title').textContent = 'Publicar cuenta';
+  document.getElementById('form-subtitle').textContent = 'Se mostrará en el catálogo al guardarla.';
+  createBtn.textContent = 'Publicar cuenta';
+  editCancelBtn.classList.add('hidden');
+}
+
+editCancelBtn.addEventListener('click', () => { salirEdicion(); setStatus(createStatus, 'Edición cancelada.', 'info'); });
+
 createForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!createForm.reportValidity()) return;
@@ -413,10 +518,12 @@ createForm.addEventListener('submit', async e => {
     fields.agentes = agentesSel.value === '__editar__' ? (document.getElementById('f-agentes-custom').value || '').trim() : agentesSel.value;
   }
   createBtn.disabled = true;
-  const label = createBtn.textContent; createBtn.textContent = 'Publicando…';
+  createBtn.textContent = editandoId ? 'Guardando…' : 'Publicando…';
   try {
+    // Sube fotos nuevas; conserva las existentes (en edición).
     const urls = [];
     for (let i = 0; i < fotos.length; i++) {
+      if (fotos[i].remote) { urls.push(fotos[i].url); continue; }
       setStatus(createStatus, `Subiendo foto ${i + 1} de ${fotos.length}…`, 'info');
       const dataUrl = await compressImage(fotos[i].file);
       const { status, data } = await api('/api/admin/upload', {
@@ -425,23 +532,30 @@ createForm.addEventListener('submit', async e => {
       if (status !== 200) throw new Error(data.error || 'Error subiendo imagen');
       urls.push(data.url);
     }
-    setStatus(createStatus, 'Guardando cuenta…', 'info');
-    const { status, data } = await api('/api/admin/cuentas', {
-      method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ...fields, imagenes: urls }),
-    });
-    if (status !== 200) throw new Error(data.error || 'Error guardando');
-    setStatus(createStatus, '¡Cuenta publicada!', 'ok');
-    createForm.reset();
-    actualizarCamposJuego();
-    limpiarEtiquetas();
-    agentesEditar.classList.add('hidden');
-    fotos.forEach(f => URL.revokeObjectURL(f.url)); fotos = []; renderPreviews();
+    if (editandoId) {
+      setStatus(createStatus, 'Guardando cambios…', 'info');
+      const patch = construirPatch(fields, urls);
+      const { status, data } = await api('/api/admin/cuentas', {
+        method: 'PATCH', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: editandoId, patch }),
+      });
+      if (status !== 200) throw new Error(data.error || 'Error guardando');
+      setStatus(createStatus, '¡Cambios guardados! (no se reenviaron anuncios)', 'ok');
+    } else {
+      setStatus(createStatus, 'Guardando cuenta…', 'info');
+      const { status, data } = await api('/api/admin/cuentas', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...fields, imagenes: urls }),
+      });
+      if (status !== 200) throw new Error(data.error || 'Error guardando');
+      setStatus(createStatus, '¡Cuenta publicada!', 'ok');
+    }
+    salirEdicion();
     recargarLista();
   } catch (err) {
     setStatus(createStatus, 'Error: ' + (err.message || err), 'err');
   } finally {
-    createBtn.disabled = false; createBtn.textContent = label;
+    createBtn.disabled = false; createBtn.textContent = editandoId ? 'Guardar cambios' : 'Publicar cuenta';
   }
 });
 
@@ -475,6 +589,8 @@ function renderLista(cuentas) {
         <p class="font-mono text-[11px] text-muted">${meta} · <span class="text-red">$${c.precio ?? 0}</span></p>
       </div>
       <div class="flex shrink-0 flex-col gap-1.5">
+        <button data-edit="${c.id}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-gold hover:text-gold">Modificar</button>
+        <button data-announce="${c.id}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-mint hover:text-mint">Subir a TG/Discord</button>
         <button data-toggle="${c.id}" data-estado="${c.estado}" class="rounded border border-line px-2.5 py-1 font-cond text-[10px] font-600 uppercase tracking-wider text-cream/80 hover:border-mint hover:text-mint">
           ${c.estado === 'disponible' ? 'Marcar vendida' : 'Marcar disponible'}
         </button>
@@ -483,14 +599,39 @@ function renderLista(cuentas) {
     </div>`;
   }).join('');
 }
+let CUENTAS = [];
 async function recargarLista() {
   const { status, data } = await api('/api/admin/cuentas');
-  if (status === 200) renderLista(data.cuentas || []);
+  if (status === 200) { CUENTAS = data.cuentas || []; renderLista(CUENTAS); }
   else mostrarLogin();
 }
 lista.addEventListener('click', async e => {
   const tgl = e.target.closest('[data-toggle]');
   const del = e.target.closest('[data-del]');
+  const edit = e.target.closest('[data-edit]');
+  const ann = e.target.closest('[data-announce]');
+  if (edit) {
+    const c = CUENTAS.find(x => String(x.id) === edit.dataset.edit);
+    if (c) entrarEdicion(c);
+    return;
+  }
+  if (ann) {
+    if (!confirm('¿Subir esta cuenta a Telegram y Discord ahora?')) return;
+    ann.disabled = true; const t = ann.textContent; ann.textContent = 'Enviando…';
+    const { status, data } = await api('/api/admin/cuentas', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ accion: 'anunciar', id: ann.dataset.announce }),
+    });
+    ann.disabled = false; ann.textContent = t;
+    if (status === 200 && data.ok) {
+      const oks = [data.discord && 'Discord', data.telegram && 'Telegram'].filter(Boolean).join(' y ');
+      const errs = (data.errores || []).length ? '\n\nErrores:\n' + data.errores.join('\n') : '';
+      alert(oks ? ('✅ Anunciado en ' + oks + errs) : ('No se pudo anunciar.' + errs));
+    } else {
+      alert('Error: ' + (data.error || status));
+    }
+    return;
+  }
   if (tgl) {
     const nuevo = tgl.dataset.estado === 'disponible' ? 'vendida' : 'disponible';
     tgl.disabled = true;
