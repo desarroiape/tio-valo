@@ -106,6 +106,9 @@
   const num = (v) => (v == null || v === '' ? NaN : Number(v));
   // Tier base del rango (quita el nivel I/II/III para agrupar el filtro)
   const baseTier = (r) => String(r || '').replace(/\s+I{1,3}$/, '').trim();
+  // Todos los rangos posibles (agrupados por tier, sin I/II/III), aunque no
+  // haya cuentas publicadas con ese rango. Deben coincidir con baseTier().
+  const RANGOS_FILTRO = ['Hierro', 'Bronce', 'Plata', 'Oro', 'Platino', 'Diamante', 'Ascendente', 'Inmortal', 'Radiante', 'Sin rango / Unranked'];
 
   /* ---------- Sidebar de filtros (según juego) ---------- */
   function chip(grupo, valor, etiqueta = valor) {
@@ -164,7 +167,7 @@
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
       setSlider('f-pavos', 'f-pavos-val', ALL.map(c => num(c.pavos)), 1000, false, ' ');
     } else {
-      const rangos = [...new Set(ALL.map(c => baseTier(c.rango)))].filter(v => v && v !== '—'), regiones = set('region');
+      const rangos = RANGOS_FILTRO, regiones = set('region');
       document.getElementById('f-rangos').innerHTML = rangos.length ? rangos.map(r => chip('rango', r)).join('') : '<span class="text-xs text-muted">—</span>';
       document.getElementById('f-regiones').innerHTML = regiones.length ? regiones.map(r => chip('region', r)).join('') : '<span class="text-xs text-muted">—</span>';
       const tags = [...new Set(ALL.flatMap(c => (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean)))];
