@@ -1,13 +1,13 @@
 /* =====================================================================
    Motor de catálogo compartido (Valorant y Fortnite).
-   La página define window.CATALOGO = { juego, whatsapp } antes de cargarlo.
+   La página define window.CATALOGO = { juego, telegram } antes de cargarlo.
    Construye los filtros según el juego, renderiza el grid y el detalle.
    ===================================================================== */
 (function () {
   const CFG = window.CATALOGO || {};
   const JUEGO = CFG.juego === 'fortnite' ? 'fortnite' : 'valorant';
   const ES_FT = JUEGO === 'fortnite';
-  const WHATSAPP = CFG.whatsapp || '51904812870';
+  const TG_BOT = CFG.telegram || 'https://t.me/Trustifym_bot';
   const PREFIX = ES_FT ? 'FN-' : 'VAL-';
   const PLACEHOLDER = 'https://placehold.co/720x480/181B27/8A93AC?text=Sin+foto';
 
@@ -51,7 +51,7 @@
         ${p.metodos.map(m => `<span class="inline-flex items-center gap-1.5 rounded-lg border border-mint/40 bg-mint/[0.06] px-3 py-1.5 text-sm text-cream">
           <svg width="14" height="14" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>${m}</span>`).join('')}
       </div>
-      <p class="mt-3 text-xs leading-[1.6] text-muted">Coordinamos el método exacto contigo por WhatsApp. <span class="text-mint">Sin comisiones.</span></p>`;
+      <p class="mt-3 text-xs leading-[1.6] text-muted">Coordinamos el método exacto contigo por Telegram. <span class="text-mint">Sin comisiones.</span></p>`;
   };
   window.swapImg = (el) => { document.getElementById('detalle-img').src = el.dataset.src; };
   window.ampliarImg = (src) => {
@@ -102,7 +102,6 @@
       link: row.link || '',
     };
   }
-  const waLink = (m) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(m)}`;
   const num = (v) => (v == null || v === '' ? NaN : Number(v));
   // Tier base del rango (quita el nivel I/II/III para agrupar el filtro)
   const baseTier = (r) => String(r || '').replace(/\s+I{1,3}$/, '').trim();
@@ -361,9 +360,7 @@
     const c = ALL.find(x => x.id === id);
     if (!c) return;
     const vendida = c.estado === 'vendida';
-    const precioMsg = tienePrecio(c.precio) ? `$${c.precio} USD` : 'a consultar';
-    const msg = `¡Hola! Quiero comprar esta cuenta (${ES_FT ? 'Fortnite' : 'Valorant'}):\n\n• ID: ${c.codigo}\n• ${c.titulo}\n• Precio: ${precioMsg}\n\n¿Sigue disponible?`;
-    const link = waLink(msg);
+    const link = TG_BOT;
     const destacadas = (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
     const tiposDetalle = tiposDe(c);
     const galeria = c.imagenes.length > 1 ? `
@@ -433,8 +430,8 @@
 
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <a href="${link}" target="_blank" rel="noopener" class="cta flex flex-1 items-center justify-center gap-2 bg-red px-6 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-ink btn-red hover:bg-red-dim">Quiero comprar esta cuenta</a>
-          <a href="${link}" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" class="cta flex items-center justify-center gap-2 border border-mint bg-mint/[0.08] px-5 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.01c-.24.68-1.42 1.3-1.95 1.34-.5.05-1.14.24-3.83-.8-3.22-1.27-5.28-4.55-5.44-4.76-.16-.21-1.31-1.74-1.31-3.32s.83-2.36 1.12-2.68c.24-.27.63-.39.99-.39.12 0 .24 0 .34.01.31.01.46.03.66.51.24.6.83 2.09.9 2.24.07.15.12.32.02.53-.09.21-.14.34-.28.53-.14.19-.29.42-.42.56-.14.15-.28.31-.12.6.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.36-.23.61-.14.25.09 1.61.76 1.88.9.28.14.46.21.53.32.07.12.07.66-.17 1.34z"/></svg>WhatsApp</a>
+          <a href="${link}" target="_blank" rel="noopener" aria-label="Contactar por Telegram" class="cta flex items-center justify-center gap-2 border border-mint bg-mint/[0.08] px-5 py-4 font-cond text-sm font-700 uppercase tracking-[0.14em] text-mint btn-red hover:bg-mint hover:text-ink">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.51L2.5 12.05c-.86.35-.85.83-.15 1.04l4.98 1.55 1.92 5.9c.23.64.12.9.79.9.52 0 .75-.24 1.04-.53.18-.18 1.28-1.24 2.5-2.43l5.2 3.84c.96.53 1.65.26 1.89-.89l3.42-16.14c.35-1.4-.53-2.04-1.15-1.72z"/></svg>Telegram</a>
         </div>
       </div>
       </div>`;
