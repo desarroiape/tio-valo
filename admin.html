@@ -212,8 +212,14 @@
               <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recuperacion" value="1" class="h-4 w-4 accent-red" /> Incluye respuestas de preguntas de recuperación</label>
             </div>
             <div class="sm:col-span-2">
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Etiquetas destacadas <span class="text-muted/60">(clic para agregar)</span></label>
+              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Etiquetas destacadas <span class="text-muted/60">(clic para agregar · escribe una nueva)</span></label>
               <div id="etiquetas" class="flex flex-wrap gap-2"></div>
+              <div class="mt-2 flex items-center gap-2">
+                <input id="etiqueta-nueva" type="text" maxlength="40" placeholder="Nueva etiqueta…" autocomplete="off"
+                       class="min-w-0 flex-1 rounded-lg border border-line bg-ink/60 px-2.5 py-1.5 text-xs text-cream placeholder:text-muted focus:border-red focus:outline-none" />
+                <button id="etiqueta-add" type="button"
+                        class="shrink-0 rounded-lg border border-line px-3 py-1.5 text-xs text-cream/70 transition hover:border-red hover:text-cream">+ Agregar</button>
+              </div>
             </div>
           </div>
 
@@ -372,24 +378,72 @@ const ETIQUETAS = [
   'Vandal Evori', 'Skins VCT', 'Cuchillo Ignite',
 ];
 const etiquetasCont = document.getElementById('etiquetas');
-etiquetasCont.innerHTML = ETIQUETAS.map(t => `<button type="button" data-tag="${t}" class="rounded-lg border border-line px-2.5 py-1.5 text-xs text-cream/70 hover:border-red hover:text-cream">${t}</button>`).join('');
-etiquetasCont.addEventListener('click', e => {
-  const b = e.target.closest('[data-tag]'); if (!b) return;
-  const on = b.classList.toggle('is-on');
+const etiquetaNueva = document.getElementById('etiqueta-nueva');
+const etiquetaAdd = document.getElementById('etiqueta-add');
+
+function setChipState(b, on) {
+  b.classList.toggle('is-on', on);
   b.classList.toggle('border-red', on);
   b.classList.toggle('bg-red/10', on);
   b.classList.toggle('text-cream', on);
   b.classList.toggle('border-line', !on);
   b.classList.toggle('text-cream/70', !on);
+  b.classList.toggle('hover:border-red', !on);
+  b.classList.toggle('hover:text-cream', !on);
+}
+function makeChip(tag, selected) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.dataset.tag = tag;
+  b.textContent = tag;
+  b.className = 'rounded-lg border px-2.5 py-1.5 text-xs transition';
+  setChipState(b, !!selected);
+  return b;
+}
+function chipPorTag(tag) {
+  return [...etiquetasCont.querySelectorAll('[data-tag]')].find(b => b.dataset.tag === tag);
+}
+function renderEtiquetas() {
+  etiquetasCont.innerHTML = '';
+  ETIQUETAS.forEach(t => etiquetasCont.appendChild(makeChip(t, false)));
+}
+renderEtiquetas();
+
+etiquetasCont.addEventListener('click', e => {
+  const b = e.target.closest('[data-tag]'); if (!b) return;
+  setChipState(b, !b.classList.contains('is-on'));
 });
+
+// Marca la etiqueta; si no existe, crea un chip solo para esta publicación.
+function activarEtiqueta(tag) {
+  let chip = chipPorTag(tag);
+  if (!chip) {
+    chip = makeChip(tag, true);
+    chip.dataset.adhoc = '1';
+    etiquetasCont.appendChild(chip);
+  } else {
+    setChipState(chip, true);
+  }
+  return chip;
+}
+function agregarEtiquetaNueva() {
+  const tag = (etiquetaNueva.value || '').trim().replace(/\s+/g, ' ');
+  if (!tag) return;
+  activarEtiqueta(tag);
+  etiquetaNueva.value = '';
+  etiquetaNueva.focus();
+}
+etiquetaAdd.addEventListener('click', agregarEtiquetaNueva);
+etiquetaNueva.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); agregarEtiquetaNueva(); }
+});
+
 function etiquetasSeleccionadas() {
   return [...etiquetasCont.querySelectorAll('.is-on')].map(b => b.dataset.tag);
 }
 function limpiarEtiquetas() {
-  etiquetasCont.querySelectorAll('.is-on').forEach(b => {
-    b.classList.remove('is-on', 'border-red', 'bg-red/10', 'text-cream');
-    b.classList.add('border-line', 'text-cream/70');
-  });
+  etiquetasCont.querySelectorAll('[data-adhoc]').forEach(b => b.remove());
+  etiquetasCont.querySelectorAll('.is-on').forEach(b => setChipState(b, false));
 }
 
 // Agentes: muestra el campo de detalle cuando se elige "Editar"
@@ -477,12 +531,7 @@ function entrarEdicion(c) {
   createForm.elements['recuperacion'].checked = !!c.recuperacion;
   limpiarEtiquetas();
   const dest = String(c.destacadas || '').split(/[,·]/).map(s => s.trim()).filter(Boolean);
-  etiquetasCont.querySelectorAll('[data-tag]').forEach(b => {
-    if (dest.includes(b.dataset.tag)) {
-      b.classList.add('is-on', 'border-red', 'bg-red/10', 'text-cream');
-      b.classList.remove('border-line', 'text-cream/70');
-    }
-  });
+  dest.forEach(tag => activarEtiqueta(tag));
   fotos.forEach(f => { if (!f.remote) URL.revokeObjectURL(f.url); });
   fotos = (Array.isArray(c.imagenes) ? c.imagenes : []).filter(Boolean).map(url => ({ url, remote: true }));
   renderPreviews();
