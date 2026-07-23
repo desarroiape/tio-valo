@@ -266,8 +266,12 @@
   function estadoBadgeHtml(c, big) {
     const vendida = c.estado === 'vendida';
     const pos = big ? 'left-4 top-4' : 'left-3 top-3';
-    const color = vendida ? 'muted' : 'red';
-    return tagPill(color, vendida ? 'Vendida' : 'Disponible', big, { bg: 'bg-ink/70 backdrop-blur-sm', extra: `absolute ${pos} z-10` });
+    const gap = big ? 'gap-2' : 'gap-1.5';
+    const bg = { bg: 'bg-ink/70 backdrop-blur-sm' };
+    const badges = [tagPill(vendida ? 'muted' : 'red', vendida ? 'Vendida' : 'Disponible', big, bg)];
+    // Badge de rango al lado (solo Valorant y si la cuenta tiene rango).
+    if (!ES_FT && c.rango) badges.push(tagPill('mint', c.rango, big, bg));
+    return `<div class="absolute ${pos} z-10 flex flex-wrap ${gap}">${badges.join('')}</div>`;
   }
   function correoIncluido(c) {
     return /correo original incluido/i.test(c.correo || '');
