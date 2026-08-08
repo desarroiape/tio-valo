@@ -197,12 +197,12 @@
             <div>
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Dinero invertido en la cuenta (USD)</label>
               <input name="inversion" type="number" min="0" placeholder="Ej. 450" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
-              <a href="https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
+              <a id="link-historial" href="https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
                 ¿Cómo ver mi historial de compras?
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"/></svg>
               </a>
             </div>
-            <div class="sm:col-span-2">
+            <div id="campo-explorant" class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Enlace de Explorant <span class="text-muted/60">(tracker de la cuenta)</span></label>
               <input name="explorant" type="url" placeholder="https://www.explorant.space/…" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
               <a href="https://www.explorant.space/" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
@@ -253,12 +253,6 @@
             <div class="campo-fortnite hidden sm:col-span-2">
               <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Plataforma</label>
-                  <select name="plataforma" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
-                    <option>PC</option><option>PlayStation</option><option>Xbox</option><option>Nintendo Switch</option><option>Móvil</option><option>Cross-platform</option>
-                  </select>
-                </div>
-                <div>
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Nivel</label>
                   <input name="nivel" type="number" min="0" placeholder="Ej. 120" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
                 </div>
@@ -266,13 +260,73 @@
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Pavos (V-Bucks)</label>
                   <input name="pavos" type="number" min="0" placeholder="Ej. 2000" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
                 </div>
-                <div class="flex items-center gap-2 pt-7">
+                <div class="flex items-center gap-2 sm:col-span-2">
                   <input id="v-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-mint" />
                   <label for="v-og" class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Es cuenta OG?</label>
                 </div>
+
+                <!-- Preguntas de seguridad / acceso (solo Fortnite) -->
+                <div class="sm:col-span-2 mt-2 border-t border-line/60 pt-5">
+                  <p class="rail pl-4 font-mono text-[11px] uppercase tracking-[0.22em] text-mint">// Acceso y estado de la cuenta</p>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿La cuenta viene con correo asociado completo (email y contraseña)?</label>
+                  <select name="correo_completo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>Sí, entrego el correo con su contraseña</option>
+                    <option>No, solo los datos de acceso al juego</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿Se puede hacer cambio de correo (UGI) sin problema?</label>
+                  <select name="cambio_correo_ugi" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>Sí, se puede cambiar sin problema</option>
+                    <option>No, el correo no se puede cambiar</option>
+                    <option>No estoy seguro</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿La cuenta tiene algún historial de recuperación o revert?</label>
+                  <select name="historial_recuperacion" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>No, nunca se recuperó ni tuvo revert</option>
+                    <option>Sí, tiene historial de recuperación o revert</option>
+                    <option>No estoy seguro</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿Está vinculada a alguna plataforma (PS, Xbox, Nintendo)?</label>
+                  <select id="v-vinculada" name="plataformas_vinculadas" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>No, solo Epic Games</option>
+                    <option>PlayStation</option>
+                    <option>Xbox</option>
+                    <option>Nintendo Switch</option>
+                    <option>Varias plataformas</option>
+                  </select>
+                </div>
+                <div id="campo-desvincular" class="hidden sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿Puedes desvincular esas plataformas si es necesario?</label>
+                  <select name="puede_desvincular" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>Sí, puedo desvincularlas</option>
+                    <option>No, no puedo desvincularlas</option>
+                    <option>No estoy seguro</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿Tienes acceso a las respuestas de recuperación?</label>
+                  <select name="acceso_respuestas" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>Sí, tengo las respuestas</option>
+                    <option>No las tengo</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="mb-1.5 block text-sm leading-[1.5] text-cream/85">¿La cuenta tiene algún bloqueo, restricción o problema?</label>
+                  <select name="bloqueos" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
+                    <option>No, está limpia</option>
+                    <option>Sí (lo detallo en las notas)</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="sm:col-span-2">
+            <div class="campo-valorant sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Entregas el correo original vinculado?</label>
               <select name="correo" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-mint focus:outline-none">
                 <option>Sí, entrego el correo original (full acceso)</option>
@@ -282,7 +336,7 @@
             </div>
             <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch-tr">
               <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recibos" value="1" class="h-4 w-4 accent-mint" /> Incluye recibos de compra</label>
-              <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="preguntas_recuperacion" value="1" class="h-4 w-4 accent-mint" /> Incluye respuestas de preguntas de recuperación</label>
+              <label class="campo-valorant flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="preguntas_recuperacion" value="1" class="h-4 w-4 accent-mint" /> Incluye respuestas de preguntas de recuperación</label>
             </div>
             <div>
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Cantidad de skins</label>
@@ -294,7 +348,7 @@
             </div>
             <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Skins o bundles destacados</label>
-              <input name="skins_destacadas" type="text" placeholder="Ej. Reaver Vandal, Champions 2023, cuchillo Prime..." class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+              <input id="v-destacadas" name="skins_destacadas" type="text" placeholder="Ej. Reaver Vandal, Champions 2023, cuchillo Prime..." class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
             </div>
             <div class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Notas adicionales</label>
@@ -410,16 +464,29 @@ const REQUISITOS = {
     ['Recibos y recuperación', 'Indica si incluyes recibos de compra y las respuestas de las preguntas de recuperación. Suman valor y confianza al comprador.'],
   ],
   fortnite: [
-    ['Correo vinculado', '¿Entregas el correo original vinculado a la cuenta? Es indispensable para transferirla de forma segura.'],
-    ['Plataforma', '¿En qué plataforma está? (PC, PlayStation, Xbox, Nintendo Switch, Móvil).'],
+    ['Correo completo y UGI', '¿La cuenta trae el correo asociado con su contraseña? ¿Se puede hacer el cambio de correo (UGI) sin problema? Es indispensable para transferirla de forma segura.'],
     ['Skins, pavos y OG', '¿Cuántas skins y pavos tiene? ¿Es cuenta OG? El valor sube con skins raras y cuentas antiguas.'],
-    ['Recibos y recuperación', 'Indica si incluyes recibos de compra y las respuestas de las preguntas de recuperación. Suman valor y confianza al comprador.'],
+    ['Plataformas vinculadas', '¿Está vinculada a PlayStation, Xbox o Nintendo? Y si lo está, ¿puedes desvincularla cuando haga falta?'],
+    ['Historial y bloqueos', 'Cuéntanos si tuvo recuperaciones o reverts, si tienes las respuestas de recuperación y si hay algún bloqueo o restricción. Ser transparente acelera el trato.'],
   ],
 };
 function actualizarCamposJuego() {
   const ft = juegoSel.value === 'fortnite';
-  document.querySelector('.campo-valorant').classList.toggle('hidden', ft);
-  document.querySelector('.campo-fortnite').classList.toggle('hidden', !ft);
+  document.querySelectorAll('.campo-valorant').forEach(el => el.classList.toggle('hidden', ft));
+  document.querySelectorAll('.campo-fortnite').forEach(el => el.classList.toggle('hidden', !ft));
+  // Explorant es un tracker de Valorant: no aplica a Fortnite.
+  const explorant = document.getElementById('campo-explorant');
+  explorant.classList.toggle('hidden', ft);
+  if (ft) explorant.querySelector('input').value = '';
+  // Ayudas contextuales del juego elegido.
+  const link = document.getElementById('link-historial');
+  link.href = ft
+    ? 'https://www.epicgames.com/help/es-ES/c-Category_EpicAccount/c-AccountPayments/como-veo-el-historial-de-transacciones-de-mi-cuenta-de-epic-games-a000084727'
+    : 'https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history';
+  document.getElementById('v-destacadas').placeholder = ft
+    ? 'Ej. Aguja Negra, Renegado, pico de Travis Scott...'
+    : 'Ej. Reaver Vandal, Champions 2023, cuchillo Prime...';
+  actualizarDesvincular();
   const pasos = REQUISITOS[ft ? 'fortnite' : 'valorant'];
   document.getElementById('requisitos').innerHTML = pasos.map((p, i) => {
     const last = i === pasos.length - 1;
@@ -432,6 +499,14 @@ function actualizarCamposJuego() {
     </li>`;
   }).join('');
 }
+// La pregunta de desvincular solo tiene sentido si hay plataformas vinculadas.
+const vinculadaSel = document.getElementById('v-vinculada');
+function actualizarDesvincular() {
+  const sinVincular = vinculadaSel.value === 'No, solo Epic Games';
+  document.getElementById('campo-desvincular').classList.toggle('hidden', sinVincular);
+}
+vinculadaSel.addEventListener('change', actualizarDesvincular);
+
 juegoSel.addEventListener('change', actualizarCamposJuego);
 actualizarCamposJuego();
 
@@ -483,7 +558,13 @@ sellForm.addEventListener('submit', async e => {
   // Normaliza los checkboxes a Sí/No para que queden claros en el registro.
   fields.recibos = fields.recibos ? 'Sí' : 'No';
   fields.preguntas_recuperacion = fields.preguntas_recuperacion ? 'Sí' : 'No';
-  if (juegoSel.value === 'fortnite') fields.og = fields.og ? 'Sí' : 'No';
+  if (juegoSel.value === 'fortnite') {
+    fields.og = fields.og ? 'Sí' : 'No';
+    // Si la cuenta no está vinculada a ninguna plataforma, la pregunta está oculta.
+    if (document.getElementById('campo-desvincular').classList.contains('hidden')) {
+      fields.puede_desvincular = 'No aplica';
+    }
+  }
   const folio = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 
   submitBtn.disabled = true;
