@@ -2,30 +2,29 @@
    Google Apps Script — recibe el formulario de venta y lo agrega
    como una fila a tu Google Sheet.
 
-   Escribe SIEMPRE en el archivo indicado en SPREADSHEET_ID (más abajo),
-   sin importar desde qué hoja se abrió el editor. Cada juego va a su
-   propia pestaña ("Valorant" / "Fortnite"); se crean solas si no existen
-   y el nombre se busca sin distinguir mayúsculas ni tildes, así que una
-   pestaña llamada "fortnite" se reutiliza tal cual.
+   UN SOLO script para los dos juegos. El sitio manda en cada envío el
+   juego y la pestaña; el script elige el libro según LIBROS (abajo), así
+   que Valorant y Fortnite pueden vivir en archivos distintos.
 
-   Las columnas se ubican por el TEXTO del encabezado, no por posición:
-   si la pestaña ya tiene encabezados, cada dato cae bajo el suyo, y los
-   que falten se añaden al final. Por eso ya no hace falta estrenar
-   pestaña cada vez que cambia una pregunta del formulario.
+   La pestaña se busca sin distinguir mayúsculas ni tildes (una llamada
+   "fortnite" se reutiliza tal cual) y se crea si no existe. Las columnas
+   se ubican por el TEXTO del encabezado, no por posición: cada dato cae
+   bajo el suyo y los que falten se añaden al final, así que cambiar una
+   pregunta del formulario ya no descuadra nada.
 
-   IMPORTANTE: si ya tenías este script implementado, después de pegar
-   esta versión debes RE-IMPLEMENTAR para que los cambios surtan efecto:
+   IMPORTANTE: guardar NO basta. La URL /exec sigue corriendo la versión
+   publicada, así que tras pegar esta versión hay que RE-IMPLEMENTAR:
    Implementar → Gestionar implementaciones → (editar la actual) →
-   Versión: "Nueva versión" → Implementar. La URL /exec no cambia.
-   Al usar SPREADSHEET_ID, Google pedirá autorizar de nuevo el permiso
-   de hojas de cálculo la primera vez: acepta.
+   Versión: "Nueva versión" → Implementar. La URL no cambia.
+   La primera vez Google pedirá autorizar de nuevo (ahora abre archivos
+   por ID): acepta.
    ─────────────────────────────────────────────────────────────────────
    CÓMO CONECTARLO (una sola vez):
-   1. Abre el editor: Extensiones → Apps Script (desde cualquier hoja),
-      o script.google.com.
-   2. Borra lo que haya y pega TODO este archivo.
-   3. Pon en SPREADSHEET_ID el ID de la hoja donde quieres los datos, y
-      en SECRET el mismo texto de la variable de entorno SHEETS_SECRET.
+   1. Abre el editor: script.google.com, o Extensiones → Apps Script
+      desde cualquier hoja.
+   2. Borra lo que haya y pega TODO este archivo, desde la primera línea.
+   3. Rellena LIBROS con el ID de cada juego y SECRET con el mismo texto
+      de la variable de entorno SHEETS_SECRET del sitio.
    4. Implementar → Nueva implementación → tipo "Aplicación web":
         - Ejecutar como:  Yo
         - Quién tiene acceso:  Cualquier usuario
@@ -37,9 +36,14 @@
    ─────────────────────────────────────────────────────────────────────
    ===================================================================== */
 
-// ID de la hoja de cálculo destino: es el trozo de la URL entre /d/ y /edit
-//   https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
-var SPREADSHEET_ID = '1Odr9_5CFQkU5cqbkTM6iV1u5t5yU5J6VcNqI07vDUsI';
+/* Un libro (archivo de Google Sheets) por juego. El ID es el trozo de la
+   URL entre /d/ y /edit:
+     https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
+   Si los dos juegos comparten libro, pon el mismo ID en ambos. */
+var LIBROS = {
+  valorant: '1Odr9_5CFQkU5cqbkTM6iV1u5t5yU5J6VcNqI07vDUsI',
+  fortnite: '1jHmWOfwwCix054PkP7W8xtSUl7kfXP6n7AKkjwlx6yo',
+};
 
 var SECRET = 'CAMBIA_ESTE_SECRETO';         // debe coincidir con SHEETS_SECRET
 var SHEET_NAME = 'Cuentas en venta';         // pestaña por defecto (si no llega body.sheet)
@@ -110,11 +114,11 @@ var COLUMNS = {
    registro de ejecución.
    --------------------------------------------------------------------- */
 function arreglarEncabezadosFortnite() {
-  return arreglarEncabezados('Fortnite', COLUMNS.fortnite);
+  return arreglarEncabezados('fortnite', 'FORTNITE FORMS', COLUMNS.fortnite);
 }
 
-function arreglarEncabezados(nombre, columnas) {
-  var ss = abrirHoja();
+function arreglarEncabezados(juego, nombre, columnas) {
+  var ss = abrirHoja(juego);
   var sheet = buscarPestana(ss, nombre);
   var encabezados = columnas.map(function (c) { return HEADERS[c] || c; });
   var filasConDatos = Math.max(sheet.getLastRow() - 1, 0);
@@ -147,7 +151,8 @@ function doPost(e) {
     var columns = body.columns || Object.keys(body.row || {});
     var row = body.row || {};
 
-    var ss = abrirHoja();
+    // body.juego decide el libro; body.sheet, la pestaña dentro de él.
+    var ss = abrirHoja(body.juego);
     var sheet = buscarPestana(ss, body.sheet || SHEET_NAME);
     agregarFila(sheet, columns, row);
 
@@ -161,11 +166,11 @@ function doGet() {
   return json({ ok: true, msg: 'Webhook de venta activo' });
 }
 
-/* Abre la hoja de SPREADSHEET_ID; si está vacío, la que contiene al script. */
-function abrirHoja() {
-  if (SPREADSHEET_ID && SPREADSHEET_ID.indexOf('PON_AQUI') === -1) {
-    return SpreadsheetApp.openById(SPREADSHEET_ID);
-  }
+/* Abre el libro del juego que llega en el envío. Si ese ID no está puesto,
+   cae en la hoja que contiene al script para no perder el dato. */
+function abrirHoja(juego) {
+  var id = LIBROS[normalizar(juego)];
+  if (id && id.indexOf('PON_AQUI') === -1) return SpreadsheetApp.openById(id);
   return SpreadsheetApp.getActiveSpreadsheet();
 }
 
