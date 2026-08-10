@@ -111,6 +111,11 @@
       <a href="/vender" class="px-3 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="Vender">Vender</span></span></a>
       <a href="/tutoriales" class="px-3 py-2 text-cream" aria-current="page"><span class="nav-flip"><span data-text="Tutoriales">Tutoriales</span></span></a>
       <a href="/faq" class="px-3 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="FAQ">FAQ</span></span></a>
+      <a href="https://discord.gg/h9e3mYVY4j" target="_blank" rel="noopener" title="Comunidad de Discord"
+         aria-label="Únete a nuestra comunidad de Discord"
+         class="ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#5865F2]/50 bg-[#5865F2]/[0.10] text-[#8B93F8] hover:-translate-y-0.5 hover:bg-[#5865F2] hover:text-cream">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.8 19.8 0 0015.45 3l-.24.44a18.3 18.3 0 014.3 1.34 12.6 12.6 0 00-15 0A18.3 18.3 0 018.8 3.44L8.55 3A19.8 19.8 0 003.68 4.37 20.26 20.26 0 00.2 18.06a19.9 19.9 0 006.1 3.07l.79-1.28a12.9 12.9 0 01-2.02-.97l.5-.38a14.2 14.2 0 0012.06 0l.5.38c-.64.38-1.32.71-2.02.97l.79 1.28a19.9 19.9 0 006.1-3.07 20.26 20.26 0 00-3.48-13.69zM8.02 15.33c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43zm7.96 0c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43z"/></svg>
+      </a>
       <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
     </nav>
   </div>
@@ -127,10 +132,12 @@
     Tutoriales
   </h1>
   <p class="fade-up mt-5 max-w-xl text-base leading-[1.7] text-muted" style="animation-delay:.12s">
-    Guías rápidas para vender tu cuenta y para asegurarla apenas la compras. Toca cada tutorial para ver los pasos.
+    Guías rápidas por juego: cómo vender tu cuenta y cómo asegurarla apenas la compras. Toca cada tutorial para ver los pasos.
   </p>
 
-  <div class="fade-up mt-12" style="animation-delay:.18s" id="tutoriales"><!-- inyectado por JS --></div>
+  <nav class="fade-up mt-8 flex flex-wrap gap-2.5" style="animation-delay:.16s" id="indice" aria-label="Secciones"><!-- inyectado por JS --></nav>
+
+  <div class="fade-up mt-12" style="animation-delay:.2s" id="tutoriales"><!-- inyectado por JS --></div>
 
   <!-- CTA -->
   <div class="fade-up mt-14 border border-mint/40 bg-mint/[0.06] p-6 notch-tr sm:p-8">
@@ -156,10 +163,10 @@
           </span>
           <span class="font-display text-lg font-800 tracking-tight text-cream">Trustify <span class="text-red">Market</span></span>
         </a>
-        <p class="mt-4 text-sm leading-[1.7] text-muted">Cuentas de Valorant y Fortnite verificadas, con acceso completo y trato directo por Telegram.</p>
-        <a href="https://t.me/Trustifym_bot" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#2AABEE]/50 bg-[#2AABEE]/[0.08] px-4 py-2 font-cond text-sm font-700 uppercase tracking-[0.12em] text-[#2AABEE] hover:bg-[#2AABEE] hover:text-ink">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.51L2.5 12.05c-.86.35-.85.83-.15 1.04l4.98 1.55 1.92 5.9c.23.64.12.9.79.9.52 0 .75-.24 1.04-.53.18-.18 1.28-1.24 2.5-2.43l5.2 3.84c.96.53 1.65.26 1.89-.89l3.42-16.14c.35-1.4-.53-2.04-1.15-1.72z"/></svg>
-          Escríbenos
+        <p class="mt-4 text-sm leading-[1.7] text-muted">Cuentas de Valorant y Fortnite verificadas, con acceso completo. Únete a nuestra comunidad de Discord: cuentas nuevas, sorteos y soporte directo.</p>
+        <a href="https://discord.gg/h9e3mYVY4j" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#5865F2]/50 bg-[#5865F2]/[0.10] px-4 py-2 font-cond text-sm font-700 uppercase tracking-[0.12em] text-[#8B93F8] hover:bg-[#5865F2] hover:text-cream">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.8 19.8 0 0015.45 3l-.24.44a18.3 18.3 0 014.3 1.34 12.6 12.6 0 00-15 0A18.3 18.3 0 018.8 3.44L8.55 3A19.8 19.8 0 003.68 4.37 20.26 20.26 0 00.2 18.06a19.9 19.9 0 006.1 3.07l.79-1.28a12.9 12.9 0 01-2.02-.97l.5-.38a14.2 14.2 0 0012.06 0l.5.38c-.64.38-1.32.71-2.02.97l.79 1.28a19.9 19.9 0 006.1-3.07 20.26 20.26 0 00-3.48-13.69zM8.02 15.33c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43zm7.96 0c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43z"/></svg>
+          Únete al Discord
         </a>
       </div>
 
@@ -179,7 +186,7 @@
         <ul class="mt-4 space-y-2.5 text-muted">
           <li><a href="/tutoriales" class="hover:text-cream">Tutoriales</a></li>
           <li><a href="/faq" class="hover:text-cream">Preguntas frecuentes</a></li>
-          <li><a href="/tutoriales" class="hover:text-cream">Cómo sacar tus fotos</a></li>
+          <li><a href="/tutoriales#valorant" class="hover:text-cream">Cómo sacar tus fotos</a></li>
         </ul>
       </nav>
 
@@ -206,24 +213,26 @@
 <script>
 document.getElementById('wa-cta').href = 'https://t.me/Trustifym_bot';
 
+// Sub-lista dentro de un paso, para los que enumeran varios puntos a revisar.
+const lista = items => `<ul class="mt-2 space-y-1.5">${items.map(i => `
+  <li class="flex gap-2 text-cream/75"><span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-red"></span>${i}</li>`).join('')}</ul>`;
+
+/* Sello del bloque: el logo del juego, o un icono si el bloque no es de un juego. */
+const chip = (g, tam) => g.logo
+  ? `<span class="grid ${tam} shrink-0 place-items-center overflow-hidden rounded-lg ring-1 ring-line"><img src="${g.logo}" alt="" class="h-full w-full object-cover" /></span>`
+  : `<span class="grid ${tam} shrink-0 place-items-center rounded-lg bg-mint/15 text-mint ring-1 ring-mint/30">${g.icono}</span>`;
+
+const ESCUDO ='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3.5v6c0 4.6-3.2 8.9-8 10.5-4.8-1.6-8-5.9-8-10.5v-6L12 2zm-1.2 13.6l5.3-5.3-1.4-1.4-3.9 3.9-1.9-1.9-1.4 1.4 3.3 3.3z"/></svg>';
+
 const GRUPOS = [
   {
-    titulo: 'Para vender tu cuenta',
+    id: 'valorant',
+    titulo: 'Procesos de Valorant',
+    sub: 'Cómo sacar tus fotos y publicar tu cuenta de Riot.',
+    logo: 'valorant-logo.jpeg',
     tutoriales: [
       {
-        titulo: 'Sacar fotos de tu inventario con el bot',
-        intro: 'Genera imágenes limpias de tus skins para tu publicación, sin capturas manuales.',
-        pasos: [
-          'Abre Telegram y entra al bot <b>@valobot</b> (tienes el enlace en la página de Vender).',
-          'Pulsa <b>Iniciar</b> o envía <b>/start</b> y sigue las instrucciones del bot.',
-          'El bot generará automáticamente las imágenes de tu inventario de skins.',
-          'Descarga esas imágenes a tu teléfono o computadora.',
-          'En la página <b>Vender</b>, arrástralas o súbelas en el apartado de fotos.',
-        ],
-        tip: 'Sube varias: inventario completo, skins destacadas y tu rango. Mientras más claro, más rápido se vende.',
-      },
-      {
-        titulo: 'Sacar las fotos de tu Valorant (Explorant)',
+        titulo: 'Sacar los datos de tu cuenta (Explorant)',
         intro: 'Trae los datos reales de tu cuenta (rango, skins, nivel) con Explorant, sin dar tu contraseña.',
         pasos: [
           '<b>Ir al login de Riot.</b> En el navegador (mejor Chrome o Edge), entra a <b>Explorant</b> y busca la opción "Login using URL" o similar. Te llevará a la URL oficial de autenticación de Riot (algo como <code>auth.riotgames.com/…</code>).',
@@ -241,7 +250,7 @@ const GRUPOS = [
         pasos: [
           'Ve a la sección <b>Vender</b>.',
           'Completa tu contacto, región, rango, cantidad de skins y el precio que pides.',
-          'Sube las fotos de tu inventario (puedes usar @valobot).',
+          'Sube las fotos de tu inventario (puedes usar el link de Explorant).',
           'Envía el formulario.',
           'Te contactamos por Telegram para cerrar el trato; revisamos la cuenta antes de publicarla.',
         ],
@@ -250,7 +259,54 @@ const GRUPOS = [
     ],
   },
   {
+    id: 'fortnite',
+    titulo: 'Procesos de Fortnite',
+    sub: 'Cómo compramos y vendemos cuentas de Epic Games.',
+    logo: 'fortnite-logo.png',
+    tutoriales: [
+      {
+        titulo: 'Proceso de compra de cuentas',
+        intro: 'Así verificamos una cuenta de Fortnite antes de pagarte por ella.',
+        pasos: [
+          `Antes de realizar cualquier pago, verificamos:${lista([
+            'Acceso completo al Gmail de creación',
+            'Correos de Epic Games',
+            'País de la cuenta',
+            'Respuestas de recuperación',
+            'Plataformas vinculadas',
+            'Que las skins coincidan con las fotos enviadas',
+          ])}`,
+          'También solicitamos acceso a <b>Epic Games</b> para revisar la cuenta directamente y verificar que toda la información sea correcta.',
+          'Durante el proceso, pediremos los <b>códigos enviados al Gmail</b> para realizar los cambios de seguridad y asegurar la cuenta correctamente.',
+          'Una vez verificado todo, procedemos con el <b>pago acordado</b> 💸',
+        ],
+      },
+      {
+        titulo: 'Proceso de venta de cuentas',
+        intro: 'Del primer cotizado hasta que recibes tu pago, paso a paso.',
+        pasos: [
+          'Primero realizamos una <b>cotización</b> de tu cuenta. Para ello, deberás enviarnos las fotos completas del inventario mediante el <b>checker de Telegram</b> que usamos, así podremos verificar las skins, cosméticos y plataformas vinculadas.',
+          `Luego de cotizarla y si aceptas el precio, te haremos unas preguntas rápidas:${lista([
+            '¿La cuenta viene con el correo de creación (Gmail original)?',
+            '¿Entregas acceso completo al Gmail?',
+            '¿De qué país es la cuenta?',
+            '¿Eres el creador original?',
+            '¿La cuenta fue comprada anteriormente?',
+            '¿Cuenta con respuestas de recuperación?',
+            '¿Tiene plataformas vinculadas? (PlayStation, Xbox, Nintendo, etc.)',
+          ])}`,
+          'Después de verificar esa información, publicaremos tu cuenta en nuestros canales de <b>Discord</b> e <b>Instagram</b> para conseguir comprador.',
+          'Una vez encontrada una persona interesada, verificaremos nuevamente todos los datos de la cuenta y procederemos con los cambios correspondientes.',
+          'Finalmente, cuando todo esté correcto y asegurado, se te enviará el <b>pago acordado</b> 💸',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'seguridad',
     titulo: 'Seguridad de tu cuenta',
+    sub: 'Qué hacer apenas recibes una cuenta de Riot.',
+    icono: ESCUDO,
     tutoriales: [
       {
         titulo: 'Qué hacer al recibir tu cuenta (checklist)',
@@ -304,12 +360,24 @@ const GRUPOS = [
   },
 ];
 
+// Índice: atajos a cada bloque, para no tener que buscar entre todos los tutoriales.
+document.getElementById('indice').innerHTML = GRUPOS.map(g => `
+  <a href="#${g.id}" class="inline-flex items-center gap-2 border border-line/70 bg-surface/50 px-4 py-2 font-cond text-sm font-600 uppercase tracking-[0.12em] text-cream/80 notch-tr hover:border-red/50 hover:text-cream">
+    ${chip(g, 'h-5 w-5')}${g.titulo}
+  </a>`).join('');
+
 const cont = document.getElementById('tutoriales');
 cont.innerHTML = GRUPOS.map((g, gi) => `
-  <section class="${gi ? 'mt-12' : ''}">
-    <div class="mb-4 flex items-center gap-3">
-      <span class="font-mono text-xs font-700 uppercase tracking-[0.24em] text-red">${String(gi + 1).padStart(2, '0')}</span>
-      <h2 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">${g.titulo}</h2>
+  <section id="${g.id}" class="${gi ? 'mt-14' : ''} scroll-mt-28">
+    <div class="mb-5 flex items-start gap-3 border-b border-line/60 pb-4">
+      ${chip(g, 'h-10 w-10')}
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="font-mono text-[11px] font-700 tracking-[0.24em] text-red">${String(gi + 1).padStart(2, '0')}</span>
+          <h2 class="font-cond text-xl font-600 uppercase tracking-wide text-cream">${g.titulo}</h2>
+        </div>
+        <p class="mt-0.5 text-sm leading-[1.6] text-muted">${g.sub}</p>
+      </div>
     </div>
     <div class="grid gap-3">
       ${g.tutoriales.map(t => `

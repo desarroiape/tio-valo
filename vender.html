@@ -133,6 +133,11 @@
       <a href="/vender" class="px-4 py-2 text-cream" aria-current="page"><span class="nav-flip"><span data-text="Vender">Vender</span></span></a>
       <a href="/tutoriales" class="px-4 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="Tutoriales">Tutoriales</span></span></a>
       <a href="/faq" class="px-4 py-2 text-cream/80 hover:text-cream"><span class="nav-flip"><span data-text="FAQ">FAQ</span></span></a>
+      <a href="https://discord.gg/h9e3mYVY4j" target="_blank" rel="noopener" title="Comunidad de Discord"
+         aria-label="Únete a nuestra comunidad de Discord"
+         class="ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#5865F2]/50 bg-[#5865F2]/[0.10] text-[#8B93F8] hover:-translate-y-0.5 hover:bg-[#5865F2] hover:text-cream">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.8 19.8 0 0015.45 3l-.24.44a18.3 18.3 0 014.3 1.34 12.6 12.6 0 00-15 0A18.3 18.3 0 018.8 3.44L8.55 3A19.8 19.8 0 003.68 4.37 20.26 20.26 0 00.2 18.06a19.9 19.9 0 006.1 3.07l.79-1.28a12.9 12.9 0 01-2.02-.97l.5-.38a14.2 14.2 0 0012.06 0l.5.38c-.64.38-1.32.71-2.02.97l.79 1.28a19.9 19.9 0 006.1-3.07 20.26 20.26 0 00-3.48-13.69zM8.02 15.33c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43zm7.96 0c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43z"/></svg>
+      </a>
       <a href="/comprar" class="ml-1 bg-red px-4 py-2 font-600 text-ink btn-red hover:bg-red-dim">Comprar ahora</a>
     </nav>
   </div>
@@ -170,8 +175,11 @@
               <input name="nombre" type="text" required placeholder="¿Cómo te llamamos?" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
             </div>
             <div>
-              <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Número de Telegram <span class="text-red">*</span></label>
-              <input name="contacto" type="tel" inputmode="numeric" pattern="[0-9+ ]{7,}" required placeholder="Ej. +52 55 1234 5678" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
+              <label for="v-telefono" class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Número de teléfono <span class="text-red">*</span></label>
+              <div class="flex">
+                <select id="v-prefijo" aria-label="Código de país" class="w-[5.5rem] shrink-0 border border-line border-r-0 bg-ink px-2 py-2.5 text-sm text-cream focus:relative focus:border-mint focus:outline-none"></select>
+                <input id="v-telefono" name="contacto" type="tel" inputmode="tel" pattern="[0-9 ()\-]{6,}" required placeholder="123 456 789" class="w-full min-w-0 border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:relative focus:border-mint focus:outline-none" />
+              </div>
             </div>
             <div>
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Instagram <span class="text-muted/60">(opcional)</span></label>
@@ -391,10 +399,10 @@
           </span>
           <span class="font-display text-lg font-800 tracking-tight text-cream">Trustify <span class="text-red">Market</span></span>
         </a>
-        <p class="mt-4 text-sm leading-[1.7] text-muted">Cuentas de Valorant y Fortnite verificadas, con acceso completo y trato directo por Telegram.</p>
-        <a href="https://t.me/Trustifym_bot" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#2AABEE]/50 bg-[#2AABEE]/[0.08] px-4 py-2 font-cond text-sm font-700 uppercase tracking-[0.12em] text-[#2AABEE] hover:bg-[#2AABEE] hover:text-ink">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.51L2.5 12.05c-.86.35-.85.83-.15 1.04l4.98 1.55 1.92 5.9c.23.64.12.9.79.9.52 0 .75-.24 1.04-.53.18-.18 1.28-1.24 2.5-2.43l5.2 3.84c.96.53 1.65.26 1.89-.89l3.42-16.14c.35-1.4-.53-2.04-1.15-1.72z"/></svg>
-          Escríbenos
+        <p class="mt-4 text-sm leading-[1.7] text-muted">Cuentas de Valorant y Fortnite verificadas, con acceso completo. Únete a nuestra comunidad de Discord: cuentas nuevas, sorteos y soporte directo.</p>
+        <a href="https://discord.gg/h9e3mYVY4j" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#5865F2]/50 bg-[#5865F2]/[0.10] px-4 py-2 font-cond text-sm font-700 uppercase tracking-[0.12em] text-[#8B93F8] hover:bg-[#5865F2] hover:text-cream">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.8 19.8 0 0015.45 3l-.24.44a18.3 18.3 0 014.3 1.34 12.6 12.6 0 00-15 0A18.3 18.3 0 018.8 3.44L8.55 3A19.8 19.8 0 003.68 4.37 20.26 20.26 0 00.2 18.06a19.9 19.9 0 006.1 3.07l.79-1.28a12.9 12.9 0 01-2.02-.97l.5-.38a14.2 14.2 0 0012.06 0l.5.38c-.64.38-1.32.71-2.02.97l.79 1.28a19.9 19.9 0 006.1-3.07 20.26 20.26 0 00-3.48-13.69zM8.02 15.33c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43zm7.96 0c-1.18 0-2.15-1.09-2.15-2.43s.95-2.44 2.15-2.44 2.17 1.1 2.15 2.44c0 1.34-.95 2.43-2.15 2.43z"/></svg>
+          Únete al Discord
         </a>
       </div>
 
@@ -521,6 +529,62 @@ function opcionesRango(conVacio) {
 document.getElementById('v-rango').innerHTML = opcionesRango(false);
 document.getElementById('v-rango-max').innerHTML = opcionesRango(true);
 
+/* Códigos de país para el teléfono. Los de LATAM/España van primero por ser
+   el grueso de los vendedores; el resto queda en orden alfabético. */
+const PAISES_TEL = [
+  ['PE', '+51', 'Perú'], ['MX', '+52', 'México'], ['AR', '+54', 'Argentina'], ['CL', '+56', 'Chile'],
+  ['CO', '+57', 'Colombia'], ['EC', '+593', 'Ecuador'], ['BO', '+591', 'Bolivia'], ['VE', '+58', 'Venezuela'],
+  ['UY', '+598', 'Uruguay'], ['PY', '+595', 'Paraguay'], ['BR', '+55', 'Brasil'], ['ES', '+34', 'España'],
+  ['US', '+1', 'Estados Unidos'], ['CR', '+506', 'Costa Rica'], ['CU', '+53', 'Cuba'],
+  ['DO', '+1', 'Rep. Dominicana'], ['GT', '+502', 'Guatemala'], ['HN', '+504', 'Honduras'],
+  ['NI', '+505', 'Nicaragua'], ['PA', '+507', 'Panamá'], ['PR', '+1', 'Puerto Rico'],
+  ['SV', '+503', 'El Salvador'],
+  ['DE', '+49', 'Alemania'], ['AU', '+61', 'Australia'], ['BE', '+32', 'Bélgica'], ['CA', '+1', 'Canadá'],
+  ['KR', '+82', 'Corea del Sur'], ['DK', '+45', 'Dinamarca'], ['AE', '+971', 'Emiratos Árabes Unidos'],
+  ['PH', '+63', 'Filipinas'], ['FI', '+358', 'Finlandia'], ['FR', '+33', 'Francia'], ['IN', '+91', 'India'],
+  ['ID', '+62', 'Indonesia'], ['IE', '+353', 'Irlanda'], ['IT', '+39', 'Italia'], ['JP', '+81', 'Japón'],
+  ['MA', '+212', 'Marruecos'], ['NO', '+47', 'Noruega'], ['NZ', '+64', 'Nueva Zelanda'],
+  ['NL', '+31', 'Países Bajos'], ['PL', '+48', 'Polonia'], ['PT', '+351', 'Portugal'],
+  ['GB', '+44', 'Reino Unido'], ['CZ', '+420', 'Rep. Checa'], ['RO', '+40', 'Rumanía'],
+  ['RU', '+7', 'Rusia'], ['SE', '+46', 'Suecia'], ['CH', '+41', 'Suiza'], ['TH', '+66', 'Tailandia'],
+  ['TR', '+90', 'Turquía'], ['UA', '+380', 'Ucrania'], ['ZA', '+27', 'Sudáfrica'],
+];
+// La bandera sale de los códigos ISO como emoji: no hace falta cargar imágenes.
+const bandera = iso => String.fromCodePoint(...[...iso].map(c => 0x1f1a5 + c.charCodeAt(0)));
+const prefijoSel = document.getElementById('v-prefijo');
+prefijoSel.innerHTML = PAISES_TEL
+  .map(([iso, cod, nombre]) => `<option value="${cod}" data-iso="${iso}" data-corto="${bandera(iso)} ${cod}">${bandera(iso)} ${cod} · ${nombre}</option>`)
+  .join('');
+/* El select cerrado solo necesita bandera + prefijo, así el número se lleva el
+   ancho. Al desplegarlo devolvemos los nombres completos para poder buscar. */
+const textoLargo = o => `${o.dataset.corto} · ${PAISES_TEL.find(p => p[0] === o.dataset.iso)[2]}`;
+function expandirPrefijos() {
+  for (const o of prefijoSel.options) o.textContent = textoLargo(o);
+}
+function colapsarPrefijo() {
+  for (const o of prefijoSel.options) o.textContent = o.selected ? o.dataset.corto : textoLargo(o);
+}
+prefijoSel.addEventListener('pointerdown', expandirPrefijos);
+prefijoSel.addEventListener('focus', expandirPrefijos);
+prefijoSel.addEventListener('change', colapsarPrefijo);
+prefijoSel.addEventListener('blur', colapsarPrefijo);
+// Preselecciona el país por la zona horaria del navegador; si no, México.
+const TZ_PAIS = {
+  'America/Lima': 'PE', 'America/Mexico_City': 'MX', 'America/Tijuana': 'MX', 'America/Monterrey': 'MX',
+  'America/Argentina/Buenos_Aires': 'AR', 'America/Santiago': 'CL', 'America/Bogota': 'CO',
+  'America/Guayaquil': 'EC', 'America/La_Paz': 'BO', 'America/Caracas': 'VE', 'America/Montevideo': 'UY',
+  'America/Asuncion': 'PY', 'America/Sao_Paulo': 'BR', 'Europe/Madrid': 'ES', 'America/Santo_Domingo': 'DO',
+  'America/Guatemala': 'GT', 'America/Costa_Rica': 'CR', 'America/Panama': 'PA', 'America/Havana': 'CU',
+};
+try {
+  const iso = TZ_PAIS[Intl.DateTimeFormat().resolvedOptions().timeZone] || 'MX';
+  const opt = [...prefijoSel.options].find(o => o.dataset.iso === iso);
+  // Por índice, no por valor: varios países comparten prefijo (+1).
+  // defaultSelected para que el reset del formulario lo mantenga.
+  if (opt) prefijoSel.selectedIndex = opt.index, opt.defaultSelected = true;
+} catch { /* sin zona horaria: se queda con la primera opción */ }
+colapsarPrefijo();
+
 // Agentes: muestra el campo de detalle cuando se elige "Otro"
 const agentesSel = document.getElementById('v-agentes');
 const agentesOtro = document.getElementById('v-agentes-otro');
@@ -554,6 +618,8 @@ sellForm.addEventListener('submit', async e => {
   if (!sellForm.reportValidity()) return;
 
   const fields = Object.fromEntries(new FormData(sellForm));
+  // El teléfono viaja completo: prefijo del país + número marcado.
+  fields.contacto = `${prefijoSel.value} ${(fields.contacto || '').trim()}`.trim();
   if (fields.agentes === '__otro__') fields.agentes = (document.getElementById('v-agentes-custom').value || '').trim();
   // Normaliza los checkboxes a Sí/No para que queden claros en el registro.
   fields.recibos = fields.recibos ? 'Sí' : 'No';
@@ -577,6 +643,7 @@ sellForm.addEventListener('submit', async e => {
 
     setStatus(`¡Listo! Recibimos tu cuenta. Folio: ${folio}. Te contactaremos por Telegram para pedir las fotos y cerrar el trato.`, 'ok');
     sellForm.reset();
+    colapsarPrefijo();
     agentesOtro.classList.add('hidden');
     actualizarCamposJuego();
   } catch (err) {
