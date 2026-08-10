@@ -618,8 +618,8 @@ sellForm.addEventListener('submit', async e => {
   if (!sellForm.reportValidity()) return;
 
   const fields = Object.fromEntries(new FormData(sellForm));
-  // El teléfono viaja completo: prefijo del país + número marcado.
-  fields.contacto = `${prefijoSel.value} ${(fields.contacto || '').trim()}`.trim();
+  // El teléfono viaja junto y sin separadores: +51925593376.
+  fields.contacto = prefijoSel.value + String(fields.contacto || '').replace(/\D/g, '');
   if (fields.agentes === '__otro__') fields.agentes = (document.getElementById('v-agentes-custom').value || '').trim();
   // Normaliza los checkboxes a Sí/No para que queden claros en el registro.
   fields.recibos = fields.recibos ? 'Sí' : 'No';
