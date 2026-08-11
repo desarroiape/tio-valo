@@ -181,9 +181,75 @@
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Pavos (V-Bucks)</label>
                   <input name="pavos" type="number" min="0" placeholder="Ej. 2000" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
                 </div>
+                <div>
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Plataformas vinculadas</label>
+                  <select id="f-vinculadas" name="plataformas_vinculadas" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option value="">—</option>
+                    <option>No, solo Epic Games</option>
+                    <option>PlayStation</option>
+                    <option>Xbox</option>
+                    <option>Nintendo Switch</option>
+                    <option>Varias plataformas</option>
+                  </select>
+                </div>
+                <div id="campo-desvincular" class="hidden">
+                  <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Puede desvincular?</label>
+                  <select name="puede_desvincular" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                    <option value="">—</option>
+                    <option>Sí, puedo desvincularlas</option>
+                    <option>No, no puedo desvincularlas</option>
+                    <option>No estoy seguro</option>
+                  </select>
+                </div>
                 <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
                   <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Es cuenta OG 👑</label>
                   <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-cambio-nombre" name="cambio_nombre" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Se puede cambiar el nombre <span class="text-xs text-muted">(si no, no se menciona en el catálogo)</span></label>
+                </div>
+
+                <!-- Lo que llega del formulario de venta pero no se publica. -->
+                <div class="sm:col-span-2 border border-line/60 bg-ink/40 p-4 notch">
+                  <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-mint">Datos internos <span class="text-muted/70">· no salen en la web ni en los anuncios</span></p>
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Origen de la cuenta</label>
+                      <select name="origen" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                        <option value="">—</option>
+                        <option>Soy el creador original de la cuenta</option>
+                        <option>La compré a otra persona</option>
+                        <option>Otro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Invertido (USD)</label>
+                      <input name="inversion" type="number" min="0" placeholder="Ej. 450" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Cambio de correo (UGI)?</label>
+                      <select name="cambio_correo_ugi" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                        <option value="">—</option>
+                        <option>Sí, se puede cambiar sin problema</option>
+                        <option>No, el correo no se puede cambiar</option>
+                        <option>No estoy seguro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Historial de recuperación / revert?</label>
+                      <select name="historial_recuperacion" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                        <option value="">—</option>
+                        <option>No, nunca se recuperó ni tuvo revert</option>
+                        <option>Sí, tiene historial de recuperación o revert</option>
+                        <option>No estoy seguro</option>
+                      </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Bloqueos o restricciones?</label>
+                      <select name="bloqueos" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
+                        <option value="">—</option>
+                        <option>No, está limpia</option>
+                        <option>Sí (lo detallo en las notas)</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -370,6 +436,15 @@ function actualizarCamposJuego() {
 juegoSel.addEventListener('change', actualizarCamposJuego);
 actualizarCamposJuego();
 
+// Desvincular solo tiene sentido si hay plataformas vinculadas (igual que en /vender).
+const vinculadasSel = $('#f-vinculadas');
+function actualizarDesvincular() {
+  const hay = vinculadasSel.value && vinculadasSel.value !== 'No, solo Epic Games';
+  document.getElementById('campo-desvincular').classList.toggle('hidden', !hay);
+  if (!hay) createForm.elements['puede_desvincular'].value = '';
+}
+vinculadasSel.addEventListener('change', actualizarDesvincular);
+
 // Etiquetas destacadas (clic para agregar)
 const ETIQUETAS = [
   'Vandal Exelio', 'Cuenta chetada', 'Cuenta verificada', 'Exclusiva', 'Cuenta económica',
@@ -490,6 +565,15 @@ function construirPatch(fields, urls) {
     pavos: ft ? admNumOrNull(fields.pavos) : null,
     og: ft ? !!fields.og : false,
     cambio_nombre: ft ? !!fields.cambio_nombre : false,
+    // Públicos: salen en el catálogo.
+    plataformas_vinculadas: ft ? (fields.plataformas_vinculadas || null) : null,
+    puede_desvincular: ft ? (fields.puede_desvincular || null) : null,
+    // Internos: solo se ven acá al editar la cuenta.
+    origen: ft ? (fields.origen || null) : null,
+    inversion: ft ? admNumOrNull(fields.inversion) : null,
+    cambio_correo_ugi: ft ? (fields.cambio_correo_ugi || null) : null,
+    historial_recuperacion: ft ? (fields.historial_recuperacion || null) : null,
+    bloqueos: ft ? (fields.bloqueos || null) : null,
     recibos: !!fields.recibos,
     recuperacion: !!fields.recuperacion,
     imagenes: urls,
@@ -515,6 +599,14 @@ function entrarEdicion(c) {
     setVal('pavos', c.pavos ?? '');
     document.getElementById('f-og').checked = !!c.og;
     document.getElementById('f-cambio-nombre').checked = !!c.cambio_nombre;
+    setVal('plataformas_vinculadas', c.plataformas_vinculadas || '');
+    setVal('puede_desvincular', c.puede_desvincular || '');
+    setVal('origen', c.origen || '');
+    setVal('inversion', c.inversion ?? '');
+    setVal('cambio_correo_ugi', c.cambio_correo_ugi || '');
+    setVal('historial_recuperacion', c.historial_recuperacion || '');
+    setVal('bloqueos', c.bloqueos || '');
+    actualizarDesvincular();
   } else {
     setVal('region', c.region || 'LATAM');
     setVal('pais', c.pais || '');
@@ -549,6 +641,7 @@ function salirEdicion() {
   editandoId = null;
   createForm.reset();
   actualizarCamposJuego();
+  actualizarDesvincular();
   limpiarEtiquetas();
   agentesEditar.classList.add('hidden');
   fotos.forEach(f => { if (!f.remote) URL.revokeObjectURL(f.url); });

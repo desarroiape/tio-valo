@@ -103,6 +103,8 @@
       plataforma: row.plataforma || '',
       og: !!row.og,
       cambio_nombre: !!row.cambio_nombre,
+      plataformas_vinculadas: row.plataformas_vinculadas || '',
+      puede_desvincular: row.puede_desvincular || '',
       rango_maximo: row.rango_maximo || '',
       agentes: row.agentes || '',
       recibos: !!row.recibos,
@@ -289,6 +291,17 @@
   function correoIncluido(c) {
     return /correo original incluido/i.test(c.correo || '');
   }
+  // Vinculación en palabras. No tener nada vinculado es buena noticia para el
+  // comprador, así que se enuncia en positivo en vez de como un "no".
+  function vinculacion(c) {
+    const v = c.plataformas_vinculadas;
+    if (!v) return [];
+    if (v === 'No, solo Epic Games') return ['Solo Epic Games, sin vincular'];
+    const out = [v === 'Varias plataformas' ? 'Vinculada a varias plataformas' : `Vinculada a ${v}`];
+    // Desvincular solo se menciona cuando sí se puede.
+    if (/^s[ií]/i.test(c.puede_desvincular || '')) out.push('Se pueden desvincular');
+    return out;
+  }
   // Resumen del preview: specs como recuadros (valor resaltado) + garantías como mini-lista.
   function resumenCard(c) {
     const specs = [];
@@ -310,6 +323,7 @@
     if (correoIncluido(c)) gar.push('Correo original incluido');
     // Solo se menciona cuando sí se puede: si no, no aparece nada.
     if (c.cambio_nombre) gar.push('Se puede cambiar el nombre');
+    vinculacion(c).forEach(v => gar.push(v));
     if (c.recibos) gar.push('Recibos de compra incluidos');
     if (c.recuperacion) gar.push('Preguntas de recuperación incluidas');
     const garHtml = gar.length ? `<ul class="mt-3 flex flex-col gap-1.5">
@@ -391,6 +405,7 @@
     if (correoIncluido(c)) chips.push(chip('<path d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"/><path d="M3.5 7l8.5 6 8.5-6"/>', c.correo));
     // Solo se menciona cuando sí se puede: si no, no aparece nada.
     if (c.cambio_nombre) chips.push(chip('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>', 'Se puede cambiar el nombre'));
+    vinculacion(c).forEach(v => chips.push(chip('<path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/>', v)));
     if (c.recibos) chips.push(chip('<path d="M7 3h10a1 1 0 011 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/>', 'Recibos de compra'));
     if (c.recuperacion) chips.push(chip('<path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/><path d="M9 12l2 2 4-4"/>', 'Preguntas de recuperación'));
 
