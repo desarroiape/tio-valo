@@ -204,52 +204,6 @@
                 <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
                   <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-cambio-nombre" name="cambio_nombre" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Se puede cambiar el nombre <span class="text-xs text-muted">(si no, no se menciona en el catálogo)</span></label>
                 </div>
-
-                <!-- Lo que llega del formulario de venta pero no se publica. -->
-                <div class="sm:col-span-2 border border-line/60 bg-ink/40 p-4 notch">
-                  <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-mint">Datos internos <span class="text-muted/70">· no salen en la web ni en los anuncios</span></p>
-                  <div class="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Origen de la cuenta</label>
-                      <select name="origen" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                        <option value="">—</option>
-                        <option>Soy el creador original de la cuenta</option>
-                        <option>La compré a otra persona</option>
-                        <option>Otro</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Invertido (USD)</label>
-                      <input name="inversion" type="number" min="0" placeholder="Ej. 450" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
-                    </div>
-                    <div>
-                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Cambio de correo (UGI)?</label>
-                      <select name="cambio_correo_ugi" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                        <option value="">—</option>
-                        <option>Sí, se puede cambiar sin problema</option>
-                        <option>No, el correo no se puede cambiar</option>
-                        <option>No estoy seguro</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Historial de recuperación / revert?</label>
-                      <select name="historial_recuperacion" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                        <option value="">—</option>
-                        <option>No, nunca se recuperó ni tuvo revert</option>
-                        <option>Sí, tiene historial de recuperación o revert</option>
-                        <option>No estoy seguro</option>
-                      </select>
-                    </div>
-                    <div class="sm:col-span-2">
-                      <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Bloqueos o restricciones?</label>
-                      <select name="bloqueos" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream focus:border-red focus:outline-none">
-                        <option value="">—</option>
-                        <option>No, está limpia</option>
-                        <option>Sí (lo detallo en las notas)</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
             <div>
@@ -444,13 +398,22 @@ function actualizarDesvincular() {
 }
 vinculadasSel.addEventListener('change', actualizarDesvincular);
 
-// Etiquetas destacadas (clic para agregar)
-const ETIQUETAS = [
+// Etiquetas destacadas (clic para agregar). Una lista por juego: las de
+// Valorant no le sirven a quien publica Fortnite y al revés. Las cuatro
+// primeras de cada lista son descriptores de la cuenta, no skins.
+const ETIQUETAS_VALORANT = [
   'Vandal Exelio', 'Cuenta chetada', 'Cuenta verificada', 'Exclusiva', 'Cuenta económica',
   'Unranked - sin skins', 'Skins beta', 'Sheriff Neo Frontier', 'Skins RGX', 'Skins Soberanas',
   'Vandal Araxys', 'Pack Arcane', 'Vandal Kuronami', 'Cuchillo Xenocazador', 'Packs Champions todo',
   'Vandal Evori', 'Skins VCT', 'Cuchillo Ignite',
 ];
+const ETIQUETAS_FORTNITE = [
+  'Cuenta chetada', 'Cuenta verificada', 'Exclusiva', 'Cuenta económica',
+  'Renegade Raider', 'Aerial Assault Trooper', 'Black Knight', 'Skull Trooper',
+  'Ghoul Trooper', 'Ikonik', 'Galaxy', 'Honor Guard', 'Double Helix', 'Wildcat',
+  'Travis Scott', 'Planeador Mako', 'Pase de batalla completo', 'Skins de colaboración',
+];
+const etiquetasDelJuego = () => (juegoSel.value === 'fortnite' ? ETIQUETAS_FORTNITE : ETIQUETAS_VALORANT);
 const etiquetasCont = document.getElementById('etiquetas');
 const etiquetaNueva = document.getElementById('etiqueta-nueva');
 const etiquetaAdd = document.getElementById('etiqueta-add');
@@ -479,9 +442,11 @@ function chipPorTag(tag) {
 }
 function renderEtiquetas() {
   etiquetasCont.innerHTML = '';
-  ETIQUETAS.forEach(t => etiquetasCont.appendChild(makeChip(t, false)));
+  etiquetasDelJuego().forEach(t => etiquetasCont.appendChild(makeChip(t, false)));
 }
 renderEtiquetas();
+// Al cambiar de juego se cambia la lista; lo marcado no aplica al otro juego.
+juegoSel.addEventListener('change', renderEtiquetas);
 
 etiquetasCont.addEventListener('click', e => {
   const b = e.target.closest('[data-tag]'); if (!b) return;
@@ -515,9 +480,11 @@ etiquetaNueva.addEventListener('keydown', e => {
 function etiquetasSeleccionadas() {
   return [...etiquetasCont.querySelectorAll('.is-on')].map(b => b.dataset.tag);
 }
+// Rehace la lista desde cero: borra los chips ad-hoc, desmarca todo y, de
+// paso, deja las etiquetas del juego que esté seleccionado. Al entrar a editar
+// se asigna juegoSel.value por código y eso no dispara el evento 'change'.
 function limpiarEtiquetas() {
-  etiquetasCont.querySelectorAll('[data-adhoc]').forEach(b => b.remove());
-  etiquetasCont.querySelectorAll('.is-on').forEach(b => setChipState(b, false));
+  renderEtiquetas();
 }
 
 // Agentes: muestra el campo de detalle cuando se elige "Editar"
@@ -565,15 +532,8 @@ function construirPatch(fields, urls) {
     // og quedó retirado del sitio. Se omite del patch a propósito para no
     // pisar el valor guardado de las cuentas que lo tenían.
     cambio_nombre: ft ? !!fields.cambio_nombre : false,
-    // Públicos: salen en el catálogo.
     plataformas_vinculadas: ft ? (fields.plataformas_vinculadas || null) : null,
     puede_desvincular: ft ? (fields.puede_desvincular || null) : null,
-    // Internos: solo se ven acá al editar la cuenta.
-    origen: ft ? (fields.origen || null) : null,
-    inversion: ft ? admNumOrNull(fields.inversion) : null,
-    cambio_correo_ugi: ft ? (fields.cambio_correo_ugi || null) : null,
-    historial_recuperacion: ft ? (fields.historial_recuperacion || null) : null,
-    bloqueos: ft ? (fields.bloqueos || null) : null,
     recibos: !!fields.recibos,
     recuperacion: !!fields.recuperacion,
     imagenes: urls,
@@ -600,11 +560,6 @@ function entrarEdicion(c) {
     document.getElementById('f-cambio-nombre').checked = !!c.cambio_nombre;
     setVal('plataformas_vinculadas', c.plataformas_vinculadas || '');
     setVal('puede_desvincular', c.puede_desvincular || '');
-    setVal('origen', c.origen || '');
-    setVal('inversion', c.inversion ?? '');
-    setVal('cambio_correo_ugi', c.cambio_correo_ugi || '');
-    setVal('historial_recuperacion', c.historial_recuperacion || '');
-    setVal('bloqueos', c.bloqueos || '');
     actualizarDesvincular();
   } else {
     setVal('region', c.region || 'LATAM');

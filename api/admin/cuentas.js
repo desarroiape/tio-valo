@@ -58,15 +58,8 @@ export default async function handler(req, res) {
         // og quedó retirado del sitio; la columna sigue ahí con el histórico.
         og: false,
         cambio_nombre: juego === 'fortnite' ? !!b.cambio_nombre : false,
-        // Públicos: el catálogo los muestra.
         plataformas_vinculadas: juego === 'fortnite' ? (b.plataformas_vinculadas || null) : null,
         puede_desvincular: juego === 'fortnite' ? (b.puede_desvincular || null) : null,
-        // Internos: quedan guardados para /admin, nunca se publican.
-        origen: juego === 'fortnite' ? (b.origen || null) : null,
-        inversion: juego === 'fortnite' ? numOrNull(b.inversion) : null,
-        cambio_correo_ugi: juego === 'fortnite' ? (b.cambio_correo_ugi || null) : null,
-        historial_recuperacion: juego === 'fortnite' ? (b.historial_recuperacion || null) : null,
-        bloqueos: juego === 'fortnite' ? (b.bloqueos || null) : null,
         // Compartidos
         recibos: !!b.recibos,
         recuperacion: !!b.recuperacion,
