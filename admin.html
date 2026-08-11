@@ -202,7 +202,6 @@
                   </select>
                 </div>
                 <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
-                  <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Es cuenta OG 👑</label>
                   <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-cambio-nombre" name="cambio_nombre" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Se puede cambiar el nombre <span class="text-xs text-muted">(si no, no se menciona en el catálogo)</span></label>
                 </div>
 
@@ -563,7 +562,8 @@ function construirPatch(fields, urls) {
     plataforma: ft ? (fields.plataforma || null) : null,
     nivel: ft ? admNumOrNull(fields.nivel) : null,
     pavos: ft ? admNumOrNull(fields.pavos) : null,
-    og: ft ? !!fields.og : false,
+    // og ya no se pregunta al publicar. Se omite del patch a propósito: si se
+    // enviara en false, editar una cuenta OG existente le borraría el badge.
     cambio_nombre: ft ? !!fields.cambio_nombre : false,
     // Públicos: salen en el catálogo.
     plataformas_vinculadas: ft ? (fields.plataformas_vinculadas || null) : null,
@@ -597,7 +597,6 @@ function entrarEdicion(c) {
     setVal('plataforma', c.plataforma || 'PC');
     setVal('nivel', c.nivel ?? '');
     setVal('pavos', c.pavos ?? '');
-    document.getElementById('f-og').checked = !!c.og;
     document.getElementById('f-cambio-nombre').checked = !!c.cambio_nombre;
     setVal('plataformas_vinculadas', c.plataformas_vinculadas || '');
     setVal('puede_desvincular', c.puede_desvincular || '');

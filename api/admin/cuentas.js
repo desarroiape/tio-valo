@@ -55,7 +55,9 @@ export default async function handler(req, res) {
         pavos: juego === 'fortnite' ? numOrNull(b.pavos) : null,
         nivel: juego === 'fortnite' ? numOrNull(b.nivel) : null,
         plataforma: juego === 'fortnite' ? (b.plataforma || null) : null,
-        og: juego === 'fortnite' ? !!b.og : false,
+        // og ya no se pregunta al publicar: las cuentas nuevas nacen sin él.
+        // En el PATCH sí se omite, para no borrarle el badge a las que ya lo tienen.
+        og: false,
         cambio_nombre: juego === 'fortnite' ? !!b.cambio_nombre : false,
         // Públicos: el catálogo los muestra.
         plataformas_vinculadas: juego === 'fortnite' ? (b.plataformas_vinculadas || null) : null,
