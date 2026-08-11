@@ -61,9 +61,10 @@ export default async function handler(req, res) {
         plataformas_vinculadas: juego === 'fortnite' ? (b.plataformas_vinculadas || null) : null,
         puede_desvincular: juego === 'fortnite' ? (b.puede_desvincular || null) : null,
         // Compartidos
-        recibos: !!b.recibos,
+        // Recibos y link son solo de Valorant; en Fortnite ni se preguntan.
+        recibos: juego === 'fortnite' ? false : !!b.recibos,
         recuperacion: !!b.recuperacion,
-        link: b.link ? String(b.link).trim() : null,
+        link: juego === 'fortnite' ? null : (b.link ? String(b.link).trim() : null),
         imagenes: Array.isArray(b.imagenes) ? b.imagenes : [],
         estado: 'disponible',
       });

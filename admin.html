@@ -222,12 +222,12 @@
                 <option>Sin correo original</option>
               </select>
             </div>
-            <div class="sm:col-span-2">
+            <div id="campo-link" class="sm:col-span-2">
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Link (explorar nombre) <span class="text-muted/60">(opcional)</span></label>
               <input name="link" type="url" placeholder="https://tracker.gg/valorant/... o el enlace que quieras" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
             </div>
             <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
-              <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recibos" value="1" class="h-4 w-4 accent-red" /> Incluye recibos de compra</label>
+              <label id="campo-recibos" class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recibos" value="1" class="h-4 w-4 accent-red" /> Incluye recibos de compra</label>
               <label class="flex items-center gap-2 text-sm text-cream/85"><input type="checkbox" name="recuperacion" value="1" class="h-4 w-4 accent-red" /> Incluye respuestas de preguntas de recuperación</label>
             </div>
             <div class="sm:col-span-2">
@@ -385,6 +385,13 @@ function actualizarCamposJuego() {
   const ft = juegoSel.value === 'fortnite';
   document.querySelector('.campo-valorant').classList.toggle('hidden', ft);
   document.querySelector('.campo-fortnite').classList.toggle('hidden', !ft);
+  // Recibos y link solo aplican a Valorant.
+  document.getElementById('campo-link').classList.toggle('hidden', ft);
+  document.getElementById('campo-recibos').classList.toggle('hidden', ft);
+  if (ft) {
+    createForm.elements['link'].value = '';
+    createForm.elements['recibos'].checked = false;
+  }
 }
 juegoSel.addEventListener('change', actualizarCamposJuego);
 actualizarCamposJuego();
@@ -520,7 +527,8 @@ function construirPatch(fields, urls) {
     skins: admNumOrNull(fields.skins),
     destacadas: fields.destacadas || null,
     correo: fields.correo || null,
-    link: fields.link ? String(fields.link).trim() : null,
+    // Recibos y link son solo de Valorant; en Fortnite ni se preguntan.
+    link: ft ? null : (fields.link ? String(fields.link).trim() : null),
     rango: ft ? null : (fields.rango || null),
     region: ft ? null : (fields.region || null),
     pais: ft ? null : (fields.pais || null),
@@ -534,7 +542,7 @@ function construirPatch(fields, urls) {
     cambio_nombre: ft ? !!fields.cambio_nombre : false,
     plataformas_vinculadas: ft ? (fields.plataformas_vinculadas || null) : null,
     puede_desvincular: ft ? (fields.puede_desvincular || null) : null,
-    recibos: !!fields.recibos,
+    recibos: ft ? false : !!fields.recibos,
     recuperacion: !!fields.recuperacion,
     imagenes: urls,
   };
