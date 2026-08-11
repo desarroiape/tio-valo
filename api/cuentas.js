@@ -9,7 +9,7 @@ import { listCuentas } from '../lib/supabase.mjs';
 const CAMPOS_PUBLICOS = [
   'id', 'juego', 'codigo', 'titulo', 'descripcion', 'precio', 'skins',
   'destacadas', 'correo', 'rango', 'region', 'pais', 'rango_maximo', 'agentes',
-  'plataforma', 'nivel', 'pavos', 'og', 'cambio_nombre',
+  'plataforma', 'nivel', 'pavos', 'cambio_nombre',
   'plataformas_vinculadas', 'puede_desvincular',
   'recibos', 'recuperacion', 'link', 'imagenes', 'estado',
 ];

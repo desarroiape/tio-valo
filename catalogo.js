@@ -101,7 +101,6 @@
       pavos: row.pavos,
       nivel: row.nivel,
       plataforma: row.plataforma || '',
-      og: !!row.og,
       cambio_nombre: !!row.cambio_nombre,
       plataformas_vinculadas: row.plataformas_vinculadas || '',
       puede_desvincular: row.puede_desvincular || '',
@@ -349,7 +348,6 @@
           <img src="${c.img}" alt="${c.titulo}" class="card-img h-full w-full object-cover" loading="lazy" />
           <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-1/2 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent"></div>
           ${estadoBadgeHtml(c, false)}
-          ${ES_FT && c.og ? `<span class="tag absolute right-3 top-3 z-10 bg-gold px-2 py-1 font-mono text-[10px] font-700 uppercase tracking-wider text-ink">OG</span>` : ''}
           <span class="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/85"><span class="h-2 w-[2px] bg-red"></span>${c.codigo}</span>
         </div>
         ${tipos.length ? `<div class="flex flex-wrap gap-1.5 px-5 pt-3">${tipos.map(t => tagTipoHtml(t, false)).join('')}</div>` : ''}
@@ -415,7 +413,6 @@
         <img id="detalle-img" src="${c.img}" alt="${c.titulo}" onclick="ampliarImg(this.src)" class="h-full w-full cursor-zoom-in object-cover" />
         <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-2/3 bg-gradient-to-t from-ink via-ink/55 to-transparent"></div>
         ${estadoBadgeHtml(c, true)}
-        ${ES_FT && c.og ? `<span class="tag absolute right-4 top-4 z-10 bg-gold px-3 py-1 font-mono text-[11px] font-700 uppercase tracking-wider text-ink">OG 👑</span>` : ''}
         ${tiposDetalle.length ? `<div class="absolute bottom-4 left-4 z-10 flex flex-wrap gap-2">${tiposDetalle.map(t => tagTipoHtml(t, false)).join('')}</div>` : ''}
         <div class="absolute bottom-4 right-4 z-10 flex items-baseline gap-1.5 border border-red/40 bg-ink/80 px-4 py-2 notch-tr backdrop-blur-sm">
           ${tienePrecio(c.precio)

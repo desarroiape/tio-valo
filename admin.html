@@ -562,8 +562,8 @@ function construirPatch(fields, urls) {
     plataforma: ft ? (fields.plataforma || null) : null,
     nivel: ft ? admNumOrNull(fields.nivel) : null,
     pavos: ft ? admNumOrNull(fields.pavos) : null,
-    // og ya no se pregunta al publicar. Se omite del patch a propósito: si se
-    // enviara en false, editar una cuenta OG existente le borraría el badge.
+    // og quedó retirado del sitio. Se omite del patch a propósito para no
+    // pisar el valor guardado de las cuentas que lo tenían.
     cambio_nombre: ft ? !!fields.cambio_nombre : false,
     // Públicos: salen en el catálogo.
     plataformas_vinculadas: ft ? (fields.plataformas_vinculadas || null) : null,
