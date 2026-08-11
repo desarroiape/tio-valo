@@ -56,6 +56,7 @@ export default async function handler(req, res) {
         nivel: juego === 'fortnite' ? numOrNull(b.nivel) : null,
         plataforma: juego === 'fortnite' ? (b.plataforma || null) : null,
         og: juego === 'fortnite' ? !!b.og : false,
+        cambio_nombre: juego === 'fortnite' ? !!b.cambio_nombre : false,
         // Compartidos
         recibos: !!b.recibos,
         recuperacion: !!b.recuperacion,

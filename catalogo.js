@@ -102,6 +102,7 @@
       nivel: row.nivel,
       plataforma: row.plataforma || '',
       og: !!row.og,
+      cambio_nombre: !!row.cambio_nombre,
       rango_maximo: row.rango_maximo || '',
       agentes: row.agentes || '',
       recibos: !!row.recibos,
@@ -300,6 +301,8 @@
 
     const gar = [];
     if (correoIncluido(c)) gar.push('Correo original incluido');
+    // Solo se menciona cuando sí se puede: si no, no aparece nada.
+    if (c.cambio_nombre) gar.push('Se puede cambiar el nombre');
     if (c.recibos) gar.push('Recibos de compra incluidos');
     if (c.recuperacion) gar.push('Preguntas de recuperación incluidas');
     const garHtml = gar.length ? `<ul class="mt-3 flex flex-col gap-1.5">
@@ -379,6 +382,8 @@
       <svg width="15" height="15" viewBox="0 0 24 24" class="shrink-0 text-mint" fill="none" stroke="currentColor" stroke-width="2">${icono}</svg>${texto}</span>`;
     const chips = [];
     if (correoIncluido(c)) chips.push(chip('<path d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"/><path d="M3.5 7l8.5 6 8.5-6"/>', c.correo));
+    // Solo se menciona cuando sí se puede: si no, no aparece nada.
+    if (c.cambio_nombre) chips.push(chip('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>', 'Se puede cambiar el nombre'));
     if (c.recibos) chips.push(chip('<path d="M7 3h10a1 1 0 011 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 011-1z"/><path d="M9 8h6M9 12h6"/>', 'Recibos de compra'));
     if (c.recuperacion) chips.push(chip('<path d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4z"/><path d="M9 12l2 2 4-4"/>', 'Preguntas de recuperación'));
 

@@ -181,9 +181,9 @@
                   <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Pavos (V-Bucks)</label>
                   <input name="pavos" type="number" min="0" placeholder="Ej. 2000" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" />
                 </div>
-                <div class="flex items-center gap-2 pt-7">
-                  <input id="f-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-red" />
-                  <label for="f-og" class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">¿Es cuenta OG?</label>
+                <div class="sm:col-span-2 flex flex-col gap-2 border border-line/60 bg-ink/40 p-3 notch">
+                  <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-og" name="og" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Es cuenta OG 👑</label>
+                  <label class="flex items-center gap-2 text-sm text-cream/85"><input id="f-cambio-nombre" name="cambio_nombre" type="checkbox" value="1" class="h-4 w-4 accent-red" /> Se puede cambiar el nombre <span class="text-xs text-muted">(si no, no se menciona en el catálogo)</span></label>
                 </div>
               </div>
             </div>
@@ -489,6 +489,7 @@ function construirPatch(fields, urls) {
     nivel: ft ? admNumOrNull(fields.nivel) : null,
     pavos: ft ? admNumOrNull(fields.pavos) : null,
     og: ft ? !!fields.og : false,
+    cambio_nombre: ft ? !!fields.cambio_nombre : false,
     recibos: !!fields.recibos,
     recuperacion: !!fields.recuperacion,
     imagenes: urls,
@@ -513,6 +514,7 @@ function entrarEdicion(c) {
     setVal('nivel', c.nivel ?? '');
     setVal('pavos', c.pavos ?? '');
     document.getElementById('f-og').checked = !!c.og;
+    document.getElementById('f-cambio-nombre').checked = !!c.cambio_nombre;
   } else {
     setVal('region', c.region || 'LATAM');
     setVal('pais', c.pais || '');
