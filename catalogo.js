@@ -128,10 +128,12 @@
 
   function construirSidebar() {
     const b = [];
-    b.push(`<div>${lbl('Skins destacadas')}<input id="f-texto" type="search" placeholder="Ej. ${ES_FT ? 'Renegade Raider' : 'Reaver Vandal'}" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" /></div>`);
+    // Busca por título y por skins destacadas a la vez.
+    b.push(`<div>${lbl('Buscar')}<input id="f-texto" type="search" placeholder="Ej. ${ES_FT ? 'Renegade Raider' : 'Reaver Vandal'}" class="w-full border border-line bg-ink px-3 py-2 text-sm text-cream placeholder:text-muted/60 focus:border-red focus:outline-none" /></div>`);
     if (ES_FT) {
       b.push(`<div>${lbl('Plataforma')}<div id="f-plataformas" class="space-y-2"></div></div>`);
-      b.push(`<div>${lbl('Cuenta')}<label class="flex cursor-pointer items-center gap-2 text-sm text-cream/85 hover:text-cream"><input id="f-og" type="checkbox" class="peer sr-only" /><span class="h-4 w-4 shrink-0 rounded border border-line bg-ink peer-checked:border-red peer-checked:bg-red"></span>Solo cuentas OG 👑</label></div>`);
+      // Lista larga: se limita la altura para que el resto de filtros siga a la vista.
+      b.push(`<div>${lbl('Skins destacadas')}<div id="f-destacadas" class="max-h-56 space-y-2 overflow-y-auto pr-1"></div></div>`);
       b.push(`<div>${sliderVal('Skins (mínimo)', 'f-skins-val')}<input id="f-skins" type="range" min="0" max="200" value="0" class="w-full accent-red" /></div>`);
       b.push(`<div>${sliderVal('Pavos (mínimo)', 'f-pavos-val')}<input id="f-pavos" type="range" min="0" max="10000" value="0" class="w-full accent-red" /></div>`);
     } else {
@@ -171,6 +173,9 @@
     if (ES_FT) {
       const plats = set('plataforma');
       document.getElementById('f-plataformas').innerHTML = plats.length ? plats.map(p => chip('plataforma', p)).join('') : '<span class="text-xs text-muted">—</span>';
+      const skins = [...new Set(ALL.flatMap(c => (c.destacado || '').split(/[,·]/).map(s => s.trim()).filter(Boolean)))]
+        .sort((a, b) => a.localeCompare(b, 'es'));
+      document.getElementById('f-destacadas').innerHTML = skins.length ? skins.map(s => chip('destacadas', s)).join('') : '<span class="text-xs text-muted">—</span>';
       setSlider('f-skins', 'f-skins-val', ALL.map(c => num(c.skins)), 10, false);
       setSlider('f-pavos', 'f-pavos-val', ALL.map(c => num(c.pavos)), 1000, false, ' ');
     } else {
@@ -205,13 +210,13 @@
     const skv = document.getElementById('f-skins-val'); if (skv) skv.textContent = String(minSkins);
     const pcv = document.getElementById('f-precio-val'); if (pcv) pcv.textContent = '$' + maxPrecio;
 
-    let minPavos = 0, soloOg = false, plats = null, rangos = null, regiones = null;
+    let minPavos = 0, plats = null, destacadasSel = null, rangos = null, regiones = null;
     let recibosSel = null, recupSel = null, otrosSel = null, agentesTxt = '';
     if (ES_FT) {
       minPavos = Number(val('f-pavos') || 0);
       const pvv = document.getElementById('f-pavos-val'); if (pvv) pvv.textContent = String(minPavos);
-      soloOg = document.getElementById('f-og').checked;
       plats = seleccionados('plataforma');
+      destacadasSel = seleccionados('destacadas');
     } else {
       rangos = seleccionados('rango');
       regiones = seleccionados('region');
@@ -228,7 +233,10 @@
       if (texto && !`${c.destacado} ${c.titulo}`.toLowerCase().includes(texto)) return false;
       if (ES_FT) {
         if (plats.size && !plats.has(c.plataforma)) return false;
-        if (soloOg && !c.og) return false;
+        if (destacadasSel.size) {
+          const tags = (c.destacado || '').split(/[,·]/).map(t => t.trim());
+          if (![...destacadasSel].some(t => tags.includes(t))) return false;
+        }
         const p = num(c.pavos);
         if (!Number.isNaN(p) && p < minPavos) return false;
       } else {
@@ -250,7 +258,6 @@
   function limpiar() {
     document.querySelectorAll('#filtros input[type="search"]').forEach(i => (i.value = ''));
     document.querySelectorAll('input[data-grupo]:checked').forEach(i => (i.checked = false));
-    const og = document.getElementById('f-og'); if (og) og.checked = false;
     ['f-skins', 'f-pavos'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
     const pr = document.getElementById('f-precio'); if (pr) pr.value = pr.max;
     aplicarFiltros();
