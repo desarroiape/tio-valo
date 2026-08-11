@@ -206,7 +206,7 @@
               <label class="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Dinero invertido en la cuenta (USD)</label>
               <input name="inversion" type="number" min="0" placeholder="Ej. 450" class="w-full border border-line bg-ink px-3 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-mint focus:outline-none" />
               <a id="link-historial" href="https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-[11px] text-mint underline decoration-mint/40 underline-offset-2 hover:decoration-mint">
-                ¿Cómo ver mi historial de compras?
+                <span id="link-historial-texto">¿Cómo ver mi historial de compras?</span>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"/></svg>
               </a>
             </div>
@@ -494,8 +494,11 @@ function actualizarCamposJuego() {
   // Ayudas contextuales del juego elegido.
   const link = document.getElementById('link-historial');
   link.href = ft
-    ? 'https://www.epicgames.com/help/es-ES/c-Category_EpicAccount/c-AccountPayments/como-veo-el-historial-de-transacciones-de-mi-cuenta-de-epic-games-a000084727'
+    ? 'https://www.epicgames.com/help/billing-and-payment-c-202300000001642/general-support-c-202300000001746/cuanto-dinero-gaste-en-mi-cuenta-de-epic-games-a202300000016849'
     : 'https://support.riotgames.com/es-es/valorant/billing/checking-your-purchase-history';
+  document.getElementById('link-historial-texto').textContent = ft
+    ? '¿Cuánto dinero gasté en mi cuenta de Epic Games?'
+    : '¿Cómo ver mi historial de compras?';
   document.getElementById('v-destacadas').placeholder = ft
     ? 'Ej. Aguja Negra, Renegado, pico de Travis Scott...'
     : 'Ej. Reaver Vandal, Champions 2023, cuchillo Prime...';
