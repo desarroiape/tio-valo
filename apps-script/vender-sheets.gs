@@ -117,6 +117,41 @@ var COLUMNS = {
 };
 
 /* ---------------------------------------------------------------------
+   EJECUTAR ESTA PRIMERO, desde el editor.
+
+   Implementar NO dispara la ventana de permisos: el consentimiento salta
+   al ejecutar una función. Como abrir libros por ID necesita un permiso
+   que el script no tenía, hay que provocarlo a mano una vez.
+
+   Selecciónala en el desplegable de arriba y pulsá "Ejecutar". Google va
+   a pedir autorización (si sale "Google no ha verificado esta app":
+   Configuración avanzada → Ir a…). Después mirá el registro de ejecución:
+   te dice el nombre real del archivo al que escribe cada juego.
+
+   Solo lee nombres de archivo. No escribe ni modifica nada.
+   --------------------------------------------------------------------- */
+function probarLibros() {
+  var juegos = Object.keys(LIBROS);
+  var lineas = ['Secreto configurado: ' + (SECRET !== 'CAMBIA_ESTE_SECRETO')];
+  for (var i = 0; i < juegos.length; i++) {
+    var j = juegos[i];
+    var id = LIBROS[j];
+    if (!id || id.indexOf('PON_AQUI') !== -1) {
+      lineas.push(j + ': ID SIN CONFIGURAR');
+      continue;
+    }
+    try {
+      lineas.push(j + ': "' + SpreadsheetApp.openById(id).getName() + '"');
+    } catch (err) {
+      lineas.push(j + ': NO SE PUDO ABRIR -> ' + err);
+    }
+  }
+  var msg = lineas.join('\n');
+  Logger.log(msg);
+  return msg;
+}
+
+/* ---------------------------------------------------------------------
    EJECUTAR UNA SOLA VEZ para dejar la pestaña de Fortnite con los
    encabezados correctos. Selecciónala arriba en el editor y pulsa
    "Ejecutar". No toca la pestaña de Valorant.
