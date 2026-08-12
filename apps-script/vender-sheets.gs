@@ -12,12 +12,21 @@
    bajo el suyo y los que falten se añaden al final, así que cambiar una
    pregunta del formulario ya no descuadra nada.
 
-   IMPORTANTE: guardar NO basta. La URL /exec sigue corriendo la versión
+   IMPORTANTE 1: al pegar este archivo se pisa SECRET con el placeholder.
+   Vuelve a poner ahí el mismo texto de SHEETS_SECRET antes de implementar,
+   o el sitio recibirá "Secreto inválido" y no se guardará nada.
+
+   IMPORTANTE 2: guardar NO basta. La URL /exec sigue corriendo la versión
    publicada, así que tras pegar esta versión hay que RE-IMPLEMENTAR:
    Implementar → Gestionar implementaciones → (editar la actual) →
    Versión: "Nueva versión" → Implementar. La URL no cambia.
    La primera vez Google pedirá autorizar de nuevo (ahora abre archivos
    por ID): acepta.
+
+   PARA COMPROBAR: abre la URL /exec en el navegador. Debe responder con
+   "version" y un campo "libros" con el nombre real de cada archivo. Si
+   solo dice {"ok":true,"msg":"Webhook de venta activo"}, la versión
+   publicada es vieja y por eso todo cae en un solo libro.
    ─────────────────────────────────────────────────────────────────────
    CÓMO CONECTARLO (una sola vez):
    1. Abre el editor: script.google.com, o Extensiones → Apps Script
@@ -44,6 +53,10 @@ var LIBROS = {
   valorant: '1Odr9_5CFQkU5cqbkTM6iV1u5t5yU5J6VcNqI07vDUsI',
   fortnite: '1jHmWOfwwCix054PkP7W8xtSUl7kfXP6n7AKkjwlx6yo',
 };
+
+/* Marca de versión: aparece al abrir la URL /exec. Si lo que ves ahí no
+   coincide con esto, el Web App sigue publicando una versión anterior. */
+var VERSION = '2026-08-11';
 
 var SECRET = 'CAMBIA_ESTE_SECRETO';         // debe coincidir con SHEETS_SECRET
 var SHEET_NAME = 'Cuentas en venta';         // pestaña por defecto (si no llega body.sheet)
@@ -162,15 +175,42 @@ function doPost(e) {
   }
 }
 
+/* Diagnóstico: abre la URL /exec en el navegador y te dice a qué libro
+   escribe cada juego. Sirve para comprobar que la versión publicada es
+   esta y no una anterior: si ves solo {"ok":true,"msg":...} sin el campo
+   "libros", el /exec sigue corriendo código viejo y hay que re-implementar. */
 function doGet() {
-  return json({ ok: true, msg: 'Webhook de venta activo' });
+  var libros = {};
+  var juegos = Object.keys(LIBROS);
+  for (var i = 0; i < juegos.length; i++) {
+    var j = juegos[i];
+    var id = LIBROS[j];
+    if (!id || id.indexOf('PON_AQUI') !== -1) {
+      libros[j] = { ok: false, error: 'ID sin configurar' };
+      continue;
+    }
+    try {
+      libros[j] = { ok: true, id: id, archivo: SpreadsheetApp.openById(id).getName() };
+    } catch (err) {
+      libros[j] = { ok: false, id: id, error: String(err) };
+    }
+  }
+  return json({
+    ok: true,
+    version: VERSION,
+    secretConfigurado: SECRET !== 'CAMBIA_ESTE_SECRETO',
+    libros: libros,
+  });
 }
 
-/* Abre el libro del juego que llega en el envío. Si ese ID no está puesto,
-   cae en la hoja que contiene al script para no perder el dato. */
+/* Abre el libro del juego que llega en el envío. Si el juego viene pero su
+   ID no está puesto, falla en vez de escribir en la hoja del script: un
+   silencio ahí es justo lo que hace que todo termine en un solo libro. */
 function abrirHoja(juego) {
-  var id = LIBROS[normalizar(juego)];
+  var clave = normalizar(juego);
+  var id = LIBROS[clave];
   if (id && id.indexOf('PON_AQUI') === -1) return SpreadsheetApp.openById(id);
+  if (clave) throw new Error('No hay libro configurado para el juego "' + clave + '"');
   return SpreadsheetApp.getActiveSpreadsheet();
 }
 
